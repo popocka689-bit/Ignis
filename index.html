@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>IGNIS (01)</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #000000;
+      --card-bg: #0d0d0d;
+      --card-border: #222222;
+      --border-bright: #333333;
+      --nothing-red: #d71921;
+      --text-white: #f5f5f5;
+      --text-muted: #666666;
+      --text-dim: #999999;
+      --green-live: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-white);
+      min-height: 100vh;
+      padding-bottom: 96px;
+      font-family: 'Space Mono', -apple-system, monospace;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: radial-gradient(#1a1a1a 1px, transparent 1px);
+      background-size: 16px 16px;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .container {
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    /* ШЛЮЗ АВТОРИЗАЦИИ */
+    #lockScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000000;
+      z-index: 999;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .lock-box {
+      width: 100%;
+      max-width: 340px;
+      border: 1px dashed var(--border-bright);
+      border-radius: 16px;
+      padding: 24px 20px;
+      background: #080808;
+    }
+    .lock-badge {
+      font-size: 9px;
+      color: var(--nothing-red);
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .lock-title {
+      font-family: 'DotGothic16', monospace;
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .lock-sub {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+
+    /* ШАПКА */
+    .tech-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0 16px 0;
+      border-bottom: 1px dashed var(--card-border);
+      margin-bottom: 20px;
+    }
+    .brand-box {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .brand-title {
+      font-family: 'DotGothic16', monospace;
+      font-size: 28px;
+      letter-spacing: 2px;
+      color: var(--text-white);
+    }
+    .brand-tag {
+      font-size: 9px;
+      color: var(--nothing-red);
+      border: 1px solid var(--nothing-red);
+      padding: 1px 5px;
+      border-radius: 2px;
+      letter-spacing: 1px;
+    }
+    .system-status {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--nothing-red);
+      box-shadow: 0 0 6px var(--nothing-red);
+    }
+
+    /* ИНДИКАТОР РОЛИ */
+    .user-pill {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #080808;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      font-size: 10px;
+    }
+    .role-badge {
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .role-admin {
+      background: rgba(215, 25, 33, 0.15);
+      border: 1px solid var(--nothing-red);
+      color: var(--nothing-red);
+    }
+    .role-student {
+      background: #161616;
+      border: 1px solid var(--border-bright);
+      color: var(--text-dim);
+    }
+
+    /* ТАБЫ */
+    .tab-view {
+      display: none;
+      animation: techFade 0.15s ease-in-out;
+    }
+    .tab-view.active {
+      display: block;
+    }
+
+    @keyframes techFade {
+      from { opacity: 0; transform: scale(0.99); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* СЕТКА STATUS */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .tech-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 16px;
+      position: relative;
+    }
+    .tech-card.span-2 {
+      grid-column: span 2;
+    }
+    .tech-card.active-lesson {
+      border-color: var(--nothing-red);
+      background: #110506;
+    }
+    .card-label {
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dot-num {
+      font-family: 'DotGothic16', monospace;
+      font-size: 38px;
+      line-height: 1;
+      color: var(--text-white);
+      margin: 4px 0 6px 0;
+    }
+    .status-text-main {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .status-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      line-height: 1.4;
+    }
+
+    /* РАСПИСАНИЕ */
+    .schedule-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .tool-title {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 1.5px;
+    }
+    .admin-toggle-btn {
+      display: none;
+      background: transparent;
+      border: 1px solid var(--border-bright);
+      color: var(--text-dim);
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    .admin-toggle-btn.active {
+      border-color: var(--nothing-red);
+      color: var(--nothing-red);
+    }
+
+    .segment-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 16px;
+      border: 1px solid var(--card-border);
+      padding: 4px;
+      border-radius: 12px;
+      background: #080808;
+    }
+    .segment-btn {
+      flex: 1;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .segment-btn.active {
+      background: #191919;
+      color: var(--text-white);
+      border-color: var(--border-bright);
+    }
+
+    .lessons-rack, .tasks-rack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .lesson-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .lesson-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .lesson-index {
+      font-family: 'DotGothic16', monospace;
+      font-size: 18px;
+      color: var(--nothing-red);
+    }
+    .lesson-time {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+    .lesson-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+    .lesson-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .lesson-cab {
+      border: 1px solid var(--border-bright);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      color: var(--text-white);
+      font-weight: 700;
+    }
+    .lesson-del-btn {
+      background: transparent;
+      border: none;
+      color: var(--nothing-red);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 4px;
+      display: none;
+    }
+    .admin-mode .lesson-del-btn {
+      display: block;
+    }
+
+    /* ЗАДАЧИ */
+    .task-item {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      transition: opacity 0.2s;
+    }
+    .task-item.completed {
+      opacity: 0.35;
+    }
+    .task-checkbox {
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--border-bright);
+      border-radius: 4px;
+      margin-top: 3px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: #000;
+    }
+    .task-checkbox.checked {
+      background: var(--nothing-red);
+      border-color: var(--nothing-red);
+    }
+    .task-checkbox.checked::after {
+      content: "✓";
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .task-content {
+      flex: 1;
+    }
+    .task-tag {
+      font-size: 9px;
+      letter-spacing: 1px;
+      color: var(--nothing-red);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .task-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+    .task-item.completed .task-title {
+      text-decoration: line-through;
+    }
+    .task-deadline {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+    .task-del-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 4px;
+      display: none;
+    }
+    .task-del-btn:hover {
+      color: var(--nothing-red);
+    }
+    .admin-mode .task-del-btn {
+      display: block;
+    }
+
+    /* РЕДАКТОР */
+    .editor-box {
+      display: none;
+      background: #0d0d0d;
+      border: 1px dashed var(--border-bright);
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+    .editor-box.show {
+      display: block;
+    }
+    .input-field {
+      width: 100%;
+      background: #000000;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      color: var(--text-white);
+      margin-bottom: 8px;
+      outline: none;
+    }
+    .input-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 8px;
+    }
+
+    .tech-btn {
+      background: var(--text-white);
+      color: #000000;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 12px;
+      width: 100%;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 6px;
+    }
+
+    .empty-screen {
+      border: 1px dashed var(--card-border);
+      border-radius: 14px;
+      padding: 36px 16px;
+      text-align: center;
+    }
+    .empty-code {
+      font-family: 'DotGothic16', monospace;
+      font-size: 20px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .empty-msg {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    /* МОДАЛЬНОЕ ОКНО РАДАРА */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-sheet {
+      background: #0d0d0d;
+      border: 1px solid var(--card-border);
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 440px;
+      padding: 20px 18px 28px 18px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      border-bottom: 1px dashed var(--border-bright);
+      padding-bottom: 10px;
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .radar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow-y: auto;
+      margin: 12px 0 16px 0;
+      max-height: 45vh;
+    }
+    .radar-user-item {
+      background: #000000;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .radar-user-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-white);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .radar-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--green-live);
+    }
+    .radar-kick-btn {
+      background: transparent;
+      border: 1px solid var(--nothing-red);
+      color: var(--nothing-red);
+      border-radius: 4px;
+      font-size: 10px;
+      padding: 2px 6px;
+      cursor: pointer;
+      font-family: 'Space Mono', monospace;
+    }
+
+    .btn-checkin {
+      background: transparent;
+      border: 1px solid var(--border-bright);
+      color: var(--text-white);
+      transition: all 0.2s;
+    }
+    .btn-checkin.checked {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--green-live);
+      color: var(--green-live);
+    }
+
+    /* НАВБАР */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.95);
+      border-top: 1px solid var(--card-border);
+      padding: 10px 16px 14px 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .nav-rack {
+      max-width: 440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+    .nav-trigger {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 8px 0;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-family: 'Space Mono', monospace;
+    }
+    .nav-trigger.active {
+      background: #111111;
+      border-color: var(--border-bright);
+      color: var(--text-white);
+    }
+    .nav-dot {
+      font-family: 'DotGothic16', monospace;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+    .nav-trigger.active .nav-dot {
+      color: var(--nothing-red);
+    }
+    .nav-text {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ШЛЮЗ АВТОРИЗАЦИИ ПО КЛЮЧУ -->
+  <div id="lockScreen">
+    <div class="lock-box">
+      <div class="lock-badge">SECURITY // G-13 GATEWAY</div>
+      <div class="lock-title">SYSTEM LOCKED</div>
+      <div class="lock-sub">Доступ только для бойцов группы. Введите ключ взвода.</div>
+      <input type="text" id="inPasscode" class="input-field" placeholder="КЛЮЧ ДОСТУПА" style="text-align: center; text-transform: uppercase; letter-spacing: 2px;">
+      <button class="tech-btn" onclick="submitPasscode()">[ ПОДТВЕРДИТЬ ВХОД ]</button>
+      <div id="lockError" style="font-size: 9px; color: var(--nothing-red); margin-top: 10px; display: none;">[ERR: INVALID_KEY]</div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <header class="tech-header">
+      <div class="brand-box">
+        <div class="brand-title">IGNIS</div>
+        <div class="brand-tag">G-13</div>
+      </div>
+      <div class="system-status">
+        <div class="status-dot"></div>
+        <span id="headerClock">00:00:00</span>
+      </div>
+    </header>
+
+    <div class="user-pill">
+      <div>
+        <span style="color: var(--text-muted);">UID:</span>
+        <span id="userUid" style="color: var(--text-white);">7004092933</span>
+      </div>
+      <div id="userRoleBadge" class="role-badge role-admin">ADMIN</div>
+    </div>
+
+    <!-- ВКЛАДКА 1: STATUS -->
+    <section id="view-today" class="tab-view active">
+      <div class="tech-grid">
+        <div class="tech-card span-2" id="liveCard">
+          <div class="card-label">
+            <span>SYS // STATUS</span>
+            <span id="liveBadge" style="color: var(--nothing-red);">● LIVE</span>
+          </div>
+          <div class="status-text-main" id="statusTitle">ПОДКЛЮЧЕНИЕ К БАЗЕ...</div>
+          <div class="status-sub" id="statusSub">Загрузка данных из облака</div>
+        </div>
+
+        <!-- КАРТОЧКА РАДАРА -->
+        <div class="tech-card" style="cursor: pointer;" onclick="openRadarModal()">
+          <div class="card-label">
+            <span>RADAR (13)</span>
+            <span style="color: var(--green-live);">● LIVE</span>
+          </div>
+          <div class="dot-num" id="radarStat">00</div>
+          <div class="status-sub">чел. на месте ➔</div>
+        </div>
+
+        <!-- КАРТОЧКА ЗАДАЧ -->
+        <div class="tech-card" style="cursor: pointer;" onclick="switchTab('tasks', document.querySelectorAll('.nav-trigger')[2])">
+          <div class="card-label">TASKS</div>
+          <div class="dot-num" id="tasksStat">00</div>
+          <div class="status-sub">дедлайнов ➔</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 2: TIMETABLE -->
+    <section id="view-schedule" class="tab-view">
+      <div class="schedule-toolbar">
+        <span class="tool-title">СЕТКА ПАР</span>
+        <button class="admin-toggle-btn" id="adminBtnSchedule" onclick="toggleAdminMode()">[EDIT_MODE: OFF]</button>
+      </div>
+
+      <div class="segment-bar">
+        <button class="segment-btn active" onclick="selectDay(1, this)">ПН</button>
+        <button class="segment-btn" onclick="selectDay(2, this)">ВТ</button>
+        <button class="segment-btn" onclick="selectDay(3, this)">СР</button>
+        <button class="segment-btn" onclick="selectDay(4, this)">ЧТ</button>
+        <button class="segment-btn" onclick="selectDay(5, this)">ПТ</button>
+      </div>
+
+      <div class="lessons-rack" id="lessonsContainer"></div>
+
+      <div class="editor-box" id="editorBoxSchedule">
+        <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; margin-bottom: 8px;">+ ДОБАВИТЬ ПАРУ (ОБЛАКО)</div>
+        <input type="text" id="inSubj" class="input-field" placeholder="Название предмета">
+        <div class="input-row">
+          <input type="text" id="inTime" class="input-field" placeholder="08:30-10:00">
+          <input type="text" id="inCab" class="input-field" placeholder="Каб. 302">
+        </div>
+        <button class="tech-btn" onclick="saveLesson()">[ ОТПРАВИТЬ В БАЗУ ]</button>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 3: TASKS -->
+    <section id="view-tasks" class="tab-view">
+      <div class="schedule-toolbar">
+        <span class="tool-title">ОЧЕРЕДЬ СРС И ДЕДЛАЙНОВ</span>
+        <button class="admin-toggle-btn" id="adminBtnTasks" onclick="toggleAdminMode()">[EDIT_MODE: OFF]</button>
+      </div>
+
+      <div class="tasks-rack" id="tasksContainer"></div>
+
+      <div class="editor-box" id="editorBoxTasks">
+        <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; margin-bottom: 8px;">+ ДОБАВИТЬ СРС // ДЕДЛАЙН</div>
+        <input type="text" id="inTaskSubj" class="input-field" placeholder="Предмет (напр. Базы данных)">
+        <input type="text" id="inTaskTitle" class="input-field" placeholder="Описание задания (напр. Лаба №3)">
+        <input type="text" id="inTaskDeadline" class="input-field" placeholder="Срок сдачи (напр. До пятницы 18:00)">
+        <button class="tech-btn" onclick="saveTask()">[ ОПУБЛИКОВАТЬ ДЛЯ ГРУППЫ ]</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- МОДАЛКА RADAR -->
+  <div id="radarModal" class="modal-backdrop" onclick="if(event.target === this) closeRadarModal()">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div>
+          <div style="font-size: 9px; color: var(--green-live); letter-spacing: 1px; text-transform: uppercase;">RADAR // ПОСЕЩАЕМОСТЬ</div>
+          <div style="font-size: 15px; font-weight: 700;">КТО В АУДИТОРИИ</div>
+        </div>
+        <button class="modal-close" onclick="closeRadarModal()">✕</button>
+      </div>
+
+      <div class="radar-list" id="radarMembersList">
+        <!-- Список присутствующих -->
+      </div>
+
+      <button class="tech-btn btn-checkin" id="checkinBtn" onclick="toggleCheckin()">[ Я В АУДИТОРИИ 📍 ]</button>
+    </div>
+  </div>
+
+  <!-- НАВБАР -->
+  <nav class="bottom-bar">
+    <div class="nav-rack">
+      <button class="nav-trigger active" onclick="switchTab('today', this)">
+        <div class="nav-dot">01</div>
+        <div class="nav-text">STATUS</div>
+      </button>
+      <button class="nav-trigger" onclick="switchTab('schedule', this)">
+        <div class="nav-dot">02</div>
+        <div class="nav-text">TIMETABLE</div>
+      </button>
+      <button class="nav-trigger" onclick="switchTab('tasks', this)">
+        <div class="nav-dot">03</div>
+        <div class="nav-text">TASKS</div>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    const DB_URL = "https://ignis-d092d-default-rtdb.firebaseio.com";
+    const SQUAD_PASSCODE = "IGNIS-29";
+    const ADMIN_IDS = [7004092933, 8030931820];
+
+    // КЛЮЧИ БОТА ДЛЯ АВТОУВЕДОМЛЕНИЙ
+    const BOT_TOKEN = "8919266628:AAG8prrDh4FmyfpUN784ObXl5vp5IqeQ-B4";
+    const CHAT_ID = "7004092933";
+
+    const tg = window.Telegram?.WebApp;
+    let currentUser = null;
+    let isAdmin = false;
+
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      tg.setHeaderColor('#000000');
+      tg.setBackgroundColor('#000000');
+      currentUser = tg.initDataUnsafe?.user;
+    }
+
+    if (!currentUser || !currentUser.id) {
+      currentUser = { id: 7004092933, first_name: "Сергей (Dev)", username: "dev" };
+    }
+
+    isAdmin = ADMIN_IDS.includes(Number(currentUser.id));
+
+    function haptic() {
+      if (tg?.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('medium');
+      }
+    }
+
+    function getTodayKey() {
+      const d = new Date();
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // ВЕЕРНАЯ РАССЫЛКА ПО ВСЕМУ ВЗВОДУ В ЛИЧКУ
+async function sendTelegramAlert(text) {
+  try {
+    const res = await fetch(`${DB_URL}/squad.json`);
+    const squad = await res.json() || {};
+    const uids = Object.keys(squad);
+
+    // Добавляем админов, если их нет в squad
+    ADMIN_IDS.forEach(id => {
+      if (!uids.includes(String(id))) uids.push(String(id));
+    });
+
+    for (const uid of uids) {
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: uid,
+          text: text,
+          parse_mode: 'HTML'
+        })
+      }).catch(err => console.error(`Не удалось отправить UID ${uid}:`, err));
+    }
+  } catch (e) {
+    console.error("Ошибка рассылки Telegram:", e);
+  }
+}
+
+
+    // ВЕРИФИКАЦИЯ SQUAD
+    async function verifySquadAccess() {
+      if (isAdmin) {
+        initUI(true);
+        return;
+      }
+
+      const localAuth = localStorage.getItem('ignis_auth_token');
+      if (localAuth === 'AUTHORIZED') {
+        initUI(false);
+        return;
+      }
+
+      try {
+        const res = await fetch(`${DB_URL}/squad/${currentUser.id}.json`);
+        const squadUser = await res.json();
+        if (squadUser) {
+          localStorage.setItem('ignis_auth_token', 'AUTHORIZED');
+          initUI(false);
+          return;
+        }
+      } catch (err) {
+        console.error("Ошибка верификации:", err);
+      }
+
+      document.getElementById('lockScreen').style.display = 'flex';
+    }
+
+    async function submitPasscode() {
+      haptic();
+      const code = document.getElementById('inPasscode').value.trim().toUpperCase();
+      const errBox = document.getElementById('lockError');
+
+      if (code !== SQUAD_PASSCODE) {
+        errBox.innerText = "[ERR: INVALID_KEY]";
+        errBox.style.display = 'block';
+        return;
+      }
+
+      try {
+        const res = await fetch(`${DB_URL}/squad.json`);
+        const squad = (await res.json()) || {};
+        const squadCount = Object.keys(squad).length;
+
+        if (squadCount >= 13 && !squad[currentUser.id]) {
+          errBox.innerText = "[ERR: MAX_CAPACITY_REACHED (13/13)]";
+          errBox.style.display = 'block';
+          return;
+        }
+
+        const memberData = {
+          uid: currentUser.id,
+          name: currentUser.first_name || "Student",
+          username: currentUser.username || "none",
+          joinedAt: Date.now(),
+          role: "student"
+        };
+
+        await fetch(`${DB_URL}/squad/${currentUser.id}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(memberData)
+        });
+
+        localStorage.setItem('ignis_auth_token', 'AUTHORIZED');
+        document.getElementById('lockScreen').style.display = 'none';
+        initUI(false);
+      } catch (err) {
+        errBox.innerText = "[ERR: NETWORK_FAILURE]";
+        errBox.style.display = 'block';
+      }
+    }
+
+    function initUI(adminStatus) {
+      document.getElementById('userUid').innerText = currentUser.id;
+      const roleBadge = document.getElementById('userRoleBadge');
+      if (adminStatus) {
+        roleBadge.innerText = "ADMIN";
+        roleBadge.className = "role-badge role-admin";
+        document.getElementById('adminBtnSchedule').style.display = "block";
+        document.getElementById('adminBtnTasks').style.display = "block";
+      } else {
+        roleBadge.innerText = "STUDENT";
+        roleBadge.className = "role-badge role-student";
+      }
+      syncDataFromCloud();
+    }
+
+    let timetable = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+    let tasks = {};
+    let completedTasks = JSON.parse(localStorage.getItem('ignis_done_tasks') || '[]');
+    let radarData = {};
+    let currentDay = 1;
+    let editMode = false;
+
+    // СИНХРОНИЗАЦИЯ С ОБЛАКОМ
+    async function syncDataFromCloud() {
+      const todayKey = getTodayKey();
+      try {
+        const [resTime, resTasks, resRadar] = await Promise.all([
+          fetch(`${DB_URL}/timetable.json`),
+          fetch(`${DB_URL}/tasks.json`),
+          fetch(`${DB_URL}/radar/${todayKey}.json`)
+        ]);
+
+        const dataTime = await resTime.json();
+        if (dataTime) {
+          timetable = {
+            1: dataTime[1] || [],
+            2: dataTime[2] || [],
+            3: dataTime[3] || [],
+            4: dataTime[4] || [],
+            5: dataTime[5] || []
+          };
+        }
+
+        tasks = (await resTasks.json()) || {};
+        radarData = (await resRadar.json()) || {};
+
+        renderLessons();
+        renderTasks();
+        renderRadar();
+        updateLiveStatus();
+      } catch (err) {
+        console.error("Ошибка синхронизации:", err);
+      }
+    }
+
+    function switchTab(viewId, el) {
+      haptic();
+      document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-trigger').forEach(b => b.classList.remove('active'));
+      document.getElementById('view-' + viewId).classList.add('active');
+      el.classList.add('active');
+    }
+
+    function toggleAdminMode() {
+      if (!isAdmin) return;
+      haptic();
+      editMode = !editMode;
+      
+      const txt = editMode ? "[EDIT_MODE: ON]" : "[EDIT_MODE: OFF]";
+      document.getElementById('adminBtnSchedule').innerText = txt;
+      document.getElementById('adminBtnTasks').innerText = txt;
+
+      document.getElementById('adminBtnSchedule').classList.toggle('active', editMode);
+      document.getElementById('adminBtnTasks').classList.toggle('active', editMode);
+
+      document.getElementById('editorBoxSchedule').classList.toggle('show', editMode);
+      document.getElementById('editorBoxTasks').classList.toggle('show', editMode);
+      document.body.classList.toggle('admin-mode', editMode);
+
+      renderLessons();
+      renderTasks();
+    }
+
+    // РАСПИСАНИЕ
+    function selectDay(dayNum, btn) {
+      haptic();
+      currentDay = dayNum;
+      document.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderLessons();
+    }
+
+    function renderLessons() {
+      const container = document.getElementById('lessonsContainer');
+      const list = timetable[currentDay] || [];
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="empty-screen">
+            <div class="empty-code">[NO_LESSONS]</div>
+            <div class="empty-msg">На этот день пары не запланированы.</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map((item, idx) => `
+        <div class="lesson-item">
+          <div class="lesson-left">
+            <div class="lesson-index">${idx + 1}</div>
+            <div>
+              <div class="lesson-time">${item.time}</div>
+              <div class="lesson-name">${item.name}</div>
+            </div>
+          </div>
+          <div class="lesson-right">
+            <div class="lesson-cab">${item.cab}</div>
+            ${isAdmin ? `<button class="lesson-del-btn" onclick="deleteLesson(${idx})">✕</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function saveLesson() {
+      if (!isAdmin) return;
+      haptic();
+      const name = document.getElementById('inSubj').value.trim();
+      const time = document.getElementById('inTime').value.trim();
+      const cab = document.getElementById('inCab').value.trim();
+
+      if (!name || !time || !cab) {
+        alert("Заполните предмет, время и кабинет!");
+        return;
+      }
+
+      if (!timetable[currentDay]) timetable[currentDay] = [];
+      timetable[currentDay].push({ name, time, cab });
+
+      document.getElementById('inSubj').value = '';
+      document.getElementById('inTime').value = '';
+      document.getElementById('inCab').value = '';
+
+      renderLessons();
+      updateLiveStatus();
+
+      await fetch(`${DB_URL}/timetable.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(timetable)
+      });
+    }
+
+    async function deleteLesson(idx) {
+      if (!isAdmin) return;
+      haptic();
+      timetable[currentDay].splice(idx, 1);
+      renderLessons();
+      updateLiveStatus();
+
+      await fetch(`${DB_URL}/timetable.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(timetable)
+      });
+    }
+
+    // ЗАДАНИЯ
+    function renderTasks() {
+      const container = document.getElementById('tasksContainer');
+      const taskKeys = Object.keys(tasks);
+
+      if (taskKeys.length === 0) {
+        container.innerHTML = `
+          <div class="empty-screen">
+            <div class="empty-code">[EMPTY_QUEUE]</div>
+            <div class="empty-msg">Все дедлайны закрыты либо отсутствуют.</div>
+          </div>
+        `;
+        document.getElementById('tasksStat').innerText = "00";
+        return;
+      }
+
+      let activeCount = 0;
+      container.innerHTML = taskKeys.map(id => {
+        const item = tasks[id];
+        const isDone = completedTasks.includes(id);
+        if (!isDone) activeCount++;
+
+        return `
+          <div class="task-item ${isDone ? 'completed' : ''}">
+            <div class="task-checkbox ${isDone ? 'checked' : ''}" onclick="toggleTask('${id}')"></div>
+            <div class="task-content" onclick="toggleTask('${id}')">
+              <div class="task-tag">${item.subj}</div>
+              <div class="task-title">${item.title}</div>
+              <div class="task-deadline">${item.deadline}</div>
+            </div>
+            ${isAdmin ? `<button class="task-del-btn" onclick="deleteTask('${id}')">✕</button>` : ''}
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('tasksStat').innerText = String(activeCount).padStart(2, '0');
+    }
+
+    function toggleTask(id) {
+      haptic();
+      if (completedTasks.includes(id)) {
+        completedTasks = completedTasks.filter(item => item !== id);
+      } else {
+        completedTasks.push(id);
+      }
+      localStorage.setItem('ignis_done_tasks', JSON.stringify(completedTasks));
+      renderTasks();
+    }
+
+    async function saveTask() {
+      if (!isAdmin) return;
+      haptic();
+      const subj = document.getElementById('inTaskSubj').value.trim();
+      const title = document.getElementById('inTaskTitle').value.trim();
+      const deadline = document.getElementById('inTaskDeadline').value.trim();
+
+      if (!subj || !title || !deadline) {
+        alert("Заполните предмет, описание и дедлайн!");
+        return;
+      }
+
+      const newId = 't_' + Date.now();
+      tasks[newId] = { subj, title, deadline };
+
+      document.getElementById('inTaskSubj').value = '';
+      document.getElementById('inTaskTitle').value = '';
+      document.getElementById('inTaskDeadline').value = '';
+
+      renderTasks();
+
+      // Сохраняем в Firebase
+      await fetch(`${DB_URL}/tasks/${newId}.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ subj, title, deadline })
+      });
+
+      // Моментально шлём уведомление в Telegram
+      const msg = `📌 <b>IGNIS // НОВЫЙ ДЕДЛАЙН</b>\n\n` +
+                  `📖 <b>Предмет:</b> ${subj}\n` +
+                  `📝 <b>Задание:</b> ${title}\n` +
+                  `⏳ <b>Срок:</b> ${deadline}\n\n` +
+                  `<i>Зафиксировано в очереди задач взвода!</i>`;
+
+      await sendTelegramAlert(msg);
+    }
+
+    async function deleteTask(id) {
+      if (!isAdmin) return;
+      haptic();
+      delete tasks[id];
+      completedTasks = completedTasks.filter(item => item !== id);
+      localStorage.setItem('ignis_done_tasks', JSON.stringify(completedTasks));
+      renderTasks();
+
+      await fetch(`${DB_URL}/tasks/${id}.json`, {
+        method: 'DELETE'
+      });
+    }
+
+    // RADAR
+    function openRadarModal() {
+      haptic();
+      renderRadar();
+      document.getElementById('radarModal').style.display = 'flex';
+    }
+
+    function closeRadarModal() {
+      haptic();
+      document.getElementById('radarModal').style.display = 'none';
+    }
+
+    function renderRadar() {
+      const listContainer = document.getElementById('radarMembersList');
+      const keys = Object.keys(radarData);
+      const count = keys.length;
+
+      document.getElementById('radarStat').innerText = String(count).padStart(2, '0');
+
+      const isMeChecked = !!radarData[currentUser.id];
+      const checkinBtn = document.getElementById('checkinBtn');
+      if (isMeChecked) {
+        checkinBtn.innerText = "[ ВЫ НА ПАРЕ ✓ ]";
+        checkinBtn.classList.add('checked');
+      } else {
+        checkinBtn.innerText = "[ Я В АУДИТОРИИ 📍 ]";
+        checkinBtn.classList.remove('checked');
+      }
+
+      if (count === 0) {
+        listContainer.innerHTML = `
+          <div style="text-align: center; padding: 20px 0; font-size: 11px; color: var(--text-muted);">
+            [NO_ACTIVITY] В аудитории пока никого нет.
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = keys.map(uid => {
+        const student = radarData[uid];
+        return `
+          <div class="radar-user-item">
+            <div class="radar-user-name">
+              <div class="radar-dot"></div>
+              <span>${student.name}</span>
+            </div>
+            ${isAdmin ? `<button class="radar-kick-btn" onclick="kickFromRadar('${uid}')">[УДАЛИТЬ]</button>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function toggleCheckin() {
+      haptic();
+      const todayKey = getTodayKey();
+      const uid = String(currentUser.id);
+
+      if (radarData[uid]) {
+        delete radarData[uid];
+        renderRadar();
+        await fetch(`${DB_URL}/radar/${todayKey}/${uid}.json`, { method: 'DELETE' });
+      } else {
+        const studentRecord = {
+          name: currentUser.first_name || "Студент",
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        radarData[uid] = studentRecord;
+        renderRadar();
+        await fetch(`${DB_URL}/radar/${todayKey}/${uid}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(studentRecord)
+        });
+      }
+    }
+
+    async function kickFromRadar(uid) {
+      if (!isAdmin) return;
+      haptic();
+      const todayKey = getTodayKey();
+      delete radarData[uid];
+      renderRadar();
+      await fetch(`${DB_URL}/radar/${todayKey}/${uid}.json`, { method: 'DELETE' });
+    }
+
+    // ТАЙМЕР И СТАТУС ПАР
+     function parseTimeToMinutes(tStr) {
+      const match = tStr.match(/(\d{1,2})[:.](\d{2})/);
+      if (!match) return null;
+      return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
+    }
+
+    function updateLiveStatus() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('headerClock').innerText = `${h}:${m}:${s}`;
+
+      const day = now.getDay();
+      const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+      const title = document.getElementById('statusTitle');
+      const sub = document.getElementById('statusSub');
+      const card = document.getElementById('liveCard');
+      const badge = document.getElementById('liveBadge');
+
+      if (day === 0 || day === 6) {
+        card.classList.remove('active-lesson');
+        badge.innerText = "● IDLE";
+        badge.style.color = "var(--text-muted)";
+        title.innerText = "ВЫХОДНОЙ ДЕНЬ";
+        sub.innerText = "Пар нет. Система в режиме ожидания.";
+        return;
+      }
+
+      const todayList = timetable[day] || [];
+
+      if (todayList.length === 0) {
+        card.classList.remove('active-lesson');
+        badge.innerText = "● IDLE";
+        badge.style.color = "var(--text-muted)";
+        title.innerText = "СЕТКА ПУСТА";
+        sub.innerText = "На сегодня расписание не заполнено.";
+        return;
+      }
+
+      const parsedLessons = [];
+      for (const item of todayList) {
+        const parts = item.time.split(/[-—–]/);
+        if (parts.length >= 2) {
+          const start = parseTimeToMinutes(parts[0]);
+          const end = parseTimeToMinutes(parts[1]);
+          if (start !== null && end !== null) {
+            parsedLessons.push({ ...item, start, end });
+          }
+        }
+      }
+
+      parsedLessons.sort((a, b) => a.start - b.start);
+
+      if (currentMinutes < parsedLessons[0].start) {
+        const diff = parsedLessons[0].start - currentMinutes;
+        card.classList.remove('active-lesson');
+        badge.innerText = "● PENDING";
+        badge.style.color = "#38bdf8";
+        title.innerText = `ДО ПАР: ${diff} МИН`;
+        sub.innerText = `1-я пара: ${parsedLessons[0].name} (${parsedLessons[0].cab})`;
+        return;
+      }
+
+      for (let i = 0; i < parsedLessons.length; i++) {
+        const lesson = parsedLessons[i];
+        if (currentMinutes >= lesson.start && currentMinutes < lesson.end) {
+          const left = lesson.end - currentMinutes;
+          card.classList.add('active-lesson');
+          badge.innerText = "● IN PROGRESS";
+          badge.style.color = "var(--nothing-red)";
+          title.innerText = `${lesson.name}`;
+          sub.innerText = `${lesson.cab} • До конца пары: ${left} мин`;
+          return;
+        }
+
+        if (i < parsedLessons.length - 1) {
+          const nextLesson = parsedLessons[i + 1];
+          if (currentMinutes >= lesson.end && currentMinutes < nextLesson.start) {
+            const breakLeft = nextLesson.start - currentMinutes;
+            card.classList.remove('active-lesson');
+            badge.innerText = "● BREAK";
+            badge.style.color = "#10b981";
+            title.innerText = `ПЕРЕМЕНА (${breakLeft} МИН)`;
+            sub.innerText = `Далее: ${nextLesson.name} (${nextLesson.cab})`;
+            return;
+          }
+        }
+      }
+
+      card.classList.remove('active-lesson');
+      badge.innerText = "● COMPLETED";
+      badge.style.color = "var(--text-muted)";
+      title.innerText = "ПАРЫ ЗАКОНЧИЛИСЬ";
+      sub.innerText = "Все занятия на сегодня завершены 🎮";
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const day = new Date().getDay();
+      currentDay = (day >= 1 && day <= 5) ? day : 1;
+      
+      const btns = document.querySelectorAll('.segment-btn');
+      btns.forEach((b, i) => b.classList.toggle('active', i + 1 === currentDay));
+      
+      verifySquadAccess();
+      setInterval(syncDataFromCloud, 10000);
+      setInterval(updateLiveStatus, 1000);
+    });
+  </script>
+</body>
+</html>
