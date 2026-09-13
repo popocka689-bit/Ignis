@@ -740,7 +740,7 @@
     </section>
 
     <!-- ВКЛАДКА 3: TASKS -->
-    <section id="view-tasks" class="tab-view">
+   <section id="view-tasks" class="tab-view">
       <div class="schedule-toolbar">
         <span class="tool-title">ОЧЕРЕДЬ СРС И ДЕДЛАЙНОВ</span>
         <button class="admin-toggle-btn" id="adminBtnTasks" onclick="toggleAdminMode()">[EDIT_MODE: OFF]</button>
@@ -801,6 +801,10 @@
     const SQUAD_PASSCODE = "IGNIS-29";
     const ADMIN_IDS = [7004092933, 8030931820];
 
+    // КЛЮЧИ БОТА ДЛЯ АВТОУВЕДОМЛЕНИЙ
+    const BOT_TOKEN = "8919266628:AAG8prrDh4FmyfpUN784ObXl5vp5IqeQ-B4";
+    const CHAT_ID = "7004092933";
+
     const tg = window.Telegram?.WebApp;
     let currentUser = null;
     let isAdmin = false;
@@ -831,6 +835,33 @@
       const month = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
+        }
+    // ВЕЕРНАЯ РАССЫЛКА ПО ВСЕМУ ВЗВОДУ В ЛИЧКУ
+async function sendTelegramAlert(text) {
+  try {
+    const res = await fetch(`${DB_URL}/squad.json`);
+    const squad = await res.json() || {};
+    const uids = Object.keys(squad);
+
+    // Добавляем админов, если их нет в squad
+    ADMIN_IDS.forEach(id => {
+      if (!uids.includes(String(id))) uids.push(String(id));
+    });
+
+    for (const uid of uids) {
+      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: uid,
+          text: text,
+          parse_mode: 'HTML'
+        })
+      }).catch(err => console.error(`Не удалось отправить UID ${uid}:`, err));
+    }
+  } catch (e) {
+    console.error("Ошибка рассылки Telegram:", e);
+  }
     }
 
     // ВЕРИФИКАЦИЯ SQUAD
@@ -987,91 +1018,8 @@
 
       renderLessons();
       renderTasks();
-    }
-
-    // РАСПИСАНИЕ
-    function selectDay(dayNum, btn) {
-      haptic();
-      currentDay = dayNum;
-      document.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderLessons();
-    }
-
-    function renderLessons() {
-      const container = document.getElementById('lessonsContainer');
-      const list = timetable[currentDay] || [];
-
-      if (list.length === 0) {
-        container.innerHTML = `
-          <div class="empty-screen">
-            <div class="empty-code">[NO_LESSONS]</div>
-            <div class="empty-msg">На этот день пары не запланированы.</div>
-          </div>
-        `;
-        return;
-      }
-
-      container.innerHTML = list.map((item, idx) => `
-        <div class="lesson-item">
-          <div class="lesson-left">
-            <div class="lesson-index">${idx + 1}</div>
-            <div>
-              <div class="lesson-time">${item.time}</div>
-              <div class="lesson-name">${item.name}</div>
-            </div>
-          </div>
-          <div class="lesson-right">
-            <div class="lesson-cab">${item.cab}</div>
-            ${isAdmin ? `<button class="lesson-del-btn" onclick="deleteLesson(${idx})">✕</button>` : ''}
-          </div>
-        </div>
-      `).join('');
-    }
-
-    async function saveLesson() {
-      if (!isAdmin) return;
-      haptic();
-      const name = document.getElementById('inSubj').value.trim();
-      const time = document.getElementById('inTime').value.trim();
-      const cab = document.getElementById('inCab').value.trim();
-
-      if (!name || !time || !cab) {
-        alert("Заполните предмет, время и кабинет!");
-        return;
-      }
-
-      if (!timetable[currentDay]) timetable[currentDay] = [];
-      timetable[currentDay].push({ name, time, cab });
-
-      document.getElementById('inSubj').value = '';
-      document.getElementById('inTime').value = '';
-      document.getElementById('inCab').value = '';
-
-      renderLessons();
-      updateLiveStatus();
-
-      await fetch(`${DB_URL}/timetable.json`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(timetable)
-      });
-    }
-
-    async function deleteLesson(idx) {
-      if (!isAdmin) return;
-      haptic();
-      timetable[currentDay].splice(idx, 1);
-      renderLessons();
-      updateLiveStatus();
-
-      await fetch(`${DB_URL}/timetable.json`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(timetable)
-      });
-    }
-
+          }
+    
     // ЗАДАНИЯ
     function renderTasks() {
       const container = document.getElementById('tasksContainer');
@@ -1142,11 +1090,21 @@
 
       renderTasks();
 
+      // Сохраняем в Firebase
       await fetch(`${DB_URL}/tasks/${newId}.json`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ subj, title, deadline })
       });
+
+      // Моментально шлём уведомление в Telegram
+      const msg = `📌 <b>IGNIS // НОВЫЙ ДЕДЛАЙН</b>\n\n` +
+                  `📖 <b>Предмет:</b> ${subj}\n` +
+                  `📝 <b>Задание:</b> ${title}\n` +
+                  `⏳ <b>Срок:</b> ${deadline}\n\n` +
+                  `<i>Зафиксировано в очереди задач взвода!</i>`;
+
+      await sendTelegramAlert(msg);
     }
 
     async function deleteTask(id) {
@@ -1161,10 +1119,7 @@
         method: 'DELETE'
       });
     }
-
-    // ==========================================
-    // ЛОГИКА RADAR (ПОСЕЩАЕМОСТЬ)
-    // ==========================================
+    // RADAR
     function openRadarModal() {
       haptic();
       renderRadar();
@@ -1250,7 +1205,7 @@
     }
 
     // ТАЙМЕР И СТАТУС ПАР
-    function parseTimeToMinutes(tStr) {
+     function parseTimeToMinutes(tStr) {
       const match = tStr.match(/(\d{1,2})[:.](\d{2})/);
       if (!match) return null;
       return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
@@ -1362,3 +1317,4 @@
   </script>
 </body>
 </html>
+      
