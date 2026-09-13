@@ -2,10 +2,29 @@ name: Check Upcoming Lessons
 
 on:
   schedule:
-    # Запуск каждые 5 минут с понедельника по пятницу
-    - cron: '*/5 * * * 1-5'
-  workflow_dispatch: # Позволяет запустить вручную кнопкой для теста
+    # 02:30 UTC = 07:30 по Казахстану (+05:00) — утренний дайджест
+    - cron: '30 2 * * 1-5'
+    # Проверка каждые 5 минут в учебное время (с 08:00 до 18:00 по местному времени = 03:00 - 13:00 UTC)
+    - cron: '*/5 3-13 * * 1-5'
+  workflow_dispatch:
 
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Run Notifier
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        run: node notifier.js
+        
 jobs:
   notify:
     runs-on: ubuntu-latest
