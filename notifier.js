@@ -17,6 +17,25 @@ function fetchData(url) {
   });
 }
 
+function putData(url, data) {
+  return new Promise((resolve) => {
+    const payload = JSON.stringify(data);
+    const parsedUrl = new URL(url);
+    const req = https.request({
+      hostname: parsedUrl.hostname,
+      path: parsedUrl.pathname + parsedUrl.search,
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(payload)
+      }
+    }, res => resolve());
+    req.on('error', () => resolve());
+    req.write(payload);
+    req.end();
+  });
+}
+
 function sendMessage(chatId, text) {
   return new Promise((resolve) => {
     const payload = JSON.stringify({
@@ -33,7 +52,7 @@ function sendMessage(chatId, text) {
       }
     }, res => resolve());
 
-    req.on('error', () => resolve()); // Игнорируем ошибку, если кто-то заблокировал бота
+    req.on('error', () => resolve());
     req.write(payload);
     req.end();
   });
@@ -63,24 +82,79 @@ async function run() {
     return;
   }
 
-  const [timetable, squadData] = await Promise.all([
+  const [timetable, squadData, tasksData, logsData] = await Promise.all([
     fetchData(`${DB_URL}/timetable.json`),
-    fetchData(`${DB_URL}/squad.json`)
+    fetchData(`${DB_URL}/squad.json`),
+    fetchData(`${DB_URL}/tasks.json`),
+    fetchData(`${DB_URL}/digest_logs.json`)
   ]);
 
-  if (!timetable || !timetable[day]) {
-    console.log("Расписание на сегодня пустое.");
-    return;
-  }
-
-  // Собираем список получателей (squad + админы)
+  // Формируем список получателей (squad + админы)
   const recipients = new Set(ADMIN_IDS);
   if (squadData) {
     Object.keys(squadData).forEach(uid => recipients.add(uid));
   }
 
-  const todayLessons = timetable[day];
+  const todayLessons = (timetable && timetable[day]) ? timetable[day] : [];
 
+  // ==========================================
+  // 1. УТРЕННИЙ ДАЙДЖЕСТ (ОКНО 07:25 - 07:45)
+  // ==========================================
+  const year = localDate.getUTCFullYear();
+  const month = String(localDate.getUTCMonth() + 1).padStart(2, '0');
+  const dateNum = String(localDate.getUTCDate()).padStart(2, '0');
+  const dateKey = `${year}-${month}-${dateNum}`;
+
+  const daysNames = ["ВОСКРЕСЕНЬЕ", "ПОНЕДЕЛЬНИК", "ВТОРНИК", "СРЕДА", "ЧЕТВЕРГ", "ПЯТНИЦА", "СУББОТА"];
+  const currentDayName = daysNames[day];
+
+  // 07:30 = 450 минут от начала суток (окно с 445 до 465)
+  if (localMinutes >= 445 && localMinutes <= 465) {
+    if (!logsData || logsData.lastDigest !== dateKey) {
+      console.log("Формирование утреннего дайджеста...");
+
+      let lessonsBlock = "";
+      if (todayLessons.length === 0) {
+        lessonsBlock = "<i>Пар на сегодня не запланировано.</i>\n";
+      } else {
+        lessonsBlock = todayLessons.map((l, i) => {
+          const isCanc = l.status === 'canceled';
+          return `${i + 1}. <b>${l.name}</b> ${isCanc ? '[ОТМЕНЕНА]' : `[${l.cab}]`} • <code>${l.time}</code>`;
+        }).join("\n");
+      }
+
+      let tasksBlock = "";
+      const taskKeys = tasksData ? Object.keys(tasksData) : [];
+      if (taskKeys.length === 0) {
+        tasksBlock = "<i>Активных дедлайнов нет.</i>";
+      } else {
+        tasksBlock = taskKeys.slice(0, 3).map(k => {
+          const t = tasksData[k];
+          return `• <b>${t.subj}</b>: ${t.title} (до <code>${t.deadline}</code>)`;
+        }).join("\n");
+      }
+
+      const digestText = `⚡ <b>IGNIS // MORNING BRIEFING</b>\n` +
+                         `<code>${currentDayName} • ${dateNum}.${month}</code>\n\n` +
+                         `🗓 <b>РАСПИСАНИЕ НА ДЕНЬ:</b>\n` +
+                         `${lessonsBlock}\n\n` +
+                         `⏳ <b>ДЕДЛАЙНЫ И СРС:</b>\n` +
+                         `${tasksBlock}\n\n` +
+                         `<i>Удачного дня взводу G-13. Отметьтесь в RADAR!</i>`;
+
+      for (const uid of recipients) {
+        await sendMessage(uid, digestText);
+      }
+
+      await putData(`${DB_URL}/digest_logs.json`, { lastDigest: dateKey });
+      console.log(`Утренний дайджест успешно отправлен ${recipients.size} бойцам.`);
+      return;
+    }
+  }
+
+  // ==========================================
+  // 2. ОПОВЕЩЕНИЯ ЗА 5 МИНУТ ДО ПАРЫ
+  // ==========================================
   for (const lesson of todayLessons) {
     if (lesson.status === 'canceled') continue;
 
@@ -90,7 +164,6 @@ async function run() {
       if (startMin !== null) {
         const diff = startMin - localMinutes;
 
-        // Если до начала пары от 3 до 8 минут
         if (diff >= 3 && diff <= 8) {
           const msg = `🚨 <b>IGNIS // НАПОМИНАНИЕ</b>\n\n` +
                       `До пары осталось <b>~5 минут</b>!\n\n` +
@@ -102,14 +175,15 @@ async function run() {
           for (const uid of recipients) {
             await sendMessage(uid, msg);
           }
-          console.log(`Рассылка отправлена ${recipients.size} бойцам.`);
+          console.log(`Рассылка о начале пары отправлена.`);
           return;
         }
       }
     }
   }
 
-  console.log("В ближайшие 5 минут пар нет.");
+  console.log("Событий для отправки нет.");
 }
 
 run();
+  
