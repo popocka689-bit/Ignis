@@ -2,7 +2,7 @@ const https = require('https');
 
 const DB_URL = "https://ignis-d092d-default-rtdb.firebaseio.com";
 const BOT_TOKEN = process.env.BOT_TOKEN;
-const CHAT_ID = process.env.CHAT_ID; // ID беседы или твой личный ID
+const ADMIN_IDS = ["7004092933", "8030931820"];
 
 function fetchData(url) {
   return new Promise((resolve, reject) => {
@@ -17,10 +17,10 @@ function fetchData(url) {
   });
 }
 
-function sendMessage(text) {
-  return new Promise((resolve, reject) => {
+function sendMessage(chatId, text) {
+  return new Promise((resolve) => {
     const payload = JSON.stringify({
-      chat_id: CHAT_ID,
+      chat_id: chatId,
       text: text,
       parse_mode: 'HTML'
     });
@@ -33,7 +33,7 @@ function sendMessage(text) {
       }
     }, res => resolve());
 
-    req.on('error', reject);
+    req.on('error', () => resolve()); // Игнорируем ошибку, если кто-то заблокировал бота
     req.write(payload);
     req.end();
   });
@@ -46,30 +46,37 @@ function parseTimeToMinutes(tStr) {
 }
 
 async function run() {
-  if (!BOT_TOKEN || !CHAT_ID) {
-    console.log("BOT_TOKEN или CHAT_ID не настроены в Secrets!");
+  if (!BOT_TOKEN) {
+    console.log("BOT_TOKEN не настроен!");
     return;
   }
 
-  // Получаем текущее время по часовому поясу твоего региона (+05:00)
   const now = new Date();
   const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
-  const localMinutes = (utcMinutes + 5 * 60) % (24 * 60); // сдвиг +5 часов (Казахстан)
+  const localMinutes = (utcMinutes + 5 * 60) % (24 * 60); // Часовой пояс +05:00
 
-  // День недели (1 - Пн, 5 - Пт)
-  // В JS 0 - Вс. Корректируем смещение дня:
   const localDate = new Date(now.getTime() + 5 * 60 * 60 * 1000);
   const day = localDate.getUTCDay();
 
   if (day === 0 || day === 6) {
-    console.log("Выходной день, уведомлений нет.");
+    console.log("Выходной день.");
     return;
   }
 
-  const timetable = await fetchData(`${DB_URL}/timetable.json`);
+  const [timetable, squadData] = await Promise.all([
+    fetchData(`${DB_URL}/timetable.json`),
+    fetchData(`${DB_URL}/squad.json`)
+  ]);
+
   if (!timetable || !timetable[day]) {
     console.log("Расписание на сегодня пустое.");
     return;
+  }
+
+  // Собираем список получателей (squad + админы)
+  const recipients = new Set(ADMIN_IDS);
+  if (squadData) {
+    Object.keys(squadData).forEach(uid => recipients.add(uid));
   }
 
   const todayLessons = timetable[day];
@@ -83,24 +90,26 @@ async function run() {
       if (startMin !== null) {
         const diff = startMin - localMinutes;
 
-        // Если до начала пары осталось от 3 до 8 минут
+        // Если до начала пары от 3 до 8 минут
         if (diff >= 3 && diff <= 8) {
-          const msg = `🚨 <b>IGNIS // ВНИМАНИЕ ВЗВОД</b>\n\n` +
-                      `До начала пары осталось <b>~5 минут</b>!\n\n` +
+          const msg = `🚨 <b>IGNIS // НАПОМИНАНИЕ</b>\n\n` +
+                      `До пары осталось <b>~5 минут</b>!\n\n` +
                       `📖 <b>Предмет:</b> ${lesson.name}\n` +
                       `🚪 <b>Кабинет:</b> ${lesson.cab}\n` +
                       `⏰ <b>Время:</b> ${lesson.time}\n\n` +
-                      `<i>Отметьтесь в RADAR по прибытии!</i>`;
+                      `<i>Не забудьте отметиться в RADAR!</i>`;
 
-          await sendMessage(msg);
-          console.log(`Уведомление отправлено для: ${lesson.name}`);
+          for (const uid of recipients) {
+            await sendMessage(uid, msg);
+          }
+          console.log(`Рассылка отправлена ${recipients.size} бойцам.`);
           return;
         }
       }
     }
   }
 
-  console.log("Пар в ближайшие 5 минут нет.");
+  console.log("В ближайшие 5 минут пар нет.");
 }
 
 run();
