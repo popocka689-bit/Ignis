@@ -163,6 +163,7 @@
       letter-spacing: 1px;
       padding: 2px 6px;
       border-radius: 4px;
+      cursor: pointer;
     }
     .role-admin {
       background: rgba(215, 25, 33, 0.15);
@@ -310,6 +311,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: all 0.2s;
+    }
+    .lesson-item.is-canceled {
+      opacity: 0.4;
+      border-style: dashed;
+    }
+    .lesson-item.is-canceled .lesson-name {
+      text-decoration: line-through;
     }
     .lesson-left {
       display: flex;
@@ -331,10 +340,20 @@
       font-weight: 700;
       color: var(--text-white);
     }
+    .lesson-badge-canceled {
+      display: inline-block;
+      font-size: 8px;
+      color: var(--nothing-red);
+      border: 1px solid var(--nothing-red);
+      padding: 1px 4px;
+      border-radius: 3px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
     .lesson-right {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
     .lesson-cab {
       border: 1px solid var(--border-bright);
@@ -344,17 +363,23 @@
       color: var(--text-white);
       font-weight: 700;
     }
-    .lesson-del-btn {
+    .lesson-action-btn {
       background: transparent;
-      border: none;
-      color: var(--nothing-red);
-      font-size: 14px;
+      border: 1px solid var(--border-bright);
+      color: var(--text-dim);
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      padding: 3px 6px;
+      border-radius: 4px;
       cursor: pointer;
-      padding: 4px;
       display: none;
     }
-    .admin-mode .lesson-del-btn {
-      display: block;
+    .admin-mode .lesson-action-btn {
+      display: inline-block;
+    }
+    .lesson-action-btn.btn-del {
+      border-color: var(--nothing-red);
+      color: var(--nothing-red);
     }
 
     /* ЗАДАЧИ */
@@ -497,7 +522,7 @@
       color: var(--text-dim);
     }
 
-    /* МОДАЛЬНОЕ ОКНО РАДАРА */
+    /* МОДАЛЬНЫЕ ОКНА */
     .modal-backdrop {
       position: fixed;
       top: 0;
@@ -538,15 +563,15 @@
       font-size: 16px;
       cursor: pointer;
     }
-    .radar-list {
+    .radar-list, .squad-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
       overflow-y: auto;
       margin: 12px 0 16px 0;
-      max-height: 45vh;
+      max-height: 48vh;
     }
-    .radar-user-item {
+    .user-entry-item {
       background: #000000;
       border: 1px solid var(--card-border);
       border-radius: 10px;
@@ -555,27 +580,19 @@
       align-items: center;
       justify-content: space-between;
     }
-    .radar-user-name {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-white);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
     .radar-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
       background: var(--green-live);
     }
-    .radar-kick-btn {
+    .btn-kick {
       background: transparent;
       border: 1px solid var(--nothing-red);
       color: var(--nothing-red);
       border-radius: 4px;
-      font-size: 10px;
-      padding: 2px 6px;
+      font-size: 9px;
+      padding: 4px 8px;
       cursor: pointer;
       font-family: 'Space Mono', monospace;
     }
@@ -672,12 +689,13 @@
       </div>
     </header>
 
-    <div class="user-pill">
+    <!-- ПЛАШКА ПРОФИЛЯ -->
+    <div class="user-pill" id="userPill">
       <div>
         <span style="color: var(--text-muted);">UID:</span>
         <span id="userUid" style="color: var(--text-white);">7004092933</span>
       </div>
-      <div id="userRoleBadge" class="role-badge role-admin">ADMIN</div>
+      <div id="userRoleBadge" class="role-badge role-admin" onclick="openSquadModal()">ADMIN ⚙</div>
     </div>
 
     <!-- ВКЛАДКА 1: STATUS -->
@@ -770,11 +788,24 @@
         <button class="modal-close" onclick="closeRadarModal()">✕</button>
       </div>
 
-      <div class="radar-list" id="radarMembersList">
-        <!-- Список присутствующих -->
+      <div class="radar-list" id="radarMembersList"></div>
+      <button class="tech-btn btn-checkin" id="checkinBtn" onclick="toggleCheckin()">[ Я В АУДИТОРИИ 📍 ]</button>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА: ВАЙТ-ЛИСТ / ПАНЕЛЬ ВЗВОДА (SQUAD MANAGEMENT) -->
+  <div id="squadModal" class="modal-backdrop" onclick="if(event.target === this) closeSquadModal()">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div>
+          <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; text-transform: uppercase;">ADMIN // WHITELIST</div>
+          <div style="font-size: 15px; font-weight: 700;" id="squadCapTitle">ВЗВОД (00/13)</div>
+        </div>
+        <button class="modal-close" onclick="closeSquadModal()">✕</button>
       </div>
 
-      <button class="tech-btn btn-checkin" id="checkinBtn" onclick="toggleCheckin()">[ Я В АУДИТОРИИ 📍 ]</button>
+      <div class="squad-list" id="squadMembersList"></div>
+      <div style="font-size: 9px; color: var(--text-muted); text-align: center;">Ключ доступа взвода: <b>IGNIS-29</b></div>
     </div>
   </div>
 
@@ -803,7 +834,6 @@
 
     // КЛЮЧИ БОТА ДЛЯ АВТОУВЕДОМЛЕНИЙ
     const BOT_TOKEN = "8919266628:AAG8prrDh4FmyfpUN784ObXl5vp5IqeQ-B4";
-    const CHAT_ID = "7004092933";
 
     const tg = window.Telegram?.WebApp;
     let currentUser = null;
@@ -838,44 +868,36 @@
     }
 
     // ВЕЕРНАЯ РАССЫЛКА ПО ВСЕМУ ВЗВОДУ В ЛИЧКУ
-async function sendTelegramAlert(text) {
-  try {
-    const res = await fetch(`${DB_URL}/squad.json`);
-    const squad = await res.json() || {};
-    const uids = Object.keys(squad);
+    async function sendTelegramAlert(text) {
+      try {
+        const res = await fetch(`${DB_URL}/squad.json`);
+        const squad = (await res.json()) || {};
+        const uids = Object.keys(squad);
 
-    // Добавляем админов, если их нет в squad
-    ADMIN_IDS.forEach(id => {
-      if (!uids.includes(String(id))) uids.push(String(id));
-    });
+        ADMIN_IDS.forEach(id => {
+          if (!uids.includes(String(id))) uids.push(String(id));
+        });
 
-    for (const uid of uids) {
-      fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: uid,
-          text: text,
-          parse_mode: 'HTML'
-        })
-      }).catch(err => console.error(`Не удалось отправить UID ${uid}:`, err));
+        for (const uid of uids) {
+          fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              chat_id: uid,
+              text: text,
+              parse_mode: 'HTML'
+            })
+          }).catch(() => {});
+        }
+      } catch (e) {
+        console.error("Ошибка рассылки Telegram:", e);
+      }
     }
-  } catch (e) {
-    console.error("Ошибка рассылки Telegram:", e);
-  }
-}
 
-
-    // ВЕРИФИКАЦИЯ SQUAD
+    // ВЕРИФИКАЦИЯ SQUAD (ВАЙТ-ЛИСТ)
     async function verifySquadAccess() {
       if (isAdmin) {
         initUI(true);
-        return;
-      }
-
-      const localAuth = localStorage.getItem('ignis_auth_token');
-      if (localAuth === 'AUTHORIZED') {
-        initUI(false);
         return;
       }
 
@@ -885,6 +907,11 @@ async function sendTelegramAlert(text) {
         if (squadUser) {
           localStorage.setItem('ignis_auth_token', 'AUTHORIZED');
           initUI(false);
+          return;
+        } else {
+          // Если админ удалил человека из базы, сразу выбиваем на экран блокировки
+          localStorage.removeItem('ignis_auth_token');
+          document.getElementById('lockScreen').style.display = 'flex';
           return;
         }
       } catch (err) {
@@ -943,13 +970,14 @@ async function sendTelegramAlert(text) {
       document.getElementById('userUid').innerText = currentUser.id;
       const roleBadge = document.getElementById('userRoleBadge');
       if (adminStatus) {
-        roleBadge.innerText = "ADMIN";
+        roleBadge.innerText = "ADMIN ⚙";
         roleBadge.className = "role-badge role-admin";
         document.getElementById('adminBtnSchedule').style.display = "block";
         document.getElementById('adminBtnTasks').style.display = "block";
       } else {
         roleBadge.innerText = "STUDENT";
         roleBadge.className = "role-badge role-student";
+        roleBadge.onclick = null;
       }
       syncDataFromCloud();
     }
@@ -1045,21 +1073,62 @@ async function sendTelegramAlert(text) {
         return;
       }
 
-      container.innerHTML = list.map((item, idx) => `
-        <div class="lesson-item">
-          <div class="lesson-left">
-            <div class="lesson-index">${idx + 1}</div>
-            <div>
-              <div class="lesson-time">${item.time}</div>
-              <div class="lesson-name">${item.name}</div>
+      container.innerHTML = list.map((item, idx) => {
+        const isCanceled = item.status === 'canceled';
+        return `
+          <div class="lesson-item ${isCanceled ? 'is-canceled' : ''}">
+            <div class="lesson-left">
+              <div class="lesson-index">${idx + 1}</div>
+              <div>
+                <div class="lesson-time">${item.time}</div>
+                <div class="lesson-name">
+                  ${item.name}
+                  ${isCanceled ? `<span class="lesson-badge-canceled">ОТМЕНЕНА</span>` : ''}
+                </div>
+              </div>
+            </div>
+            <div class="lesson-right">
+              <div class="lesson-cab">${item.cab}</div>
+              ${isAdmin ? `
+                <button class="lesson-action-btn" onclick="changeLessonCab(${idx})">[КАБ]</button>
+                <button class="lesson-action-btn" onclick="toggleLessonCancel(${idx})">[${isCanceled ? 'ВЕРНУТЬ' : 'ОТМЕНА'}]</button>
+                <button class="lesson-action-btn btn-del" onclick="deleteLesson(${idx})">✕</button>
+              ` : ''}
             </div>
           </div>
-          <div class="lesson-right">
-            <div class="lesson-cab">${item.cab}</div>
-            ${isAdmin ? `<button class="lesson-del-btn" onclick="deleteLesson(${idx})">✕</button>` : ''}
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+    }
+
+    async function changeLessonCab(idx) {
+      if (!isAdmin) return;
+      haptic();
+      const current = timetable[currentDay][idx].cab;
+      const newCab = prompt("Новый номер аудитории:", current);
+      if (newCab && newCab.trim() !== "") {
+        timetable[currentDay][idx].cab = newCab.trim();
+        renderLessons();
+        updateLiveStatus();
+        await fetch(`${DB_URL}/timetable.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(timetable)
+        });
+      }
+    }
+
+    async function toggleLessonCancel(idx) {
+      if (!isAdmin) return;
+      haptic();
+      const cur = timetable[currentDay][idx].status;
+      timetable[currentDay][idx].status = (cur === 'canceled') ? 'active' : 'canceled';
+      renderLessons();
+      updateLiveStatus();
+      await fetch(`${DB_URL}/timetable.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(timetable)
+      });
     }
 
     async function saveLesson() {
@@ -1075,7 +1144,7 @@ async function sendTelegramAlert(text) {
       }
 
       if (!timetable[currentDay]) timetable[currentDay] = [];
-      timetable[currentDay].push({ name, time, cab });
+      timetable[currentDay].push({ name, time, cab, status: 'active' });
 
       document.getElementById('inSubj').value = '';
       document.getElementById('inTime').value = '';
@@ -1106,7 +1175,7 @@ async function sendTelegramAlert(text) {
     }
 
     // ЗАДАНИЯ
-    function renderTasks() {
+   function renderTasks() {
       const container = document.getElementById('tasksContainer');
       const taskKeys = Object.keys(tasks);
 
@@ -1175,14 +1244,12 @@ async function sendTelegramAlert(text) {
 
       renderTasks();
 
-      // Сохраняем в Firebase
       await fetch(`${DB_URL}/tasks/${newId}.json`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ subj, title, deadline })
       });
 
-      // Моментально шлём уведомление в Telegram
       const msg = `📌 <b>IGNIS // НОВЫЙ ДЕДЛАЙН</b>\n\n` +
                   `📖 <b>Предмет:</b> ${subj}\n` +
                   `📝 <b>Задание:</b> ${title}\n` +
@@ -1246,12 +1313,12 @@ async function sendTelegramAlert(text) {
       listContainer.innerHTML = keys.map(uid => {
         const student = radarData[uid];
         return `
-          <div class="radar-user-item">
-            <div class="radar-user-name">
+          <div class="user-entry-item">
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;">
               <div class="radar-dot"></div>
               <span>${student.name}</span>
             </div>
-            ${isAdmin ? `<button class="radar-kick-btn" onclick="kickFromRadar('${uid}')">[УДАЛИТЬ]</button>` : ''}
+            ${isAdmin ? `<button class="btn-kick" onclick="kickFromRadar('${uid}')">[УДАЛИТЬ]</button>` : ''}
           </div>
         `;
       }).join('');
@@ -1290,8 +1357,59 @@ async function sendTelegramAlert(text) {
       await fetch(`${DB_URL}/radar/${todayKey}/${uid}.json`, { method: 'DELETE' });
     }
 
+    // ==========================================
+    // SQUAD MANAGEMENT (ВАЙТ-ЛИСТ)
+    // ==========================================
+    async function openSquadModal() {
+      if (!isAdmin) return;
+      haptic();
+      document.getElementById('squadModal').style.display = 'flex';
+      const container = document.getElementById('squadMembersList');
+      container.innerHTML = `<div style="text-align: center; color: var(--text-dim); font-size: 11px;">СКАНИРОВАНИЕ БАЗЫ...</div>`;
+
+      try {
+        const res = await fetch(`${DB_URL}/squad.json`);
+        const squad = (await res.json()) || {};
+        const uids = Object.keys(squad);
+
+        document.getElementById('squadCapTitle').innerText = `ВЗВОД (${String(uids.length).padStart(2, '0')}/13)`;
+
+        if (uids.length === 0) {
+          container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 11px;">Никто ещё не активировал ключ.</div>`;
+          return;
+        }
+
+        container.innerHTML = uids.map(uid => {
+          const user = squad[uid];
+          return `
+            <div class="user-entry-item">
+              <div>
+                <div style="font-size: 12px; font-weight: 700;">${user.name}</div>
+                <div style="font-size: 9px; color: var(--text-muted);">@${user.username} • UID: ${uid}</div>
+              </div>
+              <button class="btn-kick" onclick="kickFromSquad('${uid}')">[KICK]</button>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        container.innerHTML = `<div style="color: var(--nothing-red); font-size: 11px;">[ERR: FAILED_TO_FETCH_SQUAD]</div>`;
+      }
+    }
+
+    function closeSquadModal() {
+      haptic();
+      document.getElementById('squadModal').style.display = 'none';
+    }
+
+    async function kickFromSquad(uid) {
+      if (!confirm(`Исключить бойца UID ${uid}? Доступ будет заблокирован.`)) return;
+      haptic();
+      await fetch(`${DB_URL}/squad/${uid}.json`, { method: 'DELETE' });
+      openSquadModal();
+    }
+
     // ТАЙМЕР И СТАТУС ПАР
-     function parseTimeToMinutes(tStr) {
+    function parseTimeToMinutes(tStr) {
       const match = tStr.match(/(\d{1,2})[:.](\d{2})/);
       if (!match) return null;
       return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
@@ -1346,19 +1464,18 @@ async function sendTelegramAlert(text) {
 
       parsedLessons.sort((a, b) => a.start - b.start);
 
-      if (currentMinutes < parsedLessons[0].start) {
-        const diff = parsedLessons[0].start - currentMinutes;
-        card.classList.remove('active-lesson');
-        badge.innerText = "● PENDING";
-        badge.style.color = "#38bdf8";
-        title.innerText = `ДО ПАР: ${diff} МИН`;
-        sub.innerText = `1-я пара: ${parsedLessons[0].name} (${parsedLessons[0].cab})`;
-        return;
-      }
-
       for (let i = 0; i < parsedLessons.length; i++) {
         const lesson = parsedLessons[i];
         if (currentMinutes >= lesson.start && currentMinutes < lesson.end) {
+          if (lesson.status === 'canceled') {
+            card.classList.remove('active-lesson');
+            badge.innerText = "● CANCELED";
+            badge.style.color = "var(--nothing-red)";
+            title.innerText = "ПАРА ОТМЕНЕНА";
+            sub.innerText = `${lesson.name} (${lesson.cab}) отменена`;
+            return;
+          }
+
           const left = lesson.end - currentMinutes;
           card.classList.add('active-lesson');
           badge.innerText = "● IN PROGRESS";
@@ -1376,10 +1493,20 @@ async function sendTelegramAlert(text) {
             badge.innerText = "● BREAK";
             badge.style.color = "#10b981";
             title.innerText = `ПЕРЕМЕНА (${breakLeft} МИН)`;
-            sub.innerText = `Далее: ${nextLesson.name} (${nextLesson.cab})`;
+            sub.innerText = `Далее: ${nextLesson.name} (${nextLesson.cab})${nextLesson.status === 'canceled' ? ' [ОТМЕНА]' : ''}`;
             return;
           }
         }
+      }
+
+      if (currentMinutes < parsedLessons[0].start) {
+        const diff = parsedLessons[0].start - currentMinutes;
+        card.classList.remove('active-lesson');
+        badge.innerText = "● PENDING";
+        badge.style.color = "#38bdf8";
+        title.innerText = `ДО ПАР: ${diff} МИН`;
+        sub.innerText = `1-я пара: ${parsedLessons[0].name} (${parsedLessons[0].cab})`;
+        return;
       }
 
       card.classList.remove('active-lesson');
