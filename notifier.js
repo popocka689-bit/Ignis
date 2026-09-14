@@ -72,7 +72,7 @@ async function run() {
 
   const now = new Date();
   const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
-  const localMinutes = (utcMinutes + 5 * 60) % (24 * 60); // Часовой пояс +05:00
+  const localMinutes = (utcMinutes + 5 * 60) % (24 * 60); // Время Казахстана +05:00
 
   const localDate = new Date(now.getTime() + 5 * 60 * 60 * 1000);
   const day = localDate.getUTCDay();
@@ -82,37 +82,36 @@ async function run() {
     return;
   }
 
-  const [timetable, squadData, tasksData, logsData] = await Promise.all([
+  const year = localDate.getUTCFullYear();
+  const month = String(localDate.getUTCMonth() + 1).padStart(2, '0');
+  const dateNum = String(localDate.getUTCDate()).padStart(2, '0');
+  const dateKey = `${year}-${month}-${dateNum}`;
+
+  const [timetable, squadData, tasksData, logsData, sentAlerts] = await Promise.all([
     fetchData(`${DB_URL}/timetable.json`),
     fetchData(`${DB_URL}/squad.json`),
     fetchData(`${DB_URL}/tasks.json`),
-    fetchData(`${DB_URL}/digest_logs.json`)
+    fetchData(`${DB_URL}/digest_logs.json`),
+    fetchData(`${DB_URL}/sent_alerts/${dateKey}.json`)
   ]);
 
-  // Формируем список получателей (squad + админы)
   const recipients = new Set(ADMIN_IDS);
   if (squadData) {
     Object.keys(squadData).forEach(uid => recipients.add(uid));
   }
 
   const todayLessons = (timetable && timetable[day]) ? timetable[day] : [];
+  const alertsToday = sentAlerts || {};
 
   // ==========================================
-  // 1. УТРЕННИЙ ДАЙДЖЕСТ (ОКНО 07:25 - 07:45)
+  // 1. УТРЕННИЙ ДАЙДЖЕСТ (ШИРОКОЕ ОКНО 06:45 - 07:45)
   // ==========================================
-  const year = localDate.getUTCFullYear();
-  const month = String(localDate.getUTCMonth() + 1).padStart(2, '0');
-  const dateNum = String(localDate.getUTCDate()).padStart(2, '0');
-  const dateKey = `${year}-${month}-${dateNum}`;
-
   const daysNames = ["ВОСКРЕСЕНЬЕ", "ПОНЕДЕЛЬНИК", "ВТОРНИК", "СРЕДА", "ЧЕТВЕРГ", "ПЯТНИЦА", "СУББОТА"];
   const currentDayName = daysNames[day];
 
-  // 07:30 = 450 минут от начала суток (окно с 445 до 465)
-  if (localMinutes >= 445 && localMinutes <= 465) {
+  // 06:45 = 405 мин, 07:45 = 465 мин
+  if (localMinutes >= 405 && localMinutes <= 465) {
     if (!logsData || logsData.lastDigest !== dateKey) {
-      console.log("Формирование утреннего дайджеста...");
-
       let lessonsBlock = "";
       if (todayLessons.length === 0) {
         lessonsBlock = "<i>Пар на сегодня не запланировано.</i>\n";
@@ -147,16 +146,20 @@ async function run() {
       }
 
       await putData(`${DB_URL}/digest_logs.json`, { lastDigest: dateKey });
-      console.log(`Утренний дайджест успешно отправлен ${recipients.size} бойцам.`);
+      console.log(`Утренний дайджест отправлен.`);
       return;
     }
   }
 
   // ==========================================
-  // 2. ОПОВЕЩЕНИЯ ЗА 5 МИНУТ ДО ПАРЫ
+  // 2. НАПОМИНАНИЯ О ПАРАХ (ОКНО 1 - 15 МИНУТ)
   // ==========================================
-  for (const lesson of todayLessons) {
+  for (let idx = 0; idx < todayLessons.length; idx++) {
+    const lesson = todayLessons[idx];
     if (lesson.status === 'canceled') continue;
+
+    const alertKey = `lesson_${idx}`;
+    if (alertsToday[alertKey]) continue; // Уже отправляли сегодня
 
     const parts = lesson.time.split(/[-—–]/);
     if (parts.length >= 1) {
@@ -164,9 +167,10 @@ async function run() {
       if (startMin !== null) {
         const diff = startMin - localMinutes;
 
-        if (diff >= 3 && diff <= 8) {
+        // Если до пары от 1 до 15 минут
+        if (diff >= 1 && diff <= 15) {
           const msg = `🚨 <b>IGNIS // НАПОМИНАНИЕ</b>\n\n` +
-                      `До пары осталось <b>~5 минут</b>!\n\n` +
+                      `До пары осталось <b>~${diff} минут</b>!\n\n` +
                       `📖 <b>Предмет:</b> ${lesson.name}\n` +
                       `🚪 <b>Кабинет:</b> ${lesson.cab}\n` +
                       `⏰ <b>Время:</b> ${lesson.time}\n\n` +
@@ -175,7 +179,9 @@ async function run() {
           for (const uid of recipients) {
             await sendMessage(uid, msg);
           }
-          console.log(`Рассылка о начале пары отправлена.`);
+
+          await putData(`${DB_URL}/sent_alerts/${dateKey}/${alertKey}.json`, true);
+          console.log(`Оповещение на пару "${lesson.name}" отправлено.`);
           return;
         }
       }
@@ -186,4 +192,3 @@ async function run() {
 }
 
 run();
-  
