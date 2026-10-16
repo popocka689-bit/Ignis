@@ -7,14 +7,28 @@
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
+  <script>
+    // Ставим тему до отрисовки, чтобы не было «вспышки»:
+    // сохранённый выбор → тема Telegram → системная тема
+    (function () {
+      var saved = localStorage.getItem('ignis_theme');
+      var wa = window.Telegram && window.Telegram.WebApp;
+      var tgScheme = (wa && wa.initData) ? wa.colorScheme : null;
+      var sysLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      var theme = saved || tgScheme || (sysLight ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme', theme === 'light' ? 'light' : 'dark');
+    })();
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
   <style>
+    /* ТЁМНАЯ ТЕМА (по умолчанию) */
     :root {
       --bg: #000000;
-      --card-bg: #0d0d0d;
+      --card-bg: rgba(13, 13, 13, 0.88);
       --card-border: #222222;
       --border-bright: #333333;
       --nothing-red: #d71921;
@@ -22,6 +36,47 @@
       --text-muted: #666666;
       --text-dim: #999999;
       --green-live: #10b981;
+
+      --surface: rgba(8, 8, 8, 0.9);
+      --sheet-bg: #0d0d0d;
+      --input-bg: #000000;
+      --hover-bg: #161616;
+      --active-bg: rgba(40, 6, 8, 0.9);
+      --nav-bg: rgba(0, 0, 0, 0.85);
+      --backdrop: rgba(0, 0, 0, 0.75);
+      --lock-bg: rgba(0, 0, 0, 0.8);
+
+      --nebula-1: rgba(215, 25, 33, 0.55);
+      --nebula-2: rgba(56, 70, 200, 0.55);
+      --nebula-opacity: 0.35;
+      color-scheme: dark;
+    }
+
+    /* СВЕТЛАЯ ТЕМА */
+    :root[data-theme="light"] {
+      --bg: #f2f2f0;
+      --card-bg: rgba(255, 255, 255, 0.88);
+      --card-border: #dedede;
+      --border-bright: #c8c8c8;
+      --nothing-red: #d71921;
+      --text-white: #111111;
+      --text-muted: #8a8a8a;
+      --text-dim: #555555;
+      --green-live: #059669;
+
+      --surface: rgba(250, 250, 250, 0.92);
+      --sheet-bg: #fafafa;
+      --input-bg: #ffffff;
+      --hover-bg: #ebebeb;
+      --active-bg: rgba(253, 236, 236, 0.95);
+      --nav-bg: rgba(255, 255, 255, 0.85);
+      --backdrop: rgba(230, 230, 230, 0.6);
+      --lock-bg: rgba(242, 242, 240, 0.85);
+
+      --nebula-1: rgba(215, 25, 33, 0.35);
+      --nebula-2: rgba(80, 110, 230, 0.4);
+      --nebula-opacity: 0.4;
+      color-scheme: light;
     }
 
     * {
@@ -40,19 +95,6 @@
       overflow-x: hidden;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-image: radial-gradient(#1a1a1a 1px, transparent 1px);
-      background-size: 16px 16px;
-      z-index: -1;
-      pointer-events: none;
-    }
-
     .container {
       max-width: 440px;
       margin: 0 auto;
@@ -66,7 +108,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: #000000;
+      background: var(--lock-bg);
       z-index: 999;
       display: none;
       flex-direction: column;
@@ -81,7 +123,7 @@
       border: 1px dashed var(--border-bright);
       border-radius: 16px;
       padding: 24px 20px;
-      background: #080808;
+      background: var(--surface);
     }
     .lock-badge {
       font-size: 9px;
@@ -151,7 +193,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #080808;
+      background: var(--surface);
       border: 1px solid var(--card-border);
       border-radius: 10px;
       padding: 8px 12px;
@@ -171,7 +213,7 @@
       color: var(--nothing-red);
     }
     .role-student {
-      background: #161616;
+      background: var(--hover-bg);
       border: 1px solid var(--border-bright);
       color: var(--text-dim);
     }
@@ -208,7 +250,7 @@
     }
     .tech-card.active-lesson {
       border-color: var(--nothing-red);
-      background: #110506;
+      background: var(--active-bg);
     }
     .card-label {
       font-size: 9px;
@@ -276,7 +318,7 @@
       border: 1px solid var(--card-border);
       padding: 4px;
       border-radius: 12px;
-      background: #080808;
+      background: var(--surface);
     }
     .segment-btn {
       flex: 1;
@@ -292,7 +334,7 @@
       transition: all 0.15s;
     }
     .segment-btn.active {
-      background: #191919;
+      background: var(--hover-bg);
       color: var(--text-white);
       border-color: var(--border-bright);
     }
@@ -407,7 +449,7 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      background: #000;
+      background: var(--input-bg);
     }
     .task-checkbox.checked {
       background: var(--nothing-red);
@@ -462,7 +504,7 @@
     /* РЕДАКТОР */
     .editor-box {
       display: none;
-      background: #0d0d0d;
+      background: var(--sheet-bg);
       border: 1px dashed var(--border-bright);
       border-radius: 14px;
       padding: 14px;
@@ -473,7 +515,7 @@
     }
     .input-field {
       width: 100%;
-      background: #000000;
+      background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 10px;
@@ -491,7 +533,7 @@
 
     .tech-btn {
       background: var(--text-white);
-      color: #000000;
+      color: var(--bg);
       border: none;
       border-radius: 10px;
       font-family: 'Space Mono', monospace;
@@ -529,7 +571,7 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(0, 0, 0, 0.85);
+      background: var(--backdrop);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       z-index: 200;
@@ -538,7 +580,7 @@
       justify-content: center;
     }
     .modal-sheet {
-      background: #0d0d0d;
+      background: var(--sheet-bg);
       border: 1px solid var(--card-border);
       border-radius: 20px 20px 0 0;
       width: 100%;
@@ -572,7 +614,7 @@
       max-height: 48vh;
     }
     .user-entry-item {
-      background: #000000;
+      background: var(--input-bg);
       border: 1px solid var(--card-border);
       border-radius: 10px;
       padding: 10px 12px;
@@ -615,7 +657,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: rgba(0, 0, 0, 0.95);
+      background: var(--nav-bg);
       border-top: 1px solid var(--card-border);
       padding: 10px 16px 14px 16px;
       backdrop-filter: blur(10px);
@@ -642,7 +684,7 @@
       font-family: 'Space Mono', monospace;
     }
     .nav-trigger.active {
-      background: #111111;
+      background: var(--hover-bg);
       border-color: var(--border-bright);
       color: var(--text-white);
     }
@@ -660,9 +702,165 @@
       letter-spacing: 1.5px;
       text-transform: uppercase;
     }
+
+    /* ==========================================
+       ФОН: КОСМОС
+       ========================================== */
+    .space-bg {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    #spaceCanvas {
+      position: absolute;
+      inset: 0;
+    }
+    .nebula {
+      position: absolute;
+      width: 70vmax;
+      height: 70vmax;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: var(--nebula-opacity);
+      will-change: transform;
+    }
+    .nebula-a {
+      background: radial-gradient(circle, var(--nebula-1) 0%, transparent 65%);
+      top: -25vmax;
+      left: -20vmax;
+      animation: nebulaDrift 38s ease-in-out infinite alternate;
+    }
+    .nebula-b {
+      background: radial-gradient(circle, var(--nebula-2) 0%, transparent 65%);
+      bottom: -30vmax;
+      right: -25vmax;
+      animation: nebulaDrift 46s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes nebulaDrift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(8vmax, 6vmax) scale(1.15); }
+    }
+
+    /* ==========================================
+       КНОПКА ТЕМЫ
+       ========================================== */
+    .theme-btn {
+      background: transparent;
+      border: 1px solid var(--border-bright);
+      color: var(--text-white);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      font-size: 13px;
+      line-height: 1;
+      cursor: pointer;
+      margin-left: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .theme-btn.spin {
+      animation: themeSpin 0.45s ease;
+    }
+    @keyframes themeSpin {
+      from { transform: rotate(-180deg) scale(0.6); }
+      to   { transform: rotate(0) scale(1); }
+    }
+
+    /* Плавная смена цветов при переключении темы */
+    .theme-switching,
+    .theme-switching * {
+      transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease !important;
+    }
+
+    /* ==========================================
+       АНИМАЦИИ НАЖАТИЙ
+       ========================================== */
+    .tech-btn, .segment-btn, .nav-trigger, .admin-toggle-btn,
+    .lesson-action-btn, .btn-kick, .theme-btn, .role-badge {
+      position: relative;
+      overflow: hidden;
+    }
+    .tech-card {
+      overflow: hidden;
+    }
+
+    button, .role-badge, .tech-card[onclick], .task-checkbox {
+      transition: transform 0.12s ease, background-color 0.2s, border-color 0.2s, color 0.2s, opacity 0.2s;
+    }
+    button:active, .role-badge:active, .task-checkbox:active {
+      transform: scale(0.93);
+    }
+    .tech-card[onclick]:active {
+      transform: scale(0.97);
+    }
+    .task-content:active {
+      opacity: 0.7;
+    }
+
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.25;
+      transform: scale(0);
+      pointer-events: none;
+      animation: rippleOut 0.55s ease-out forwards;
+    }
+    .tech-btn .ripple {
+      background: var(--bg);
+    }
+    @keyframes rippleOut {
+      to { transform: scale(1); opacity: 0; }
+    }
+
+    /* Галочка задачи «выпрыгивает» (класс ставится только при клике) */
+    .task-checkbox.pop {
+      animation: checkPop 0.3s ease;
+    }
+    @keyframes checkPop {
+      0%   { transform: scale(0.7); }
+      60%  { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Активная вкладка в навбаре слегка подпрыгивает */
+    .nav-trigger.active .nav-dot {
+      animation: navBounce 0.35s ease;
+    }
+    @keyframes navBounce {
+      0%   { transform: translateY(0); }
+      40%  { transform: translateY(-4px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* Модалки выезжают снизу */
+    .modal-sheet {
+      animation: sheetUp 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+    @keyframes sheetUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
   </style>
 </head>
 <body>
+
+  <!-- ФОН: КОСМОС -->
+  <div class="space-bg" aria-hidden="true">
+    <div class="nebula nebula-a"></div>
+    <div class="nebula nebula-b"></div>
+    <canvas id="spaceCanvas"></canvas>
+  </div>
 
   <!-- ШЛЮЗ АВТОРИЗАЦИИ ПО КЛЮЧУ -->
   <div id="lockScreen">
@@ -686,6 +884,7 @@
       <div class="system-status">
         <div class="status-dot"></div>
         <span id="headerClock">00:00:00</span>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Сменить тему">☀</button>
       </div>
     </header>
 
@@ -842,8 +1041,7 @@
     if (tg) {
       tg.ready();
       tg.expand();
-      tg.setHeaderColor('#000000');
-      tg.setBackgroundColor('#000000');
+      // Цвета шапки Telegram выставляются в applyTheme()
       currentUser = tg.initDataUnsafe?.user;
     }
 
@@ -1221,6 +1419,9 @@
       }
       localStorage.setItem('ignis_done_tasks', JSON.stringify(completedTasks));
       renderTasks();
+
+      const box = document.querySelector(`.task-checkbox[onclick="toggleTask('${id}')"]`);
+      if (box) box.classList.add('pop');
     }
 
     async function saveTask() {
@@ -1491,7 +1692,7 @@
             const breakLeft = nextLesson.start - currentMinutes;
             card.classList.remove('active-lesson');
             badge.innerText = "● BREAK";
-            badge.style.color = "#10b981";
+            badge.style.color = "var(--green-live)";
             title.innerText = `ПЕРЕМЕНА (${breakLeft} МИН)`;
             sub.innerText = `Далее: ${nextLesson.name} (${nextLesson.cab})${nextLesson.status === 'canceled' ? ' [ОТМЕНА]' : ''}`;
             return;
@@ -1516,7 +1717,179 @@
       sub.innerText = "Все занятия на сегодня завершены 🎮";
     }
 
+    // ==========================================
+    // ТЕМА (ТЁМНАЯ / СВЕТЛАЯ)
+    // ==========================================
+    const THEME_COLORS = { dark: '#000000', light: '#f2f2f0' };
+
+    function applyTheme(theme, animate) {
+      const root = document.documentElement;
+      if (animate) {
+        root.classList.add('theme-switching');
+        setTimeout(() => root.classList.remove('theme-switching'), 400);
+      }
+      root.setAttribute('data-theme', theme);
+      localStorage.setItem('ignis_theme', theme);
+
+      const btn = document.getElementById('themeBtn');
+      if (btn) btn.innerText = theme === 'light' ? '☾' : '☀';
+
+      if (tg) {
+        try {
+          tg.setHeaderColor(THEME_COLORS[theme]);
+          tg.setBackgroundColor(THEME_COLORS[theme]);
+        } catch (e) {}
+      }
+      SpaceBG.setTheme(theme);
+    }
+
+    function toggleTheme() {
+      haptic();
+      const btn = document.getElementById('themeBtn');
+      btn.classList.remove('spin');
+      void btn.offsetWidth; // перезапуск анимации
+      btn.classList.add('spin');
+      const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(cur === 'dark' ? 'light' : 'dark', true);
+    }
+
+    // ==========================================
+    // RIPPLE-ЭФФЕКТ ПРИ НАЖАТИИ
+    // ==========================================
+    const RIPPLE_TARGETS = '.tech-btn, .segment-btn, .nav-trigger, .admin-toggle-btn, .lesson-action-btn, .btn-kick, .theme-btn, .role-badge, .tech-card[onclick]';
+
+    document.addEventListener('pointerdown', (e) => {
+      const el = e.target.closest(RIPPLE_TARGETS);
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height) * 2;
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple';
+      ripple.style.width = ripple.style.height = size + 'px';
+      ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+      ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+      el.appendChild(ripple);
+      ripple.addEventListener('animationend', () => ripple.remove());
+    });
+    // Нужно, чтобы :active срабатывал на iOS
+    document.addEventListener('touchstart', () => {}, { passive: true });
+
+    // ==========================================
+    // ФОН: ПЛЫВУЩИЙ КОСМОС
+    // ==========================================
+    const SpaceBG = (() => {
+      const canvas = document.getElementById('spaceCanvas');
+      const ctx = canvas.getContext('2d');
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let w = 0, h = 0, stars = [], meteor = null, nextMeteor = 4000;
+      let starColor = '255,255,255';
+      let last = performance.now();
+      let running = false;
+
+      function makeStar() {
+        const z = Math.random(); // глубина: дальние звёзды мельче и медленнее
+        return {
+          x: Math.random() * w,
+          y: Math.random() * h,
+          z,
+          r: 0.3 + z * 1.3,
+          speed: 0.04 + z * 0.3,
+          tw: Math.random() * Math.PI * 2
+        };
+      }
+
+      function resize() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = window.innerWidth;
+        h = window.innerHeight;
+        canvas.width = w * dpr;
+        canvas.height = h * dpr;
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const count = Math.min(220, Math.round((w * h) / 5500));
+        stars = Array.from({ length: count }, makeStar);
+        if (reduceMotion) draw(0);
+      }
+
+      function draw(dt) {
+        ctx.clearRect(0, 0, w, h);
+
+        for (const s of stars) {
+          s.x -= s.speed * dt * 0.6;
+          s.y += s.speed * dt * 0.2;
+          s.tw += 0.025 * dt;
+          if (s.x < -2) { s.x = w + 2; s.y = Math.random() * h; }
+          if (s.y > h + 2) { s.y = -2; s.x = Math.random() * w; }
+
+          const alpha = (0.3 + 0.7 * s.z) * (0.65 + 0.35 * Math.sin(s.tw));
+          ctx.beginPath();
+          ctx.fillStyle = `rgba(${starColor},${alpha.toFixed(3)})`;
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Редкая падающая звезда
+        if (meteor) {
+          meteor.x += meteor.vx * dt;
+          meteor.y += meteor.vy * dt;
+          meteor.life -= dt;
+          const a = Math.max(meteor.life / meteor.maxLife, 0);
+          const grad = ctx.createLinearGradient(meteor.x, meteor.y, meteor.x - meteor.vx * 14, meteor.y - meteor.vy * 14);
+          grad.addColorStop(0, `rgba(${starColor},${(0.9 * a).toFixed(3)})`);
+          grad.addColorStop(1, `rgba(${starColor},0)`);
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 1.4;
+          ctx.beginPath();
+          ctx.moveTo(meteor.x, meteor.y);
+          ctx.lineTo(meteor.x - meteor.vx * 14, meteor.y - meteor.vy * 14);
+          ctx.stroke();
+          if (meteor.life <= 0) meteor = null;
+        }
+      }
+
+      function frame(now) {
+        const dt = Math.min((now - last) / 16.67, 3);
+        last = now;
+
+        nextMeteor -= dt * 16.67;
+        if (!meteor && nextMeteor <= 0) {
+          meteor = {
+            x: w * (0.3 + Math.random() * 0.7),
+            y: Math.random() * h * 0.4,
+            vx: -(5 + Math.random() * 3),
+            vy: 2 + Math.random() * 2,
+            life: 45,
+            maxLife: 45
+          };
+          nextMeteor = 7000 + Math.random() * 9000;
+        }
+
+        draw(dt);
+        if (running) requestAnimationFrame(frame);
+      }
+
+      function start() {
+        resize();
+        window.addEventListener('resize', resize);
+        if (reduceMotion) return;
+        running = true;
+        last = performance.now();
+        requestAnimationFrame(frame);
+      }
+
+      function setTheme(theme) {
+        starColor = theme === 'light' ? '70,80,130' : '255,255,255';
+        if (reduceMotion && w) draw(0);
+      }
+
+      return { start, setTheme };
+    })();
+
     window.addEventListener('DOMContentLoaded', () => {
+      applyTheme(document.documentElement.getAttribute('data-theme') || 'dark', false);
+      SpaceBG.start();
+
       const day = new Date().getDay();
       currentDay = (day >= 1 && day <= 5) ? day : 1;
       
