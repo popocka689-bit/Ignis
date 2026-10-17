@@ -908,6 +908,149 @@
       filter: brightness(1.12);
     }
 
+    /* ==========================================
+       КИБЕР-МАСКОТ (UNIT-13 // AI COMPANION)
+    ========================================== */
+    .mascot-card {
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1),
+                  border-color 0.3s ease,
+                  box-shadow 0.3s ease;
+    }
+    .mascot-card:active {
+      transform: scale(0.985);
+    }
+    .mascot-body {
+      display: flex;
+      align-items: stretch;
+      gap: 14px;
+      margin-top: 4px;
+    }
+    .mascot-screen {
+      min-width: 112px;
+      width: 112px;
+      min-height: 76px;
+      border-radius: 12px;
+      background:
+        radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(10, 12, 16, 0.92) 0%, rgba(5, 6, 8, 0.96) 100%);
+      background-size: 6px 6px, 100% 100%;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow:
+        inset 0 2px 10px rgba(0, 0, 0, 0.7),
+        0 2px 8px rgba(0, 0, 0, 0.25);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 6px;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    }
+    :root[data-theme="light"] .mascot-screen {
+      background:
+        radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(180deg, #1b1d24 0%, #111318 100%);
+      background-size: 6px 6px, 100% 100%;
+      border-color: rgba(0, 0, 0, 0.25);
+    }
+    .mascot-screen.alert-mode {
+      border-color: rgba(215, 25, 33, 0.55);
+      box-shadow:
+        inset 0 2px 10px rgba(215, 25, 33, 0.18),
+        0 0 14px rgba(215, 25, 33, 0.18);
+    }
+    .mascot-screen.hype-mode {
+      border-color: rgba(0, 230, 118, 0.45);
+      box-shadow:
+        inset 0 2px 10px rgba(0, 230, 118, 0.14),
+        0 0 14px rgba(0, 230, 118, 0.15);
+    }
+    .mascot-face {
+      font-family: var(--font-dot);
+      font-size: 16px;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      text-align: center;
+      line-height: 1.2;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
+      white-space: nowrap;
+      transition: transform 0.18s ease, color 0.2s ease;
+    }
+    .mascot-screen.alert-mode .mascot-face {
+      color: #ff4d55;
+      text-shadow: 0 0 10px rgba(215, 25, 33, 0.55);
+    }
+    .mascot-screen.hype-mode .mascot-face {
+      color: #4dff9b;
+      text-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
+    }
+    .mascot-mood-tag {
+      font-size: 8px;
+      letter-spacing: 1.5px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 7px;
+      text-transform: uppercase;
+    }
+    .mascot-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .mascot-speech {
+      font-size: 11px;
+      line-height: 1.45;
+      color: var(--text-white);
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      transition: opacity 0.18s ease;
+    }
+    .mascot-meta-row {
+      display: flex;
+       flex-direction: column;
+      gap: 5px;
+    }
+    .mascot-energy-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+    .mascot-energy-track {
+      width: 100%;
+      height: 5px;
+      background: rgba(128, 128, 128, 0.18);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+    .mascot-energy-fill {
+      height: 100%;
+      width: 75%;
+      background: var(--green-live);
+      border-radius: 999px;
+      transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease;
+    }
+    @keyframes mascotBounce {
+      0%   { transform: scale(1) rotate(0deg); }
+      30%  { transform: scale(1.07, 0.93) rotate(-2deg); }
+      65%  { transform: scale(0.96, 1.04) rotate(2deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+    .mascot-screen.poke-anim {
+      animation: mascotBounce 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -987,6 +1130,32 @@
           <div class="card-label">TASKS</div>
           <div class="dot-num" id="tasksStat">00</div>
           <div class="status-sub">дедлайнов ➔</div>
+        </div>
+
+        <!-- КИБЕР-МАСКОТ ВЗВОДА (UNIT-13) -->
+        <div class="tech-card span-2 mascot-card" id="mascotCard" onclick="pokeMascot()">
+          <div class="card-label">
+            <span>AI // UNIT-13</span>
+            <span id="mascotBadge" style="color: var(--green-live);">● ONLINE</span>
+          </div>
+          <div class="mascot-body">
+            <div class="mascot-screen" id="mascotScreen">
+              <div class="mascot-face" id="mascotFace">[ • ‿ • ]</div>
+              <div class="mascot-mood-tag" id="mascotMood">STANDBY</div>
+            </div>
+            <div class="mascot-info">
+              <div class="mascot-speech" id="mascotSpeech">Инициализация нейромодуля взвода G-13... Тапни на меня для связи!</div>
+              <div class="mascot-meta-row">
+                <div class="mascot-energy-header">
+                  <span>ЗАРЯД ВЗВОДА // TAP TO POKE</span>
+                  <span id="mascotEnergyVal">75%</span>
+                </div>
+                <div class="mascot-energy-track">
+                  <div class="mascot-energy-fill" id="mascotEnergyFill"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -1458,6 +1627,7 @@
           </div>
         `;
         document.getElementById('tasksStat').innerText = "00";
+        updateMascot();
         return;
       }
 
@@ -1481,6 +1651,7 @@
       }).join('');
 
       document.getElementById('tasksStat').innerText = String(activeCount).padStart(2, '0');
+      updateMascot();
     }
 
     function toggleTask(id) {
@@ -1564,6 +1735,7 @@
       const count = keys.length;
 
       document.getElementById('radarStat').innerText = String(count).padStart(2, '0');
+      updateMascot();
 
       const isMeChecked = !!radarData[currentUser.id];
       const checkinBtn = document.getElementById('checkinBtn');
@@ -1682,6 +1854,202 @@
       openSquadModal();
     }
 
+    // ==========================================
+    // КИБЕР-МАСКОТ ВЗВОДА (UNIT-13)
+    // ==========================================
+    let mascotCtxState = { mode: 'idle', left: 0, subj: '' };
+    let mascotPokeUntil = 0;
+    let mascotPokeStreak = 0;
+    let mascotLastPokeAt = 0;
+    let mascotLastQuipIdx = -1;
+
+    const MASCOT_QUIPS = [
+      { face: '[ ⌐■_■ ]', mood: 'COOL', text: 'Совет дня: если смотреть на препода с умным видом, шанс быть вызванным падает на 42%.' },
+      { face: '[ ★ ‿ ★ ]', mood: 'LUCK', text: 'Анализ вероятностей: сегодня отличный день, чтобы закрыть хотя бы один долг!' },
+      { face: '[ ⊙ _ ⊙ ]', mood: 'SCAN', text: 'Сканирую аудиторию... Обнаружен высокий уровень желания пойти домой.' },
+      { face: '[ ^ ‿ ^ ]', mood: 'VIBE', text: 'UNIT-13 на связи! Не забудь отметиться на РАДАРЕ, если ты уже в корпусе 📍' },
+      { face: '[ • ̀_•́ ]', mood: 'FOCUS', text: 'Боец G-13, помни: закрытый вовремя дедлайн бережёт нервные клетки на сессии.' },
+      { face: '[ ˘ ‿ ˘ ]', mood: 'COFFEE', text: 'Мои сенсоры подсказывают, что взводу срочно требуется доза кофе или шавухи ☕' },
+      { face: '[ ✧ ‿ ✧ ]', mood: 'BOOST', text: 'Плюс +100 к удаче на весь день активировано! Продолжай в том же духе.' },
+      { face: '[ ಠ ‿ ಠ ]', mood: 'SECRET', text: 'Секретный протокол: главная сила взвода G-13 — вовремя скинутая в чат домашка.' },
+      { face: '[ ◕ ‿ ◕ ]', mood: 'FRIEND', text: 'Я слежу за расписанием 24/7, чтобы вы могли спокойно спать до самого будильника.' },
+      { face: '[ ° ▃ ° ]', mood: 'GLITCH', text: 'BEEP-BOOP // Попытка взломать систему оценок... Шутка, лучше просто сдай лабу!' }
+    ];
+
+    function updateMascot(ctxOverride) {
+      if (ctxOverride) mascotCtxState = ctxOverride;
+
+      const screenEl = document.getElementById('mascotScreen');
+      const faceEl = document.getElementById('mascotFace');
+      const moodEl = document.getElementById('mascotMood');
+      const speechEl = document.getElementById('mascotSpeech');
+      const badgeEl = document.getElementById('mascotBadge');
+      const energyValEl = document.getElementById('mascotEnergyVal');
+      const energyFillEl = document.getElementById('mascotEnergyFill');
+      if (!screenEl || !faceEl) return;
+
+      const radarCount = Object.keys(radarData).length;
+      const totalTasks = Object.keys(tasks);
+      const pendingTasks = totalTasks.filter(id => !completedTasks.includes(id)).length;
+      const doneCount = totalTasks.length - pendingTasks;
+      const hour = new Date().getHours();
+
+      // 1. Расчёт заряда взвода (10% .. 100%)
+      let energy = 65;
+      if (mascotCtxState.mode === 'weekend' || mascotCtxState.mode === 'after') energy = 82;
+      if (mascotCtxState.mode === 'canceled') energy = 92;
+      if (mascotCtxState.mode === 'in_progress') {
+        energy = radarCount === 0 ? 32 : Math.min(100, 55 + radarCount * 9);
+      } else {
+        energy += radarCount * 6;
+      }
+      energy += doneCount * 5;
+      energy -= pendingTasks * 6;
+      energy = Math.max(10, Math.min(100, energy));
+
+      energyValEl.innerText = `${energy}%`;
+      energyFillEl.style.width = `${energy}%`;
+      if (energy < 35) {
+        energyFillEl.style.backgroundColor = 'var(--nothing-red)';
+      } else if (energy >= 75) {
+        energyFillEl.style.backgroundColor = 'var(--green-live)';
+      } else {
+        energyFillEl.style.backgroundColor = '#38bdf8';
+      }
+
+      // Если пользователь недавно тапнул на маскота — не перезаписываем реплику
+      if (Date.now() < mascotPokeUntil) return;
+
+      // 2. Выбор контекстной эмоции и фразы
+      let face = '[ • ‿ • ]';
+      let mood = 'ONLINE';
+      let speech = 'Системы взвода G-13 работают в штатном режиме.';
+      let screenMode = '';
+      let badgeText = '● ONLINE';
+      let badgeColor = 'var(--green-live)';
+
+      const isNight = hour >= 0 && hour < 6;
+      const blink = (new Date().getSeconds() % 7 === 0);
+
+      if (isNight) {
+        face = '[ - ‿ - ] zZ';
+        mood = 'SLEEP';
+        speech = 'Ночной режим энергосбережения... Иди спать, боец, завтра новый день!';
+        badgeText = '● SLEEP';
+        badgeColor = 'var(--text-muted)';
+      } else if (mascotCtxState.mode === 'canceled') {
+        face = '[ ★ ‿ ★ ]';
+        mood = 'FREE';
+        speech = `Пара «${mascotCtxState.subj}» отменена! Легальный чилл активирован ⚡`;
+        screenMode = 'hype-mode';
+        badgeText = '● HYPE';
+      } else if (mascotCtxState.mode === 'in_progress') {
+        if (radarCount === 0) {
+          face = '[ ಠ _ ಠ ]';
+          mood = 'GHOST';
+          speech = `Идёт «${mascotCtxState.subj}», а на радаре 00 чел... Вы вообще в шараге?!`;
+          screenMode = 'alert-mode';
+          badgeText = '● ALERT';
+          badgeColor = 'var(--nothing-red)';
+        } else if (radarCount >= 5) {
+          face = '[ ⌐■_■ ]';
+          mood = 'SQUAD';
+          speech = `На радаре уже ${radarCount} чел.! Взвод G-13 держит оборону. До конца ${mascotCtxState.left} мин.`;
+          screenMode = 'hype-mode';
+        } else {
+          face = blink ? '[ - ̀_-́ ]' : '[ • ̀_•́ ]';
+          mood = 'STUDY';
+          speech = `Держим строй на паре! До звонка осталось ${mascotCtxState.left} мин.`;
+        }
+      } else if (mascotCtxState.mode === 'break') {
+        face = blink ? '[ - ‿ - ]' : '[ ^ ‿ ^ ]';
+        mood = 'BREAK';
+        speech = `Перемена ${mascotCtxState.left} мин! Самое время размяться или сгонять за перекусом ☕`;
+        screenMode = 'hype-mode';
+      } else if (mascotCtxState.mode === 'before') {
+        face = blink ? '[ - _ - ]' : '[ ⊙ _ ⊙ ]';
+        mood = 'READY';
+        speech = `До первой пары ${mascotCtxState.left} мин. Проверь рюкзак и не забудь отметиться на радаре!`;
+      } else if (pendingTasks >= 4) {
+        face = '[ ; _ ; ]';
+        mood = 'PANIC';
+        speech = `Внимание: в очереди висит ${pendingTasks} незакрытых дедлайна! Давай разгребём хотя бы один?`;
+        screenMode = 'alert-mode';
+        badgeText = '● OVERLOAD';
+        badgeColor = 'var(--nothing-red)';
+      } else if (mascotCtxState.mode === 'weekend') {
+        face = '[ ✧ ‿ ✧ ]';
+        mood = 'WEEKEND';
+        speech = 'Выходной день! Никаких пар — перезаряжаем батареи взвода на максимум 🔋';
+        screenMode = 'hype-mode';
+      } else if (mascotCtxState.mode === 'after') {
+        face = '[ ˘ ‿ ˘ ]';
+        mood = 'CHILL';
+        speech = pendingTasks > 0
+          ? `Пары закончились! Осталось закрыть дедлайнов: ${pendingTasks} — и можно отдыхать 🎮`
+          : 'Все пары и дедлайны позади! Заслуженный отдых, боец 🎮';
+        screenMode = 'hype-mode';
+      } else {
+        face = blink ? '[ - ‿ - ]' : '[ • ‿ • ]';
+        mood = 'STANDBY';
+        speech = pendingTasks > 0
+          ? `На контроле дедлайнов: ${pendingTasks}. Тапни на меня, если нужен кибер-совет!`
+          : 'Дедлайны чисты, расписание под контролем. Тапни на меня для связи!';
+      }
+
+      screenEl.className = 'mascot-screen' + (screenMode ? ' ' + screenMode : '');
+      faceEl.innerText = face;
+      moodEl.innerText = mood;
+      speechEl.innerText = speech;
+      badgeEl.innerText = badgeText;
+      badgeEl.style.color = badgeColor;
+    }
+
+    function pokeMascot() {
+      haptic();
+      const now = Date.now();
+      if (now - mascotLastPokeAt < 1800) {
+        mascotPokeStreak++;
+      } else {
+        mascotPokeStreak = 1;
+      }
+      mascotLastPokeAt = now;
+      mascotPokeUntil = now + 6000;
+
+      const screenEl = document.getElementById('mascotScreen');
+      const faceEl = document.getElementById('mascotFace');
+      const moodEl = document.getElementById('mascotMood');
+      const speechEl = document.getElementById('mascotSpeech');
+      const badgeEl = document.getElementById('mascotBadge');
+
+      screenEl.classList.remove('poke-anim');
+      void screenEl.offsetWidth;
+      screenEl.classList.add('poke-anim');
+
+      // Пасхалка при частом закликивании
+      if (mascotPokeStreak >= 5) {
+        screenEl.className = 'mascot-screen alert-mode poke-anim';
+        faceEl.innerText = '[ ╬ ಠ_ಠ ]';
+        moodEl.innerText = 'OVERCLICK';
+        speechEl.innerText = 'Эй-эй, полегче! У меня так пиксели осыпятся — лучше закрой дедлайны во вкладке TASKS!';
+        badgeEl.innerText = '● ANGRY';
+        badgeEl.style.color = 'var(--nothing-red)';
+        return;
+      }
+
+      let idx = Math.floor(Math.random() * MASCOT_QUIPS.length);
+      if (idx === mascotLastQuipIdx) idx = (idx + 1) % MASCOT_QUIPS.length;
+      mascotLastQuipIdx = idx;
+
+      const q = MASCOT_QUIPS[idx];
+      screenEl.className = 'mascot-screen hype-mode poke-anim';
+      faceEl.innerText = q.face;
+      moodEl.innerText = q.mood;
+      speechEl.innerText = q.text;
+      badgeEl.innerText = '● ACTIVE';
+      badgeEl.style.color = 'var(--green-live)';
+    }
+
     // ТАЙМЕР И СТАТУС ПАР
     function parseTimeToMinutes(tStr) {
       const match = tStr.match(/(\d{1,2})[:.](\d{2})/);
@@ -1710,6 +2078,7 @@
         badge.style.color = "var(--text-muted)";
         title.innerText = "ВЫХОДНОЙ ДЕНЬ";
         sub.innerText = "Пар нет. Система в режиме ожидания.";
+        updateMascot({ mode: 'weekend', left: 0, subj: '' });
         return;
       }
 
@@ -1721,6 +2090,7 @@
         badge.style.color = "var(--text-muted)";
         title.innerText = "СЕТКА ПУСТА";
         sub.innerText = "На сегодня расписание не заполнено.";
+        updateMascot({ mode: 'empty', left: 0, subj: '' });
         return;
       }
 
@@ -1742,6 +2112,7 @@
         badge.style.color = "var(--text-muted)";
         title.innerText = "РАСПИСАНИЕ АКТИВНО";
         sub.innerText = `Пар на сегодня: ${todayList.length}`;
+        updateMascot({ mode: 'idle', left: 0, subj: '' });
         return;
       }
 
@@ -1756,6 +2127,7 @@
             badge.style.color = "var(--nothing-red)";
             title.innerText = "ПАРА ОТМЕНЕНА";
             sub.innerText = `${lesson.name} (${lesson.cab}) отменена`;
+            updateMascot({ mode: 'canceled', left: lesson.end - currentMinutes, subj: lesson.name });
             return;
           }
 
@@ -1765,6 +2137,7 @@
           badge.style.color = "var(--nothing-red)";
           title.innerText = `${lesson.name}`;
           sub.innerText = `${lesson.cab} • До конца пары: ${left} мин`;
+          updateMascot({ mode: 'in_progress', left, subj: lesson.name });
           return;
         }
 
@@ -1777,6 +2150,7 @@
             badge.style.color = "var(--green-live)";
             title.innerText = `ПЕРЕМЕНА (${breakLeft} МИН)`;
             sub.innerText = `Далее: ${nextLesson.name} (${nextLesson.cab})${nextLesson.status === 'canceled' ? ' [ОТМЕНА]' : ''}`;
+            updateMascot({ mode: 'break', left: breakLeft, subj: nextLesson.name });
             return;
           }
         }
@@ -1789,6 +2163,7 @@
         badge.style.color = "#38bdf8";
         title.innerText = `ДО ПАР: ${diff} МИН`;
         sub.innerText = `1-я пара: ${parsedLessons[0].name} (${parsedLessons[0].cab})${parsedLessons[0].status === 'canceled' ? ' [ОТМЕНА]' : ''}`;
+        updateMascot({ mode: 'before', left: diff, subj: parsedLessons[0].name });
         return;
       }
 
@@ -1797,6 +2172,7 @@
       badge.style.color = "var(--text-muted)";
       title.innerText = "ПАРЫ ЗАКОНЧИЛИСЬ";
       sub.innerText = "Все занятия на сегодня завершены 🎮";
+      updateMascot({ mode: 'after', left: 0, subj: '' });
     }
 
     // ==========================================
