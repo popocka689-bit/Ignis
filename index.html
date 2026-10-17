@@ -45,6 +45,25 @@
       --backdrop: rgba(0, 0, 0, 0.75);
       --lock-bg: rgba(0, 0, 0, 0.8);
 
+      --font-dot: 'DotGothic16', monospace;
+      --font-mono: 'Space Mono', -apple-system, monospace;
+
+      --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.05) 100%), rgba(28, 28, 32, 0.62);
+      --glass-bg-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.09) 100%), rgba(40, 40, 46, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.14);
+      --glass-border-strong: rgba(255, 255, 255, 0.24);
+      --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+      --glass-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      --glass-blur: blur(16px) saturate(160%);
+      --glass-text: #f5f5f5;
+
+      --glass-red-bg: linear-gradient(180deg, rgba(255, 70, 78, 0.30) 0%, rgba(215, 25, 33, 0.14) 100%), rgba(40, 10, 12, 0.6);
+      --glass-red-border: rgba(255, 80, 88, 0.45);
+      --glass-red-text: #ff5a62;
+
+      --glass-green-bg: linear-gradient(180deg, rgba(52, 211, 153, 0.28) 0%, rgba(16, 185, 129, 0.12) 100%), rgba(8, 32, 24, 0.6);
+      --glass-green-border: rgba(52, 211, 153, 0.45);
+
       --nebula-1: rgba(215, 25, 33, 0.55);
       --nebula-2: rgba(56, 70, 200, 0.55);
       --nebula-opacity: 0.35;
@@ -70,6 +89,21 @@
       --nav-bg: rgba(255, 255, 255, 0.85);
       --backdrop: rgba(230, 230, 230, 0.6);
       --lock-bg: rgba(242, 242, 240, 0.85);
+
+      --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 100%), rgba(236, 236, 240, 0.55);
+      --glass-bg-strong: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.78) 100%), rgba(228, 228, 234, 0.6);
+      --glass-border: rgba(0, 0, 0, 0.08);
+      --glass-border-strong: rgba(0, 0, 0, 0.14);
+      --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+      --glass-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      --glass-text: #111111;
+
+      --glass-red-bg: linear-gradient(180deg, rgba(255, 235, 236, 0.95) 0%, rgba(255, 210, 213, 0.7) 100%);
+      --glass-red-border: rgba(215, 25, 33, 0.35);
+      --glass-red-text: #c4141c;
+
+      --glass-green-bg: linear-gradient(180deg, rgba(225, 250, 240, 0.95) 0%, rgba(190, 240, 220, 0.7) 100%);
+      --glass-green-border: rgba(5, 150, 105, 0.4);
 
       --nebula-1: rgba(215, 25, 33, 0.35);
       --nebula-2: rgba(80, 110, 230, 0.4);
@@ -530,14 +564,6 @@
       color: var(--text-muted);
       letter-spacing: 1.5px;
     }
-    .admin-toggle-btn {
-      display: none;
-      font-family: 'Space Mono', monospace;
-      font-size: 9px;
-      padding: 4px 8px;
-      cursor: pointer;
-      text-transform: uppercase;
-    }
 
     .segment-bar {
       display: flex;
@@ -571,20 +597,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: all 0.2s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease, opacity 0.2s ease;
+    }
+    .lesson-item:active {
+      transform: scale(0.985);
     }
     .lesson-item.is-canceled {
       opacity: 0.4;
       border-style: dashed;
-    }
-    .lesson-item {
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease;
-    }
-    .lesson-item:active {
-      transform: scale(0.985);
     }
     .lesson-item.is-canceled .lesson-name {
       text-decoration: line-through;
@@ -656,16 +679,6 @@
       color: var(--text-white);
       font-weight: 700;
     }
-    .lesson-action-btn {
-      font-family: 'Space Mono', monospace;
-      font-size: 9px;
-      padding: 3px 6px;
-      cursor: pointer;
-      display: none;
-    }
-    .admin-mode .lesson-action-btn {
-      display: inline-block;
-    }
 
     /* ДОСЬЕ ПАРЫ (LESSON INTEL MODAL) */
     .intel-grid {
@@ -712,24 +725,7 @@
       font-style: italic;
       font-weight: 400;
     }
-    .intel-textarea {
-      resize: vertical;
-      min-height: 68px;
-      line-height: 1.4;
-    }
 
-    /* РЕДАКТОР */
-    .editor-box {
-      display: none;
-      background: var(--sheet-bg);
-      border: 1px dashed var(--border-bright);
-      border-radius: 14px;
-      padding: 14px;
-      margin-top: 14px;
-    }
-    .editor-box.show {
-      display: block;
-    }
     .input-field {
       width: 100%;
       background: var(--input-bg);
@@ -741,11 +737,6 @@
       color: var(--text-white);
       margin-bottom: 8px;
       outline: none;
-    }
-    .input-row {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 8px;
     }
 
     .tech-btn {
@@ -815,7 +806,7 @@
     .modal-close {
       cursor: pointer;
     }
-    .radar-list, .squad-list {
+    .radar-list {
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -837,12 +828,6 @@
       height: 6px;
       border-radius: 50%;
       background: var(--green-live);
-    }
-    .btn-kick {
-      font-size: 9px;
-      padding: 4px 8px;
-      cursor: pointer;
-      font-family: 'Space Mono', monospace;
     }
 
     /* НАВБАР */
@@ -954,8 +939,8 @@
     /* ==========================================
        АНИМАЦИИ НАЖАТИЙ
        ========================================== */
-    .tech-btn, .segment-btn, .nav-trigger, .admin-toggle-btn,
-    .lesson-action-btn, .btn-kick, .theme-btn, .header-admin-btn,
+    .tech-btn, .segment-btn, .nav-trigger,
+    .theme-btn, .header-admin-btn,
     .modal-close, .tech-card {
       position: relative;
       overflow: hidden;
@@ -998,45 +983,7 @@
     /* ==========================================
        LIQUID GLASS — МАТОВЫЕ СТЕКЛЯННЫЕ КНОПКИ
        ========================================== */
-    :root {
-      --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.05) 100%), rgba(28, 28, 32, 0.62);
-      --glass-bg-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.09) 100%), rgba(40, 40, 46, 0.72);
-      --glass-border: rgba(255, 255, 255, 0.14);
-      --glass-border-strong: rgba(255, 255, 255, 0.24);
-      --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(0, 0, 0, 0.35);
-      --glass-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
-      --glass-blur: blur(16px) saturate(160%);
-      --glass-text: #f5f5f5;
-
-      --glass-red-bg: linear-gradient(180deg, rgba(255, 70, 78, 0.30) 0%, rgba(215, 25, 33, 0.14) 100%), rgba(40, 10, 12, 0.6);
-      --glass-red-border: rgba(255, 80, 88, 0.45);
-      --glass-red-text: #ff5a62;
-
-      --glass-green-bg: linear-gradient(180deg, rgba(52, 211, 153, 0.28) 0%, rgba(16, 185, 129, 0.12) 100%), rgba(8, 32, 24, 0.6);
-      --glass-green-border: rgba(52, 211, 153, 0.45);
-    }
-    :root[data-theme="light"] {
-      --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 100%), rgba(236, 236, 240, 0.55);
-      --glass-bg-strong: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.78) 100%), rgba(228, 228, 234, 0.6);
-      --glass-border: rgba(0, 0, 0, 0.08);
-      --glass-border-strong: rgba(0, 0, 0, 0.14);
-      --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 -1px 0 rgba(0, 0, 0, 0.06);
-      --glass-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-      --glass-text: #111111;
-
-      --glass-red-bg: linear-gradient(180deg, rgba(255, 235, 236, 0.95) 0%, rgba(255, 210, 213, 0.7) 100%);
-      --glass-red-border: rgba(215, 25, 33, 0.35);
-      --glass-red-text: #c4141c;
-
-      --glass-green-bg: linear-gradient(180deg, rgba(225, 250, 240, 0.95) 0%, rgba(190, 240, 220, 0.7) 100%);
-      --glass-green-border: rgba(5, 150, 105, 0.4);
-    }
-
-    /* Базовое стекло для всех кнопок */
     .tech-btn,
-    .admin-toggle-btn,
-    .lesson-action-btn,
-    .btn-kick,
     .theme-btn,
     .modal-close {
       background: var(--glass-bg);
@@ -1076,15 +1023,6 @@
       box-shadow: var(--glass-highlight), 0 2px 8px rgba(0, 0, 0, 0.18);
     }
 
-    /* Красные варианты (удаление, админ, активный режим редактирования) */
-    .btn-kick,
-    .lesson-action-btn.btn-del,
-    .admin-toggle-btn.active {
-      background: var(--glass-red-bg);
-      border-color: var(--glass-red-border);
-      color: var(--glass-red-text);
-    }
-
     /* Кнопка «Я в аудитории» */
     .tech-btn.btn-checkin {
       background: var(--glass-bg);
@@ -1112,18 +1050,8 @@
       color: var(--text-dim);
     }
 
-    /* Небольшие кнопки — мягкие скругления */
-    .admin-toggle-btn,
-    .lesson-action-btn,
-    .btn-kick {
-      border-radius: 8px;
-    }
-
     /* Стекло при нажатии становится чуть светлее */
     .tech-btn:active,
-    .admin-toggle-btn:active,
-    .lesson-action-btn:active,
-    .btn-kick:active,
     .theme-btn:active,
     .header-admin-btn:active,
     .modal-close:active {
@@ -3237,12 +3165,15 @@
       return `${m} МИН`;
     }
 
+    let lastJourneyTrackHtml = '';
+
     function renderDayJourney(day, currentMinutes, parsedLessons) {
       const wrap = document.getElementById('dayJourneyWrap');
       if (!wrap) return { equator: false, dayPct: 0 };
 
       if (!parsedLessons || parsedLessons.length === 0) {
         wrap.style.display = 'none';
+        lastJourneyTrackHtml = '';
         return { equator: false, dayPct: 0 };
       }
 
@@ -3420,7 +3351,11 @@
           }
         }
 
-        track.innerHTML = nodesHtml.join('');
+        const nextTrackHtml = nodesHtml.join('');
+        if (nextTrackHtml !== lastJourneyTrackHtml) {
+          track.innerHTML = nextTrackHtml;
+          lastJourneyTrackHtml = nextTrackHtml;
+        }
       }
 
       return { equator: isEquator, dayPct };
@@ -3589,7 +3524,7 @@
     // ==========================================
     // RIPPLE-ЭФФЕКТ ПРИ НАЖАТИИ
     // ==========================================
-    const RIPPLE_TARGETS = '.tech-btn, .segment-btn, .nav-trigger, .admin-toggle-btn, .lesson-action-btn, .btn-kick, .theme-btn, .role-badge, .modal-close, .task-del-btn, .tech-card[onclick], .lesson-item, .hero-weather-box';
+    const RIPPLE_TARGETS = '.tech-btn, .segment-btn, .nav-trigger, .theme-btn, .header-admin-btn, .mascot-mini-btn, .modal-close, .tech-card[onclick], .lesson-item, .journey-node, .hero-weather-box';
 
     document.addEventListener('pointerdown', (e) => {
       const el = e.target.closest(RIPPLE_TARGETS);
@@ -3727,10 +3662,10 @@
 
       const day = new Date().getDay();
       currentDay = (day >= 1 && day <= 5) ? day : 1;
-      
-      const btns = document.querySelectorAll('.segment-btn');
+
+      const btns = document.querySelectorAll('#view-schedule .segment-btn');
       btns.forEach((b, i) => b.classList.toggle('active', i + 1 === currentDay));
-      
+
       verifySquadAccess();
       setInterval(syncDataFromCloud, 10000);
       setInterval(updateLiveStatus, 1000);
