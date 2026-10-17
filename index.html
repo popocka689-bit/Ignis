@@ -329,6 +329,15 @@
       opacity: 0.4;
       border-style: dashed;
     }
+    .lesson-item {
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.2s ease;
+    }
+    .lesson-item:active {
+      transform: scale(0.985);
+    }
     .lesson-item.is-canceled .lesson-name {
       text-decoration: line-through;
     }
@@ -336,11 +345,14 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      min-width: 0;
+      flex: 1;
     }
     .lesson-index {
       font-family: 'DotGothic16', monospace;
       font-size: 18px;
       color: var(--nothing-red);
+      flex-shrink: 0;
     }
     .lesson-time {
       font-size: 10px;
@@ -351,6 +363,26 @@
       font-size: 14px;
       font-weight: 700;
       color: var(--text-white);
+    }
+    .lesson-sub-meta {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 3px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .lesson-intel-pill {
+      display: inline-block;
+      font-size: 8px;
+      letter-spacing: 0.6px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-white);
+      text-transform: uppercase;
     }
     .lesson-badge-canceled {
       display: inline-block;
@@ -366,6 +398,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      flex-shrink: 0;
     }
     .lesson-cab {
       border: 1px solid var(--border-bright);
@@ -384,6 +417,57 @@
     }
     .admin-mode .lesson-action-btn {
       display: inline-block;
+    }
+
+    /* ДОСЬЕ ПАРЫ (LESSON INTEL MODAL) */
+    .intel-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 10px 0 16px 0;
+    }
+    .intel-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .intel-chip {
+      font-size: 10px;
+      padding: 5px 10px;
+      border-radius: 8px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-white);
+      font-weight: 700;
+    }
+    .intel-box {
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 11px 13px;
+    }
+    .intel-label {
+      font-size: 8px;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .intel-val {
+      font-size: 12px;
+      color: var(--text-white);
+      line-height: 1.45;
+      word-break: break-word;
+    }
+    .intel-val.empty {
+      color: var(--text-muted);
+      font-style: italic;
+      font-weight: 400;
+    }
+    .intel-textarea {
+      resize: vertical;
+      min-height: 68px;
+      line-height: 1.4;
     }
 
     /* ЗАДАЧИ */
@@ -1184,6 +1268,9 @@
           <input type="text" id="inTime" class="input-field" placeholder="08:30-10:00">
           <input type="text" id="inCab" class="input-field" placeholder="Каб. 302">
         </div>
+        <input type="text" id="inTeacher" class="input-field" placeholder="Преподаватель (необязательно)">
+        <input type="text" id="inLocation" class="input-field" placeholder="Этаж / крыло (необязательно)">
+        <input type="text" id="inNote" class="input-field" placeholder="Заметка к паре (необязательно)">
         <button class="tech-btn" onclick="saveLesson()">[ ОТПРАВИТЬ В БАЗУ ]</button>
       </div>
     </section>
@@ -1206,6 +1293,69 @@
       </div>
     </section>
 
+  </div>
+
+  <!-- МОДАЛКА: ДОСЬЕ ПАРЫ (LESSON INTEL) -->
+  <div id="lessonModal" class="modal-backdrop" onclick="if(event.target === this) closeLessonModal()">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div style="min-width: 0; padding-right: 10px;">
+          <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; text-transform: uppercase;">LESSON // INTEL</div>
+          <div style="font-size: 15px; font-weight: 700; word-break: break-word;" id="intelModalTitle">ПРЕДМЕТ</div>
+        </div>
+        <button class="modal-close" onclick="closeLessonModal()">✕</button>
+      </div>
+
+      <!-- РЕЖИМ ПРОСМОТРА -->
+      <div id="lessonIntelView">
+        <div class="intel-grid">
+          <div class="intel-chips">
+            <div class="intel-chip" id="intelChipTime">⏰ 08:30-10:00</div>
+            <div class="intel-chip" id="intelChipCab">🚪 Каб. 302</div>
+            <div class="intel-chip" id="intelChipStatus">● АКТИВНА</div>
+          </div>
+
+          <div class="intel-box">
+            <div class="intel-label">👤 ПРЕПОДАВАТЕЛЬ</div>
+            <div class="intel-val" id="intelValTeacher">Не указан</div>
+          </div>
+
+          <div class="intel-box">
+            <div class="intel-label">🧭 ЛОКАЦИЯ // ЭТАЖ</div>
+            <div class="intel-val" id="intelValLocation">Не указана</div>
+          </div>
+
+          <div class="intel-box">
+            <div class="intel-label">📝 ЗАМЕТКА ВЗВОДА // ТРЕБОВАНИЯ</div>
+            <div class="intel-val" id="intelValNote">Заметок к этой паре пока нет.</div>
+          </div>
+        </div>
+
+        <button class="tech-btn" id="btnOpenIntelEdit" style="display: none;" onclick="toggleLessonIntelEdit(true)">[ ⚙ ИЗМЕНИТЬ ДАННЫЕ ]</button>
+      </div>
+
+      <!-- РЕЖИМ РЕДАКТИРОВАНИЯ (ТОЛЬКО ДЛЯ АДМИНА) -->
+      <div id="lessonIntelEdit" style="display: none;">
+        <div style="margin: 8px 0 12px 0;">
+          <div class="intel-label">КАБИНЕТ / АУДИТОРИЯ</div>
+          <input type="text" id="editIntelCab" class="input-field" placeholder="Напр. 302 или Спортзал">
+
+          <div class="intel-label" style="margin-top: 4px;">👤 ПРЕПОДАВАТЕЛЬ (ФИО)</div>
+          <input type="text" id="editIntelTeacher" class="input-field" placeholder="Напр. Сидоров Алексей Викторович">
+
+          <div class="intel-label" style="margin-top: 4px;">🧭 ЛОКАЦИЯ / ЭТАЖ / КОРПУС</div>
+          <input type="text" id="editIntelLocation" class="input-field" placeholder="Напр. 3 этаж, левое крыло">
+
+          <div class="intel-label" style="margin-top: 4px;">📝 ЗАМЕТКА К ПАРЕ</div>
+          <textarea id="editIntelNote" class="input-field intel-textarea" placeholder="Что взять с собой, требования к зачёту, тема контрольной..."></textarea>
+        </div>
+
+        <div class="input-row" style="grid-template-columns: 1fr 1fr;">
+          <button class="tech-btn" style="margin-top: 0;" onclick="toggleLessonIntelEdit(false)">[ ОТМЕНА ]</button>
+          <button class="tech-btn btn-checkin" style="margin-top: 0;" onclick="saveLessonIntel()">[ СОХРАНИТЬ ]</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- МОДАЛКА RADAR -->
@@ -1499,6 +1649,8 @@
       renderLessons();
     }
 
+    let activeIntelIdx = null;
+
     function renderLessons() {
       const container = document.getElementById('lessonsContainer');
       const list = timetable[currentDay] || [];
@@ -1515,29 +1667,129 @@
 
       container.innerHTML = list.map((item, idx) => {
         const isCanceled = item.status === 'canceled';
+        const hasTeacher = item.teacher && item.teacher.trim() !== '';
+        const hasNote = item.note && item.note.trim() !== '';
+        const hasLocation = item.location && item.location.trim() !== '';
+        const hasIntel = hasTeacher || hasNote || hasLocation;
+
         return `
-          <div class="lesson-item ${isCanceled ? 'is-canceled' : ''}">
+          <div class="lesson-item ${isCanceled ? 'is-canceled' : ''}" onclick="openLessonModal(${idx})">
             <div class="lesson-left">
               <div class="lesson-index">${idx + 1}</div>
-              <div>
+              <div style="min-width: 0;">
                 <div class="lesson-time">${esc(item.time)}</div>
                 <div class="lesson-name">
                   ${esc(item.name)}
                   ${isCanceled ? `<span class="lesson-badge-canceled">ОТМЕНЕНА</span>` : ''}
                 </div>
+                ${hasIntel ? `
+                  <div class="lesson-sub-meta">
+                    ${hasTeacher ? `<span>👤 ${esc(item.teacher)}</span>` : ''}
+                    ${hasNote ? `<span class="lesson-intel-pill">📝 ЗАМЕТКА</span>` : ''}
+                  </div>
+                ` : ''}
               </div>
             </div>
             <div class="lesson-right">
               <div class="lesson-cab">${esc(item.cab)}</div>
               ${isAdmin ? `
-                <button class="lesson-action-btn" onclick="changeLessonCab(${idx})">[КАБ]</button>
-                <button class="lesson-action-btn" onclick="toggleLessonCancel(${idx})">[${isCanceled ? 'ВЕРНУТЬ' : 'ОТМЕНА'}]</button>
-                <button class="lesson-action-btn btn-del" onclick="deleteLesson(${idx})">✕</button>
+                <button class="lesson-action-btn" onclick="event.stopPropagation(); changeLessonCab(${idx})">[КАБ]</button>
+                <button class="lesson-action-btn" onclick="event.stopPropagation(); toggleLessonCancel(${idx})">[${isCanceled ? 'ВЕРНУТЬ' : 'ОТМЕНА'}]</button>
+                <button class="lesson-action-btn btn-del" onclick="event.stopPropagation(); deleteLesson(${idx})">✕</button>
               ` : ''}
             </div>
           </div>
         `;
       }).join('');
+    }
+
+    function openLessonModal(idx) {
+      const list = timetable[currentDay] || [];
+      const item = list[idx];
+      if (!item) return;
+      haptic();
+      activeIntelIdx = idx;
+
+      document.getElementById('intelModalTitle').innerText = item.name;
+      document.getElementById('intelChipTime').innerText = `⏰ ${item.time}`;
+      document.getElementById('intelChipCab').innerText = `🚪 ${item.cab}`;
+
+      const statusChip = document.getElementById('intelChipStatus');
+      if (item.status === 'canceled') {
+        statusChip.innerText = '● ОТМЕНЕНА';
+        statusChip.style.color = 'var(--nothing-red)';
+      } else {
+        statusChip.innerText = '● АКТИВНА';
+        statusChip.style.color = 'var(--green-live)';
+      }
+
+      const setField = (elId, val, emptyText) => {
+        const el = document.getElementById(elId);
+        if (val && val.trim() !== '') {
+          el.innerText = val.trim();
+          el.classList.remove('empty');
+        } else {
+          el.innerText = emptyText;
+          el.classList.add('empty');
+        }
+      };
+
+      setField('intelValTeacher', item.teacher, 'Не указан');
+      setField('intelValLocation', item.location, 'Не указана');
+      setField('intelValNote', item.note, 'Заметок к этой паре пока нет.');
+
+      document.getElementById('btnOpenIntelEdit').style.display = isAdmin ? 'block' : 'none';
+      toggleLessonIntelEdit(false, true);
+      document.getElementById('lessonModal').style.display = 'flex';
+    }
+
+    function closeLessonModal() {
+      haptic();
+      document.getElementById('lessonModal').style.display = 'none';
+      activeIntelIdx = null;
+    }
+
+    function toggleLessonIntelEdit(show, silent) {
+      if (!silent) haptic();
+      const viewBox = document.getElementById('lessonIntelView');
+      const editBox = document.getElementById('lessonIntelEdit');
+
+      if (show && isAdmin && activeIntelIdx !== null) {
+        const item = (timetable[currentDay] || [])[activeIntelIdx];
+        if (!item) return;
+        document.getElementById('editIntelCab').value = item.cab || '';
+        document.getElementById('editIntelTeacher').value = item.teacher || '';
+        document.getElementById('editIntelLocation').value = item.location || '';
+        document.getElementById('editIntelNote').value = item.note || '';
+        viewBox.style.display = 'none';
+        editBox.style.display = 'block';
+      } else {
+        viewBox.style.display = 'block';
+        editBox.style.display = 'none';
+      }
+    }
+
+    async function saveLessonIntel() {
+      if (!isAdmin || activeIntelIdx === null) return;
+      const item = (timetable[currentDay] || [])[activeIntelIdx];
+      if (!item) return;
+      haptic();
+
+      const newCab = document.getElementById('editIntelCab').value.trim();
+      if (newCab) item.cab = newCab;
+      item.teacher = document.getElementById('editIntelTeacher').value.trim();
+      item.location = document.getElementById('editIntelLocation').value.trim();
+      item.note = document.getElementById('editIntelNote').value.trim();
+
+      renderLessons();
+      updateLiveStatus();
+      openLessonModal(activeIntelIdx);
+
+      await fetch(`${DB_URL}/timetable.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(timetable)
+      });
     }
 
     async function changeLessonCab(idx) {
@@ -1577,6 +1829,9 @@
       const name = document.getElementById('inSubj').value.trim();
       const time = document.getElementById('inTime').value.trim();
       const cab = document.getElementById('inCab').value.trim();
+      const teacher = document.getElementById('inTeacher').value.trim();
+      const location = document.getElementById('inLocation').value.trim();
+      const note = document.getElementById('inNote').value.trim();
 
       if (!name || !time || !cab) {
         alert("Заполните предмет, время и кабинет!");
@@ -1584,11 +1839,14 @@
       }
 
       if (!timetable[currentDay]) timetable[currentDay] = [];
-      timetable[currentDay].push({ name, time, cab, status: 'active' });
+      timetable[currentDay].push({ name, time, cab, teacher, location, note, status: 'active' });
 
       document.getElementById('inSubj').value = '';
       document.getElementById('inTime').value = '';
       document.getElementById('inCab').value = '';
+      document.getElementById('inTeacher').value = '';
+      document.getElementById('inLocation').value = '';
+      document.getElementById('inNote').value = '';
 
       renderLessons();
       updateLiveStatus();
@@ -2214,7 +2472,7 @@
     // ==========================================
     // RIPPLE-ЭФФЕКТ ПРИ НАЖАТИИ
     // ==========================================
-    const RIPPLE_TARGETS = '.tech-btn, .segment-btn, .nav-trigger, .admin-toggle-btn, .lesson-action-btn, .btn-kick, .theme-btn, .role-badge, .modal-close, .task-del-btn, .tech-card[onclick]';
+    const RIPPLE_TARGETS = '.tech-btn, .segment-btn, .nav-trigger, .admin-toggle-btn, .lesson-action-btn, .btn-kick, .theme-btn, .role-badge, .modal-close, .task-del-btn, .tech-card[onclick], .lesson-item';
 
     document.addEventListener('pointerdown', (e) => {
       const el = e.target.closest(RIPPLE_TARGETS);
