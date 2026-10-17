@@ -693,15 +693,6 @@
       gap: 3px;
       font-family: 'Space Mono', monospace;
     }
-    .nav-dot {
-      font-family: 'DotGothic16', monospace;
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-    .nav-trigger.active .nav-dot {
-      color: var(--nothing-red);
-      animation: navBounce 0.35s ease;
-    }
     .nav-text {
       font-size: 9px;
       font-weight: 700;
@@ -1135,6 +1126,203 @@
       animation: mascotBounce 0.36s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
+    /* ==========================================
+       ГЛАВНЫЙ ВИДЖЕТ ДАТЫ И ПОГОДЫ (HERO CARD)
+    ========================================== */
+    .hero-date-card {
+      padding: 18px;
+      overflow: hidden;
+    }
+    .hero-date-layout {
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .hero-date-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      flex: 1;
+    }
+    .hero-day-badge {
+      min-width: 72px;
+      height: 76px;
+      border-radius: 16px;
+      background:
+        radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(160deg, rgba(215, 25, 33, 0.18) 0%, rgba(20, 20, 26, 0.75) 100%);
+      background-size: 6px 6px, 100% 100%;
+      border: 1px solid rgba(215, 25, 33, 0.42);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 6px 18px rgba(215, 25, 33, 0.14);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+    :root[data-theme="light"] .hero-day-badge {
+      background:
+        radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+        linear-gradient(160deg, rgba(215, 25, 33, 0.14) 0%, rgba(255, 255, 255, 0.9) 100%);
+      background-size: 6px 6px, 100% 100%;
+      border-color: rgba(215, 25, 33, 0.38);
+    }
+    .hero-day-num {
+      font-family: var(--font-dot);
+      font-size: 42px;
+      line-height: 1;
+      color: var(--text-white);
+      letter-spacing: 1px;
+    }
+    .hero-day-dot {
+      font-size: 8px;
+      letter-spacing: 1.5px;
+      color: var(--nothing-red);
+      margin-top: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .hero-date-texts {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+    .hero-weekday {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--text-white);
+      letter-spacing: 0.5px;
+      line-height: 1.15;
+      text-transform: uppercase;
+    }
+    .hero-month-full {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      font-weight: 700;
+    }
+    .hero-week-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 9px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      letter-spacing: 0.4px;
+    }
+    .hero-weather-box {
+      min-width: 112px;
+      max-width: 132px;
+      border-radius: 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      padding: 10px 11px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-end;
+      text-align: right;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.18s ease, border-color 0.25s ease;
+    }
+    .hero-weather-box:active {
+      transform: scale(0.96);
+    }
+    .weather-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .weather-icon {
+      font-size: 20px;
+      line-height: 1;
+    }
+    .weather-temp {
+      font-family: var(--font-dot);
+      font-size: 24px;
+      line-height: 1;
+      color: var(--text-white);
+    }
+    .weather-desc {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-white);
+      line-height: 1.25;
+      margin-top: 4px;
+    }
+    .weather-meta {
+      font-size: 8px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    /* ==========================================
+       ПЛАВНОЕ ПОЯВЛЕНИЕ КАРТОЧЕК И ИКОНКИ НАВБАРА
+    ========================================== */
+    @keyframes smoothCardReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.985);
+        filter: blur(4px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+    }
+    .tab-view.active .tech-grid > .tech-card,
+    .tab-view.active .lessons-rack > .lesson-item,
+    .tab-view.active .tasks-rack > .task-item,
+    .tab-view.active .segment-bar,
+    .tab-view.active .schedule-toolbar {
+      animation: smoothCardReveal 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .tab-view.active .tech-grid > .tech-card:nth-child(1) { animation-delay: 0.02s; }
+    .tab-view.active .tech-grid > .tech-card:nth-child(2) { animation-delay: 0.08s; }
+    .tab-view.active .tech-grid > .tech-card:nth-child(3) { animation-delay: 0.14s; }
+    .tab-view.active .tech-grid > .tech-card:nth-child(4) { animation-delay: 0.18s; }
+    .tab-view.active .tech-grid > .tech-card:nth-child(5) { animation-delay: 0.24s; }
+
+    .tab-view.active .lessons-rack > .lesson-item:nth-child(1),
+    .tab-view.active .tasks-rack > .task-item:nth-child(1) { animation-delay: 0.04s; }
+    .tab-view.active .lessons-rack > .lesson-item:nth-child(2),
+    .tab-view.active .tasks-rack > .task-item:nth-child(2) { animation-delay: 0.09s; }
+    .tab-view.active .lessons-rack > .lesson-item:nth-child(3),
+    .tab-view.active .tasks-rack > .task-item:nth-child(3) { animation-delay: 0.14s; }
+    .tab-view.active .lessons-rack > .lesson-item:nth-child(4),
+    .tab-view.active .tasks-rack > .task-item:nth-child(4) { animation-delay: 0.19s; }
+    .tab-view.active .lessons-rack > .lesson-item:nth-child(5),
+    .tab-view.active .tasks-rack > .task-item:nth-child(5) { animation-delay: 0.24s; }
+
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      color: var(--text-muted);
+      transition: color 0.2s ease, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .nav-trigger.active .nav-icon {
+      color: var(--nothing-red);
+      animation: navBounce 0.35s ease;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -1155,12 +1343,12 @@
   <!-- ШЛЮЗ АВТОРИЗАЦИИ ПО КЛЮЧУ -->
   <div id="lockScreen">
     <div class="lock-box">
-      <div class="lock-badge">SECURITY // G-13 GATEWAY</div>
-      <div class="lock-title">SYSTEM LOCKED</div>
-      <div class="lock-sub">Доступ только для бойцов группы. Введите ключ взвода.</div>
+      <div class="lock-badge">ЗАЩИТА // ВЗВОД G-13</div>
+      <div class="lock-title">ДОСТУП ЗАКРЫТ</div>
+      <div class="lock-sub">Вход только для своей группы. Введите ключ взвода:</div>
       <input type="text" id="inPasscode" class="input-field" placeholder="КЛЮЧ ДОСТУПА" style="text-align: center; text-transform: uppercase; letter-spacing: 2px;">
-      <button class="tech-btn" onclick="submitPasscode()">[ ПОДТВЕРДИТЬ ВХОД ]</button>
-      <div id="lockError" style="font-size: 9px; color: var(--nothing-red); margin-top: 10px; display: none;">[ERR: INVALID_KEY]</div>
+      <button class="tech-btn" onclick="submitPasscode()">[ ВОЙТИ В СИСТЕМУ ]</button>
+      <div id="lockError" style="font-size: 9px; color: var(--nothing-red); margin-top: 10px; display: none;">[ОШИБКА: НЕВЕРНЫЙ КЛЮЧ]</div>
     </div>
   </div>
 
@@ -1181,29 +1369,56 @@
     <!-- ПЛАШКА ПРОФИЛЯ -->
     <div class="user-pill" id="userPill">
       <div>
-        <span style="color: var(--text-muted);">UID:</span>
+        <span style="color: var(--text-muted);">ID БОЙЦА:</span>
         <span id="userUid" style="color: var(--text-white);">7004092933</span>
       </div>
-      <div id="userRoleBadge" class="role-badge role-admin" onclick="openSquadModal()">ADMIN ⚙</div>
+      <div id="userRoleBadge" class="role-badge role-admin" onclick="openSquadModal()">АДМИН ⚙</div>
     </div>
 
-    <!-- ВКЛАДКА 1: STATUS -->
+    <!-- ВКЛАДКА 1: СВОДКА -->
     <section id="view-today" class="tab-view active">
       <div class="tech-grid">
+        <!-- ГЛАВНЫЙ БЛОК: СЕГОДНЯШНЕЕ ЧИСЛО, ДАТА И ПОГОДА -->
+        <div class="tech-card span-2 hero-date-card" id="heroDateCard">
+          <div class="hero-date-layout">
+            <div class="hero-date-left">
+              <div class="hero-day-badge">
+                <div class="hero-day-num" id="heroDayNum">17</div>
+                <div class="hero-day-dot" id="heroMonthShort">ОКТ</div>
+              </div>
+              <div class="hero-date-texts">
+                <div class="hero-weekday" id="heroWeekday">СУББОТА</div>
+                <div class="hero-month-full" id="heroMonthYear">17 октября 2026</div>
+                <div class="hero-week-tag" id="heroWeekTag">● Сегодняшний день</div>
+              </div>
+            </div>
+
+            <div class="hero-weather-box" id="heroWeatherBox" onclick="fetchWeather(true)" title="Обновить погоду">
+              <div class="weather-top">
+                <span class="weather-icon" id="weatherIcon">⛅</span>
+                <span class="weather-temp" id="weatherTemp">--°</span>
+              </div>
+              <div class="weather-desc" id="weatherDesc">Загрузка...</div>
+              <div class="weather-meta" id="weatherMeta">📍 Авто-погода</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- СТАТУС ПАР -->
         <div class="tech-card span-2" id="liveCard">
           <div class="card-label">
-            <span>SYS // STATUS</span>
-            <span id="liveBadge" style="color: var(--nothing-red);">● LIVE</span>
+            <span>СЕЙЧАС ПО РАСПИСАНИЮ</span>
+            <span id="liveBadge" style="color: var(--nothing-red);">● ЗАГРУЗКА</span>
           </div>
           <div class="status-text-main" id="statusTitle">ПОДКЛЮЧЕНИЕ К БАЗЕ...</div>
-          <div class="status-sub" id="statusSub">Загрузка данных из облака</div>
+          <div class="status-sub" id="statusSub">Загрузка актуального расписания</div>
         </div>
 
         <!-- КАРТОЧКА РАДАРА -->
         <div class="tech-card" style="cursor: pointer;" onclick="openRadarModal()">
           <div class="card-label">
-            <span>RADAR (13)</span>
-            <span style="color: var(--green-live);">● LIVE</span>
+            <span>В АУДИТОРИИ</span>
+            <span style="color: var(--green-live);">● ОНЛАЙН</span>
           </div>
           <div class="dot-num" id="radarStat">00</div>
           <div class="status-sub">чел. на месте ➔</div>
@@ -1211,27 +1426,30 @@
 
         <!-- КАРТОЧКА ЗАДАЧ -->
         <div class="tech-card" style="cursor: pointer;" onclick="switchTab('tasks', document.querySelectorAll('.nav-trigger')[2])">
-          <div class="card-label">TASKS</div>
+          <div class="card-label">
+            <span>ДЕДЛАЙНЫ</span>
+            <span style="color: var(--text-muted);">СРС</span>
+          </div>
           <div class="dot-num" id="tasksStat">00</div>
-          <div class="status-sub">дедлайнов ➔</div>
+          <div class="status-sub">активных задач ➔</div>
         </div>
 
-        <!-- КИБЕР-МАСКОТ ВЗВОДА (UNIT-13) -->
+        <!-- КИБЕР-МАСКОТ ВЗВОДА (ЮНИТ-13) -->
         <div class="tech-card span-2 mascot-card" id="mascotCard" onclick="pokeMascot()">
           <div class="card-label">
-            <span>AI // UNIT-13</span>
-            <span id="mascotBadge" style="color: var(--green-live);">● ONLINE</span>
+            <span>НАПАРНИК // ЮНИТ-13</span>
+            <span id="mascotBadge" style="color: var(--green-live);">● НА СВЯЗИ</span>
           </div>
           <div class="mascot-body">
             <div class="mascot-screen" id="mascotScreen">
               <div class="mascot-face" id="mascotFace">[ • ‿ • ]</div>
-              <div class="mascot-mood-tag" id="mascotMood">STANDBY</div>
+              <div class="mascot-mood-tag" id="mascotMood">НА СВЯЗИ</div>
             </div>
             <div class="mascot-info">
-              <div class="mascot-speech" id="mascotSpeech">Инициализация нейромодуля взвода G-13... Тапни на меня для связи!</div>
+              <div class="mascot-speech" id="mascotSpeech">Инициализация модуля взвода G-13... Тапни на меня для связи!</div>
               <div class="mascot-meta-row">
                 <div class="mascot-energy-header">
-                  <span>ЗАРЯД ВЗВОДА // TAP TO POKE</span>
+                  <span>ЗАРЯД ВЗВОДА // ТАПНИ НА МЕНЯ</span>
                   <span id="mascotEnergyVal">75%</span>
                 </div>
                 <div class="mascot-energy-track">
@@ -1244,11 +1462,11 @@
       </div>
     </section>
 
-    <!-- ВКЛАДКА 2: TIMETABLE -->
+    <!-- ВКЛАДКА 2: РАСПИСАНИЕ -->
     <section id="view-schedule" class="tab-view">
       <div class="schedule-toolbar">
-        <span class="tool-title">СЕТКА ПАР</span>
-        <button class="admin-toggle-btn" id="adminBtnSchedule" onclick="toggleAdminMode()">[EDIT_MODE: OFF]</button>
+        <span class="tool-title">РАСПИСАНИЕ ПАР НА НЕДЕЛЮ</span>
+        <button class="admin-toggle-btn" id="adminBtnSchedule" onclick="toggleAdminMode()">[РЕДАКТОР: ВЫКЛ]</button>
       </div>
 
       <div class="segment-bar">
@@ -1262,7 +1480,7 @@
       <div class="lessons-rack" id="lessonsContainer"></div>
 
       <div class="editor-box" id="editorBoxSchedule">
-        <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; margin-bottom: 8px;">+ ДОБАВИТЬ ПАРУ (ОБЛАКО)</div>
+        <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; margin-bottom: 8px;">+ ДОБАВИТЬ ПАРУ В РАСПИСАНИЕ</div>
         <input type="text" id="inSubj" class="input-field" placeholder="Название предмета">
         <div class="input-row">
           <input type="text" id="inTime" class="input-field" placeholder="08:30-10:00">
@@ -1271,21 +1489,21 @@
         <input type="text" id="inTeacher" class="input-field" placeholder="Преподаватель (необязательно)">
         <input type="text" id="inLocation" class="input-field" placeholder="Этаж / крыло (необязательно)">
         <input type="text" id="inNote" class="input-field" placeholder="Заметка к паре (необязательно)">
-        <button class="tech-btn" onclick="saveLesson()">[ ОТПРАВИТЬ В БАЗУ ]</button>
+        <button class="tech-btn" onclick="saveLesson()">[ СОХРАНИТЬ ПАРУ ]</button>
       </div>
     </section>
 
-    <!-- ВКЛАДКА 3: TASKS -->
+    <!-- ВКЛАДКА 3: ЗАДАНИЯ -->
     <section id="view-tasks" class="tab-view">
       <div class="schedule-toolbar">
-        <span class="tool-title">ОЧЕРЕДЬ СРС И ДЕДЛАЙНОВ</span>
-        <button class="admin-toggle-btn" id="adminBtnTasks" onclick="toggleAdminMode()">[EDIT_MODE: OFF]</button>
+        <span class="tool-title">СПИСОК ЗАДАНИЙ И ДЕДЛАЙНОВ</span>
+        <button class="admin-toggle-btn" id="adminBtnTasks" onclick="toggleAdminMode()">[РЕДАКТОР: ВЫКЛ]</button>
       </div>
 
       <div class="tasks-rack" id="tasksContainer"></div>
 
       <div class="editor-box" id="editorBoxTasks">
-        <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; margin-bottom: 8px;">+ ДОБАВИТЬ СРС // ДЕДЛАЙН</div>
+        <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; margin-bottom: 8px;">+ НОВОЕ ЗАДАНИЕ // ДЕДЛАЙН</div>
         <input type="text" id="inTaskSubj" class="input-field" placeholder="Предмет (напр. Базы данных)">
         <input type="text" id="inTaskTitle" class="input-field" placeholder="Описание задания (напр. Лаба №3)">
         <input type="text" id="inTaskDeadline" class="input-field" placeholder="Срок сдачи (напр. До пятницы 18:00)">
@@ -1295,12 +1513,12 @@
 
   </div>
 
-  <!-- МОДАЛКА: ДОСЬЕ ПАРЫ (LESSON INTEL) -->
+  <!-- МОДАЛКА: ДОСЬЕ ПАРЫ -->
   <div id="lessonModal" class="modal-backdrop" onclick="if(event.target === this) closeLessonModal()">
     <div class="modal-sheet">
       <div class="modal-head">
         <div style="min-width: 0; padding-right: 10px;">
-          <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; text-transform: uppercase;">LESSON // INTEL</div>
+          <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; text-transform: uppercase;">ИНФОРМАЦИЯ О ПАРЕ</div>
           <div style="font-size: 15px; font-weight: 700; word-break: break-word;" id="intelModalTitle">ПРЕДМЕТ</div>
         </div>
         <button class="modal-close" onclick="closeLessonModal()">✕</button>
@@ -1321,12 +1539,12 @@
           </div>
 
           <div class="intel-box">
-            <div class="intel-label">🧭 ЛОКАЦИЯ // ЭТАЖ</div>
+            <div class="intel-label">🧭 ГДЕ НАХОДИТСЯ // ЭТАЖ</div>
             <div class="intel-val" id="intelValLocation">Не указана</div>
           </div>
 
           <div class="intel-box">
-            <div class="intel-label">📝 ЗАМЕТКА ВЗВОДА // ТРЕБОВАНИЯ</div>
+            <div class="intel-label">📝 ЗАМЕТКА ДЛЯ ГРУППЫ</div>
             <div class="intel-val" id="intelValNote">Заметок к этой паре пока нет.</div>
           </div>
         </div>
@@ -1363,8 +1581,8 @@
     <div class="modal-sheet">
       <div class="modal-head">
         <div>
-          <div style="font-size: 9px; color: var(--green-live); letter-spacing: 1px; text-transform: uppercase;">RADAR // ПОСЕЩАЕМОСТЬ</div>
-          <div style="font-size: 15px; font-weight: 700;">КТО В АУДИТОРИИ</div>
+          <div style="font-size: 9px; color: var(--green-live); letter-spacing: 1px; text-transform: uppercase;">ПОСЕЩАЕМОСТЬ ГРУППЫ</div>
+          <div style="font-size: 15px; font-weight: 700;">КТО СЕЙЧАС В АУДИТОРИИ</div>
         </div>
         <button class="modal-close" onclick="closeRadarModal()">✕</button>
       </div>
@@ -1374,13 +1592,13 @@
     </div>
   </div>
 
-  <!-- МОДАЛКА: ВАЙТ-ЛИСТ / ПАНЕЛЬ ВЗВОДА (SQUAD MANAGEMENT) -->
+  <!-- МОДАЛКА: СПИСОК ГРУППЫ -->
   <div id="squadModal" class="modal-backdrop" onclick="if(event.target === this) closeSquadModal()">
     <div class="modal-sheet">
       <div class="modal-head">
         <div>
-          <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; text-transform: uppercase;">ADMIN // WHITELIST</div>
-          <div style="font-size: 15px; font-weight: 700;" id="squadCapTitle">ВЗВОД (00/13)</div>
+          <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; text-transform: uppercase;">УПРАВЛЕНИЕ ДОСТУПОМ</div>
+          <div style="font-size: 15px; font-weight: 700;" id="squadCapTitle">СОСТАВ ВЗВОДА (00/13)</div>
         </div>
         <button class="modal-close" onclick="closeSquadModal()">✕</button>
       </div>
@@ -1390,20 +1608,35 @@
     </div>
   </div>
 
-  <!-- НАВБАР -->
+  <!-- НАВБАР С ПОНЯТНЫМИ ИКОНКАМИ -->
   <nav class="bottom-bar">
     <div class="nav-rack">
       <button class="nav-trigger active" onclick="switchTab('today', this)">
-        <div class="nav-dot">01</div>
-        <div class="nav-text">STATUS</div>
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="3" width="7" height="9" rx="2"></rect>
+          <rect x="14" y="3" width="7" height="5" rx="2"></rect>
+          <rect x="14" y="12" width="7" height="9" rx="2"></rect>
+          <rect x="3" y="16" width="7" height="5" rx="2"></rect>
+        </svg>
+        <div class="nav-text">СВОДКА</div>
       </button>
       <button class="nav-trigger" onclick="switchTab('schedule', this)">
-        <div class="nav-dot">02</div>
-        <div class="nav-text">TIMETABLE</div>
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="17" rx="2.5"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+          <line x1="8" y1="14" x2="16" y2="14"></line>
+          <line x1="8" y1="17.5" x2="13" y2="17.5"></line>
+        </svg>
+        <div class="nav-text">РАСПИСАНИЕ</div>
       </button>
       <button class="nav-trigger" onclick="switchTab('tasks', this)">
-        <div class="nav-dot">03</div>
-        <div class="nav-text">TASKS</div>
+        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 11l3 3L22 4"></path>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+        </svg>
+        <div class="nav-text">ЗАДАНИЯ</div>
       </button>
     </div>
   </nav>
@@ -1521,7 +1754,7 @@
       const errBox = document.getElementById('lockError');
 
       if (code !== SQUAD_PASSCODE) {
-        errBox.innerText = "[ERR: INVALID_KEY]";
+        errBox.innerText = "[ОШИБКА: НЕВЕРНЫЙ КЛЮЧ]";
         errBox.style.display = 'block';
         return;
       }
@@ -1532,14 +1765,14 @@
         const squadCount = Object.keys(squad).length;
 
         if (squadCount >= 13 && !squad[currentUser.id]) {
-          errBox.innerText = "[ERR: MAX_CAPACITY_REACHED (13/13)]";
+          errBox.innerText = "[ОШИБКА: ГРУППА ЗАПОЛНЕНА (13/13)]";
           errBox.style.display = 'block';
           return;
         }
 
         const memberData = {
           uid: currentUser.id,
-          name: currentUser.first_name || "Student",
+          name: currentUser.first_name || "Студент",
           username: currentUser.username || "none",
           joinedAt: Date.now(),
           role: "student"
@@ -1554,7 +1787,7 @@
         document.getElementById('lockScreen').style.display = 'none';
         initUI(false);
       } catch (err) {
-        errBox.innerText = "[ERR: NETWORK_FAILURE]";
+        errBox.innerText = "[ОШИБКА СЕТИ]";
         errBox.style.display = 'block';
       }
     }
@@ -1563,12 +1796,12 @@
       document.getElementById('userUid').innerText = currentUser.id;
       const roleBadge = document.getElementById('userRoleBadge');
       if (adminStatus) {
-        roleBadge.innerText = "ADMIN ⚙";
+        roleBadge.innerText = "АДМИН ⚙";
         roleBadge.className = "role-badge role-admin";
         document.getElementById('adminBtnSchedule').style.display = "block";
         document.getElementById('adminBtnTasks').style.display = "block";
       } else {
-        roleBadge.innerText = "STUDENT";
+        roleBadge.innerText = "СТУДЕНТ";
         roleBadge.className = "role-badge role-student";
         roleBadge.onclick = null;
       }
@@ -1628,7 +1861,7 @@
       haptic();
       editMode = !editMode;
       
-      const txt = editMode ? "[EDIT_MODE: ON]" : "[EDIT_MODE: OFF]";
+      const txt = editMode ? "[РЕДАКТОР: ВКЛ]" : "[РЕДАКТОР: ВЫКЛ]";
       document.getElementById('adminBtnSchedule').innerText = txt;
       document.getElementById('adminBtnTasks').innerText = txt;
 
@@ -1658,7 +1891,7 @@
       if (list.length === 0) {
         container.innerHTML = `
           <div class="empty-screen">
-            <div class="empty-code">[NO_LESSONS]</div>
+            <div class="empty-code">НЕТ ПАР</div>
             <div class="empty-msg">На этот день пары не запланированы.</div>
           </div>
         `;
@@ -1880,7 +2113,7 @@
       if (taskKeys.length === 0) {
         container.innerHTML = `
           <div class="empty-screen">
-            <div class="empty-code">[EMPTY_QUEUE]</div>
+            <div class="empty-code">ВСЕ СДАНО</div>
             <div class="empty-msg">Все дедлайны закрыты либо отсутствуют.</div>
           </div>
         `;
@@ -1953,11 +2186,11 @@
         body: JSON.stringify({ subj, title, deadline })
       });
 
-      const msg = `📌 <b>IGNIS // НОВЫЙ ДЕДЛАЙН</b>\n\n` +
+      const msg = `📌 <b>IGNIS // НОВОЕ ЗАДАНИЕ</b>\n\n` +
                   `📖 <b>Предмет:</b> ${esc(subj)}\n` +
                   `📝 <b>Задание:</b> ${esc(title)}\n` +
                   `⏳ <b>Срок:</b> ${esc(deadline)}\n\n` +
-                  `<i>Зафиксировано в очереди задач взвода!</i>`;
+                  `<i>Добавлено в список дедлайнов группы!</i>`;
 
       await sendTelegramAlert(msg);
     }
@@ -1975,7 +2208,7 @@
       });
     }
 
-    // RADAR
+    // ПОСЕЩАЕМОСТЬ (РАДАР)
     function openRadarModal() {
       haptic();
       renderRadar();
@@ -2008,7 +2241,7 @@
       if (count === 0) {
         listContainer.innerHTML = `
           <div style="text-align: center; padding: 20px 0; font-size: 11px; color: var(--text-muted);">
-            [NO_ACTIVITY] В аудитории пока никого нет.
+            В аудитории пока никто не отметился.
           </div>
         `;
         return;
@@ -2022,7 +2255,7 @@
               <div class="radar-dot"></div>
               <span>${esc(student.name)}</span>
             </div>
-            ${isAdmin ? `<button class="btn-kick" onclick="kickFromRadar('${esc(uid)}')">[УДАЛИТЬ]</button>` : ''}
+            ${isAdmin ? `<button class="btn-kick" onclick="kickFromRadar('${esc(uid)}')">[УБРАТЬ]</button>` : ''}
           </div>
         `;
       }).join('');
@@ -2062,21 +2295,21 @@
     }
 
     // ==========================================
-    // SQUAD MANAGEMENT (ВАЙТ-ЛИСТ)
+    // УПРАВЛЕНИЕ СОСТАВОМ ГРУППЫ
     // ==========================================
     async function openSquadModal() {
       if (!isAdmin) return;
       haptic();
       document.getElementById('squadModal').style.display = 'flex';
       const container = document.getElementById('squadMembersList');
-      container.innerHTML = `<div style="text-align: center; color: var(--text-dim); font-size: 11px;">СКАНИРОВАНИЕ БАЗЫ...</div>`;
+      container.innerHTML = `<div style="text-align: center; color: var(--text-dim); font-size: 11px;">ЗАГРУЗКА СПИСКА...</div>`;
 
       try {
         const res = await fetch(`${DB_URL}/squad.json`);
         const squad = (await res.json()) || {};
         const uids = Object.keys(squad);
 
-        document.getElementById('squadCapTitle').innerText = `ВЗВОД (${String(uids.length).padStart(2, '0')}/13)`;
+        document.getElementById('squadCapTitle').innerText = `СОСТАВ ВЗВОДА (${String(uids.length).padStart(2, '0')}/13)`;
 
         if (uids.length === 0) {
           container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 11px;">Никто ещё не активировал ключ.</div>`;
@@ -2089,14 +2322,14 @@
             <div class="user-entry-item">
               <div>
                 <div style="font-size: 12px; font-weight: 700;">${esc(user.name)}</div>
-                <div style="font-size: 9px; color: var(--text-muted);">@${esc(user.username)} • UID: ${esc(uid)}</div>
+                <div style="font-size: 9px; color: var(--text-muted);">@${esc(user.username)} • ID: ${esc(uid)}</div>
               </div>
-              <button class="btn-kick" onclick="kickFromSquad('${esc(uid)}')">[KICK]</button>
+              <button class="btn-kick" onclick="kickFromSquad('${esc(uid)}')">[ИСКЛЮЧИТЬ]</button>
             </div>
           `;
         }).join('');
       } catch (err) {
-        container.innerHTML = `<div style="color: var(--nothing-red); font-size: 11px;">[ERR: FAILED_TO_FETCH_SQUAD]</div>`;
+        container.innerHTML = `<div style="color: var(--nothing-red); font-size: 11px;">[ОШИБКА ЗАГРУЗКИ СПИСКА]</div>`;
       }
     }
 
@@ -2106,14 +2339,148 @@
     }
 
     async function kickFromSquad(uid) {
-      if (!confirm(`Исключить бойца UID ${uid}? Доступ будет заблокирован.`)) return;
+      if (!confirm(`Исключить участника ID ${uid}? Доступ будет закрыт.`)) return;
       haptic();
       await fetch(`${DB_URL}/squad/${uid}.json`, { method: 'DELETE' });
       openSquadModal();
     }
 
     // ==========================================
-    // КИБЕР-МАСКОТ ВЗВОДА (UNIT-13)
+    // ДАТА И АВТОМАТИЧЕСКАЯ ПОГОДА (HERO WIDGET)
+    // ==========================================
+    const MONTHS_GENITIVE = [
+      'января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
+      'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'
+    ];
+    const MONTHS_SHORT = [
+      'ЯНВ', 'ФЕВ', 'МАР', 'АПР', 'МАЙ', 'ИЮН',
+      'ИЮЛ', 'АВГ', 'СЕН', 'ОКТ', 'НОЯ', 'ДЕК'
+    ];
+    const WEEKDAYS_FULL = [
+      'ВОСКРЕСЕНЬЕ', 'ПОНЕДЕЛЬНИК', 'ВТОРНИК', 'СРЕДА', 'ЧЕТВЕРГ', 'ПЯТНИЦА', 'СУББОТА'
+    ];
+
+    function updateHeroDate(now) {
+      const dayNum = String(now.getDate()).padStart(2, '0');
+      const monthIdx = now.getMonth();
+      const year = now.getFullYear();
+      const wDay = now.getDay();
+
+      const elDay = document.getElementById('heroDayNum');
+      const elMonthShort = document.getElementById('heroMonthShort');
+      const elWeekday = document.getElementById('heroWeekday');
+      const elMonthYear = document.getElementById('heroMonthYear');
+      const elWeekTag = document.getElementById('heroWeekTag');
+
+      if (!elDay) return;
+      elDay.innerText = dayNum;
+      elMonthShort.innerText = MONTHS_SHORT[monthIdx];
+      elWeekday.innerText = WEEKDAYS_FULL[wDay];
+      elMonthYear.innerText = `${now.getDate()} ${MONTHS_GENITIVE[monthIdx]} ${year}`;
+
+      if (wDay === 0 || wDay === 6) {
+        elWeekTag.innerText = '● Выходной день';
+        elWeekTag.style.color = 'var(--green-live)';
+      } else {
+        const todayCount = (timetable[wDay] || []).length;
+        elWeekTag.innerText = todayCount > 0 ? `● Учебный день • Пар: ${todayCount}` : '● Свободный день';
+        elWeekTag.style.color = 'var(--text-muted)';
+      }
+    }
+
+    function decodeWeatherWMO(code, isDay) {
+      if (code === 0) return { icon: isDay ? '☀️' : '🌙', desc: 'Ясно' };
+      if (code === 1) return { icon: isDay ? '🌤️' : '🌙', desc: 'Малооблачно' };
+      if (code === 2) return { icon: '⛅', desc: 'Облачно' };
+      if (code === 3) return { icon: '☁️', desc: 'Пасмурно' };
+      if (code === 45 || code === 48) return { icon: '🌫️', desc: 'Туман' };
+      if (code >= 51 && code <= 57) return { icon: '🌦️', desc: 'Морось' };
+      if (code >= 61 && code <= 67) return { icon: '🌧️', desc: 'Дождь' };
+      if (code >= 71 && code <= 77) return { icon: '❄️', desc: 'Снег' };
+      if (code >= 80 && code <= 82) return { icon: '🌧️', desc: 'Ливень' };
+      if (code >= 85 && code <= 86) return { icon: '🌨️', desc: 'Снегопад' };
+      if (code >= 95) return { icon: '⛈️', desc: 'Гроза' };
+      return { icon: '⛅', desc: 'За окном' };
+    }
+
+    async function resolveAutoCoords() {
+      // 1. Попытка быстрого определения по IP (без запроса разрешений, работает мгновенно)
+      try {
+        const res = await fetch('https://ipwho.is/');
+        const data = await res.json();
+        if (data && data.latitude && data.longitude) {
+          return { lat: data.latitude, lon: data.longitude, city: data.city || '' };
+        }
+      } catch (e) {}
+
+      // 2. Резервный IP-сервис
+      try {
+        const res2 = await fetch('https://get.geojs.io/v1/ip/geo.json');
+        const data2 = await res2.json();
+        if (data2 && data2.latitude && data2.longitude) {
+          return { lat: parseFloat(data2.latitude), lon: parseFloat(data2.longitude), city: data2.city || '' };
+        }
+      } catch (e) {}
+
+      // 3. Попытка через браузерную геолокацию, если IP-сервисы недоступны
+      if (navigator.geolocation) {
+        try {
+          const pos = await new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 3500, maximumAge: 600000 });
+          });
+          return { lat: pos.coords.latitude, lon: pos.coords.longitude, city: '' };
+        } catch (e) {}
+      }
+
+      return null;
+    }
+
+    async function fetchWeather(manualTap) {
+      if (manualTap) haptic();
+      const iconEl = document.getElementById('weatherIcon');
+      const tempEl = document.getElementById('weatherTemp');
+      const descEl = document.getElementById('weatherDesc');
+      const metaEl = document.getElementById('weatherMeta');
+      if (!tempEl) return;
+
+      if (manualTap) {
+        descEl.innerText = 'Обновляю...';
+      }
+
+      try {
+        const loc = await resolveAutoCoords();
+        if (!loc) {
+          descEl.innerText = 'Нет геоданных';
+          metaEl.innerText = 'Тапни для повтора';
+          return;
+        }
+
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.lat}&longitude=${loc.lon}&current=temperature_2m,apparent_temperature,weather_code,is_day&timezone=auto`;
+        const res = await fetch(url);
+        const weather = await res.json();
+        const cur = weather?.current;
+        if (!cur) throw new Error('No current weather');
+
+        const t = Math.round(cur.temperature_2m);
+        const feels = Math.round(cur.apparent_temperature);
+        const sign = t > 0 ? '+' : '';
+        const feelsSign = feels > 0 ? '+' : '';
+        const info = decodeWeatherWMO(cur.weather_code, cur.is_day === 1);
+
+        iconEl.innerText = info.icon;
+        tempEl.innerText = `${sign}${t}°`;
+        descEl.innerText = info.desc;
+        metaEl.innerText = loc.city
+          ? `📍 ${loc.city} • Ощущ. ${feelsSign}${feels}°`
+          : `Ощущается как ${feelsSign}${feels}°`;
+      } catch (err) {
+        descEl.innerText = 'Погода недоступна';
+        metaEl.innerText = 'Тапни для повтора';
+      }
+    }
+
+    // ==========================================
+    // КИБЕР-МАСКОТ ВЗВОДА (ЮНИТ-13)
     // ==========================================
     let mascotCtxState = { mode: 'idle', left: 0, subj: '' };
     let mascotPokeUntil = 0;
@@ -2122,16 +2489,16 @@
     let mascotLastQuipIdx = -1;
 
     const MASCOT_QUIPS = [
-      { face: '[ ⌐■_■ ]', mood: 'COOL', text: 'Совет дня: если смотреть на препода с умным видом, шанс быть вызванным падает на 42%.' },
-      { face: '[ ★ ‿ ★ ]', mood: 'LUCK', text: 'Анализ вероятностей: сегодня отличный день, чтобы закрыть хотя бы один долг!' },
-      { face: '[ ⊙ _ ⊙ ]', mood: 'SCAN', text: 'Сканирую аудиторию... Обнаружен высокий уровень желания пойти домой.' },
-      { face: '[ ^ ‿ ^ ]', mood: 'VIBE', text: 'UNIT-13 на связи! Не забудь отметиться на РАДАРЕ, если ты уже в корпусе 📍' },
-      { face: '[ • ̀_•́ ]', mood: 'FOCUS', text: 'Боец G-13, помни: закрытый вовремя дедлайн бережёт нервные клетки на сессии.' },
-      { face: '[ ˘ ‿ ˘ ]', mood: 'COFFEE', text: 'Мои сенсоры подсказывают, что взводу срочно требуется доза кофе или шавухи ☕' },
-      { face: '[ ✧ ‿ ✧ ]', mood: 'BOOST', text: 'Плюс +100 к удаче на весь день активировано! Продолжай в том же духе.' },
-      { face: '[ ಠ ‿ ಠ ]', mood: 'SECRET', text: 'Секретный протокол: главная сила взвода G-13 — вовремя скинутая в чат домашка.' },
-      { face: '[ ◕ ‿ ◕ ]', mood: 'FRIEND', text: 'Я слежу за расписанием 24/7, чтобы вы могли спокойно спать до самого будильника.' },
-      { face: '[ ° ▃ ° ]', mood: 'GLITCH', text: 'BEEP-BOOP // Попытка взломать систему оценок... Шутка, лучше просто сдай лабу!' }
+      { face: '[ ⌐■_■ ]', mood: 'СОВЕТ', text: 'Совет дня: если смотреть на препода с умным видом, шанс быть вызванным падает на 42%.' },
+      { face: '[ ★ ‿ ★ ]', mood: 'УДАЧА', text: 'Анализ вероятностей: сегодня отличный день, чтобы закрыть хотя бы один долг!' },
+      { face: '[ ⊙ _ ⊙ ]', mood: 'СКАНЕР', text: 'Сканирую аудиторию... Обнаружен высокий уровень желания пойти домой.' },
+      { face: '[ ^ ‿ ^ ]', mood: 'НА СВЯЗИ', text: 'Юнит-13 на связи! Не забудь отметиться в карточке «В аудитории», если ты уже на месте 📍' },
+      { face: '[ • ̀_•́ ]', mood: 'ФОКУС', text: 'Боец G-13, помни: закрытый вовремя дедлайн бережёт нервные клетки на сессии.' },
+      { face: '[ ˘ ‿ ˘ ]', mood: 'ПЕРЕРЫВ', text: 'Мои сенсоры подсказывают, что взводу срочно требуется доза кофе или шавухи ☕' },
+      { face: '[ ✧ ‿ ✧ ]', mood: 'БОНУС', text: 'Плюс +100 к удаче на весь день активировано! Продолжай в том же духе.' },
+      { face: '[ ಠ ‿ ಠ ]', mood: 'СЕКРЕТ', text: 'Секретный протокол: главная сила взвода G-13 — вовремя скинутая в чат домашка.' },
+      { face: '[ ◕ ‿ ◕ ]', mood: 'ДРУГ', text: 'Я слежу за расписанием 24/7, чтобы вы могли спокойно спать до самого будильника.' },
+      { face: '[ ° ▃ ° ]', mood: 'ВЗЛОМ', text: 'БИП-БОП // Попытка взломать журнал оценок... Шутка, лучше просто сдай лабу!' }
     ];
 
     function updateMascot(ctxOverride) {
@@ -2180,10 +2547,10 @@
 
       // 2. Выбор контекстной эмоции и фразы
       let face = '[ • ‿ • ]';
-      let mood = 'ONLINE';
-      let speech = 'Системы взвода G-13 работают в штатном режиме.';
+      let mood = 'НА СВЯЗИ';
+      let speech = 'Все системы взвода G-13 работают отлично.';
       let screenMode = '';
-      let badgeText = '● ONLINE';
+      let badgeText = '● НА СВЯЗИ';
       let badgeColor = 'var(--green-live)';
 
       const isNight = hour >= 0 && hour < 6;
@@ -2191,67 +2558,67 @@
 
       if (isNight) {
         face = '[ - ‿ - ] zZ';
-        mood = 'SLEEP';
+        mood = 'СОН';
         speech = 'Ночной режим энергосбережения... Иди спать, боец, завтра новый день!';
-        badgeText = '● SLEEP';
+        badgeText = '● СПИТ';
         badgeColor = 'var(--text-muted)';
       } else if (mascotCtxState.mode === 'canceled') {
         face = '[ ★ ‿ ★ ]';
-        mood = 'FREE';
-        speech = `Пара «${mascotCtxState.subj}» отменена! Легальный чилл активирован ⚡`;
+        mood = 'ХАЛЯВА';
+        speech = `Пара «${mascotCtxState.subj}» отменена! Легальный отдых активирован ⚡`;
         screenMode = 'hype-mode';
-        badgeText = '● HYPE';
+        badgeText = '● КАЙФ';
       } else if (mascotCtxState.mode === 'in_progress') {
         if (radarCount === 0) {
           face = '[ ಠ _ ಠ ]';
-          mood = 'GHOST';
-          speech = `Идёт «${mascotCtxState.subj}», а на радаре 00 чел... Вы вообще в шараге?!`;
+          mood = 'ПУСТО';
+          speech = `Идёт «${mascotCtxState.subj}», а в аудитории 00 чел... Вы вообще на учёбе?!`;
           screenMode = 'alert-mode';
-          badgeText = '● ALERT';
+          badgeText = '● ТРЕВОГА';
           badgeColor = 'var(--nothing-red)';
         } else if (radarCount >= 5) {
           face = '[ ⌐■_■ ]';
-          mood = 'SQUAD';
-          speech = `На радаре уже ${radarCount} чел.! Взвод G-13 держит оборону. До конца ${mascotCtxState.left} мин.`;
+          mood = 'ВЗВОД';
+          speech = `В аудитории уже ${radarCount} чел.! Взвод G-13 держит оборону. До конца ${mascotCtxState.left} мин.`;
           screenMode = 'hype-mode';
         } else {
           face = blink ? '[ - ̀_-́ ]' : '[ • ̀_•́ ]';
-          mood = 'STUDY';
+          mood = 'УЧЁБА';
           speech = `Держим строй на паре! До звонка осталось ${mascotCtxState.left} мин.`;
         }
       } else if (mascotCtxState.mode === 'break') {
         face = blink ? '[ - ‿ - ]' : '[ ^ ‿ ^ ]';
-        mood = 'BREAK';
+        mood = 'ПЕРЕМЕНА';
         speech = `Перемена ${mascotCtxState.left} мин! Самое время размяться или сгонять за перекусом ☕`;
         screenMode = 'hype-mode';
       } else if (mascotCtxState.mode === 'before') {
         face = blink ? '[ - _ - ]' : '[ ⊙ _ ⊙ ]';
-        mood = 'READY';
-        speech = `До первой пары ${mascotCtxState.left} мин. Проверь рюкзак и не забудь отметиться на радаре!`;
+        mood = 'ГОТОВ';
+        speech = `До первой пары ${mascotCtxState.left} мин. Проверь рюкзак и не забудь отметиться в аудитории!`;
       } else if (pendingTasks >= 4) {
         face = '[ ; _ ; ]';
-        mood = 'PANIC';
+        mood = 'АВРАЛ';
         speech = `Внимание: в очереди висит ${pendingTasks} незакрытых дедлайна! Давай разгребём хотя бы один?`;
         screenMode = 'alert-mode';
-        badgeText = '● OVERLOAD';
+        badgeText = '● АВРАЛ';
         badgeColor = 'var(--nothing-red)';
       } else if (mascotCtxState.mode === 'weekend') {
         face = '[ ✧ ‿ ✧ ]';
-        mood = 'WEEKEND';
+        mood = 'ВЫХОДНОЙ';
         speech = 'Выходной день! Никаких пар — перезаряжаем батареи взвода на максимум 🔋';
         screenMode = 'hype-mode';
       } else if (mascotCtxState.mode === 'after') {
         face = '[ ˘ ‿ ˘ ]';
-        mood = 'CHILL';
+        mood = 'ОТДЫХ';
         speech = pendingTasks > 0
           ? `Пары закончились! Осталось закрыть дедлайнов: ${pendingTasks} — и можно отдыхать 🎮`
           : 'Все пары и дедлайны позади! Заслуженный отдых, боец 🎮';
         screenMode = 'hype-mode';
       } else {
         face = blink ? '[ - ‿ - ]' : '[ • ‿ • ]';
-        mood = 'STANDBY';
+        mood = 'НА СВЯЗИ';
         speech = pendingTasks > 0
-          ? `На контроле дедлайнов: ${pendingTasks}. Тапни на меня, если нужен кибер-совет!`
+          ? `Активных дедлайнов: ${pendingTasks}. Тапни на меня, если нужен совет!`
           : 'Дедлайны чисты, расписание под контролем. Тапни на меня для связи!';
       }
 
@@ -2288,9 +2655,9 @@
       if (mascotPokeStreak >= 5) {
         screenEl.className = 'mascot-screen alert-mode poke-anim';
         faceEl.innerText = '[ ╬ ಠ_ಠ ]';
-        moodEl.innerText = 'OVERCLICK';
-        speechEl.innerText = 'Эй-эй, полегче! У меня так пиксели осыпятся — лучше закрой дедлайны во вкладке TASKS!';
-        badgeEl.innerText = '● ANGRY';
+        moodEl.innerText = 'ПЕРЕГРЕВ';
+        speechEl.innerText = 'Эй-эй, полегче! У меня так пиксели осыпятся — лучше закрой дедлайны во вкладке «Задания»!';
+        badgeEl.innerText = '● ЗЛИТСЯ';
         badgeEl.style.color = 'var(--nothing-red)';
         return;
       }
@@ -2304,7 +2671,7 @@
       faceEl.innerText = q.face;
       moodEl.innerText = q.mood;
       speechEl.innerText = q.text;
-      badgeEl.innerText = '● ACTIVE';
+      badgeEl.innerText = '● АКТИВЕН';
       badgeEl.style.color = 'var(--green-live)';
     }
 
@@ -2322,6 +2689,8 @@
       const s = String(now.getSeconds()).padStart(2, '0');
       document.getElementById('headerClock').innerText = `${h}:${m}:${s}`;
 
+      updateHeroDate(now);
+
       const day = now.getDay();
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
@@ -2332,10 +2701,10 @@
 
       if (day === 0 || day === 6) {
         card.classList.remove('active-lesson');
-        badge.innerText = "● IDLE";
+        badge.innerText = "● ВЫХОДНОЙ";
         badge.style.color = "var(--text-muted)";
         title.innerText = "ВЫХОДНОЙ ДЕНЬ";
-        sub.innerText = "Пар нет. Система в режиме ожидания.";
+        sub.innerText = "Сегодня пар нет — отдыхаем и набираемся сил.";
         updateMascot({ mode: 'weekend', left: 0, subj: '' });
         return;
       }
@@ -2344,9 +2713,9 @@
 
       if (todayList.length === 0) {
         card.classList.remove('active-lesson');
-        badge.innerText = "● IDLE";
+        badge.innerText = "● СВОБОДНО";
         badge.style.color = "var(--text-muted)";
-        title.innerText = "СЕТКА ПУСТА";
+        title.innerText = "ПАР НА СЕГОДНЯ НЕТ";
         sub.innerText = "На сегодня расписание не заполнено.";
         updateMascot({ mode: 'empty', left: 0, subj: '' });
         return;
@@ -2366,10 +2735,10 @@
 
       if (parsedLessons.length === 0) {
         card.classList.remove('active-lesson');
-        badge.innerText = "● IDLE";
+        badge.innerText = "● ПО РАСПИСАНИЮ";
         badge.style.color = "var(--text-muted)";
-        title.innerText = "РАСПИСАНИЕ АКТИВНО";
-        sub.innerText = `Пар на сегодня: ${todayList.length}`;
+        title.innerText = "РАСПИСАНИЕ НА СЕГОДНЯ";
+        sub.innerText = `Пар запланировано: ${todayList.length}`;
         updateMascot({ mode: 'idle', left: 0, subj: '' });
         return;
       }
@@ -2381,7 +2750,7 @@
         if (currentMinutes >= lesson.start && currentMinutes < lesson.end) {
           if (lesson.status === 'canceled') {
             card.classList.remove('active-lesson');
-            badge.innerText = "● CANCELED";
+            badge.innerText = "● ОТМЕНЕНА";
             badge.style.color = "var(--nothing-red)";
             title.innerText = "ПАРА ОТМЕНЕНА";
             sub.innerText = `${lesson.name} (${lesson.cab}) отменена`;
@@ -2391,7 +2760,7 @@
 
           const left = lesson.end - currentMinutes;
           card.classList.add('active-lesson');
-          badge.innerText = "● IN PROGRESS";
+          badge.innerText = "● ИДЁТ ПАРА";
           badge.style.color = "var(--nothing-red)";
           title.innerText = `${lesson.name}`;
           sub.innerText = `${lesson.cab} • До конца пары: ${left} мин`;
@@ -2404,7 +2773,7 @@
           if (currentMinutes >= lesson.end && currentMinutes < nextLesson.start) {
             const breakLeft = nextLesson.start - currentMinutes;
             card.classList.remove('active-lesson');
-            badge.innerText = "● BREAK";
+            badge.innerText = "● ПЕРЕМЕНА";
             badge.style.color = "var(--green-live)";
             title.innerText = `ПЕРЕМЕНА (${breakLeft} МИН)`;
             sub.innerText = `Далее: ${nextLesson.name} (${nextLesson.cab})${nextLesson.status === 'canceled' ? ' [ОТМЕНА]' : ''}`;
@@ -2417,7 +2786,7 @@
       if (currentMinutes < parsedLessons[0].start) {
         const diff = parsedLessons[0].start - currentMinutes;
         card.classList.remove('active-lesson');
-        badge.innerText = "● PENDING";
+        badge.innerText = "● СКОРО ПАРА";
         badge.style.color = "#38bdf8";
         title.innerText = `ДО ПАР: ${diff} МИН`;
         sub.innerText = `1-я пара: ${parsedLessons[0].name} (${parsedLessons[0].cab})${parsedLessons[0].status === 'canceled' ? ' [ОТМЕНА]' : ''}`;
@@ -2426,7 +2795,7 @@
       }
 
       card.classList.remove('active-lesson');
-      badge.innerText = "● COMPLETED";
+      badge.innerText = "● ЗАВЕРШЕНО";
       badge.style.color = "var(--text-muted)";
       title.innerText = "ПАРЫ ЗАКОНЧИЛИСЬ";
       sub.innerText = "Все занятия на сегодня завершены 🎮";
@@ -2472,7 +2841,7 @@
     // ==========================================
     // RIPPLE-ЭФФЕКТ ПРИ НАЖАТИИ
     // ==========================================
-    const RIPPLE_TARGETS = '.tech-btn, .segment-btn, .nav-trigger, .admin-toggle-btn, .lesson-action-btn, .btn-kick, .theme-btn, .role-badge, .modal-close, .task-del-btn, .tech-card[onclick], .lesson-item';
+    const RIPPLE_TARGETS = '.tech-btn, .segment-btn, .nav-trigger, .admin-toggle-btn, .lesson-action-btn, .btn-kick, .theme-btn, .role-badge, .modal-close, .task-del-btn, .tech-card[onclick], .lesson-item, .hero-weather-box';
 
     document.addEventListener('pointerdown', (e) => {
       const el = e.target.closest(RIPPLE_TARGETS);
@@ -2605,6 +2974,8 @@
     window.addEventListener('DOMContentLoaded', () => {
       applyTheme(document.documentElement.getAttribute('data-theme') || 'dark', false);
       SpaceBG.start();
+      updateHeroDate(new Date());
+      fetchWeather(false);
 
       const day = new Date().getDay();
       currentDay = (day >= 1 && day <= 5) ? day : 1;
@@ -2615,6 +2986,7 @@
       verifySquadAccess();
       setInterval(syncDataFromCloud, 10000);
       setInterval(updateLiveStatus, 1000);
+      setInterval(() => fetchWeather(false), 900000);
     });
   </script>
 </body>
