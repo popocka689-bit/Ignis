@@ -1003,19 +1003,20 @@
       gap: 14px;
       margin-top: 4px;
     }
+    /* ТЁМНАЯ ТЕМА: Чёрный корпус + Ярко-красные сияющие глаза */
     .mascot-screen {
       min-width: 112px;
       width: 112px;
       min-height: 76px;
-      border-radius: 12px;
+      border-radius: 14px;
       background:
-        radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-        linear-gradient(180deg, rgba(10, 12, 16, 0.92) 0%, rgba(5, 6, 8, 0.96) 100%);
+        radial-gradient(rgba(255, 45, 55, 0.12) 1px, transparent 1px),
+        linear-gradient(180deg, #0b0c10 0%, #040507 100%);
       background-size: 6px 6px, 100% 100%;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 38, 50, 0.38);
       box-shadow:
-        inset 0 2px 10px rgba(0, 0, 0, 0.7),
-        0 2px 8px rgba(0, 0, 0, 0.25);
+        inset 0 2px 12px rgba(0, 0, 0, 0.85),
+        0 0 14px rgba(215, 25, 33, 0.16);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -1024,53 +1025,100 @@
       position: relative;
       overflow: hidden;
       flex-shrink: 0;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
-    }
-    :root[data-theme="light"] .mascot-screen {
-      background:
-        radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
-        linear-gradient(180deg, #1b1d24 0%, #111318 100%);
-      background-size: 6px 6px, 100% 100%;
-      border-color: rgba(0, 0, 0, 0.25);
+      transition: background 0.35s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
     }
     .mascot-screen.alert-mode {
-      border-color: rgba(215, 25, 33, 0.55);
+      border-color: rgba(255, 45, 55, 0.72);
       box-shadow:
-        inset 0 2px 10px rgba(215, 25, 33, 0.18),
-        0 0 14px rgba(215, 25, 33, 0.18);
+        inset 0 2px 12px rgba(215, 25, 33, 0.28),
+        0 0 18px rgba(255, 35, 45, 0.32);
     }
     .mascot-screen.hype-mode {
-      border-color: rgba(0, 230, 118, 0.45);
+      border-color: rgba(255, 45, 55, 0.58);
       box-shadow:
-        inset 0 2px 10px rgba(0, 230, 118, 0.14),
-        0 0 14px rgba(0, 230, 118, 0.15);
+        inset 0 2px 10px rgba(215, 25, 33, 0.2),
+        0 0 16px rgba(255, 45, 55, 0.24);
     }
     .mascot-face {
       font-family: var(--font-dot);
       font-size: 16px;
-      color: #ffffff;
+      color: #ff2a36;
       letter-spacing: 0.5px;
       text-align: center;
       line-height: 1.2;
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.35);
+      text-shadow:
+        0 0 8px rgba(255, 38, 50, 0.75),
+        0 0 18px rgba(215, 25, 33, 0.45);
       white-space: nowrap;
-      transition: transform 0.18s ease, color 0.2s ease;
+      transition: transform 0.18s ease, color 0.25s ease, text-shadow 0.25s ease;
     }
     .mascot-screen.alert-mode .mascot-face {
-      color: #ff4d55;
-      text-shadow: 0 0 10px rgba(215, 25, 33, 0.55);
+      color: #ff1e2b;
+      text-shadow:
+        0 0 10px rgba(255, 30, 43, 0.9),
+        0 0 22px rgba(215, 25, 33, 0.65);
     }
     .mascot-screen.hype-mode .mascot-face {
-      color: #4dff9b;
-      text-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
+      color: #ff3b47;
+      text-shadow:
+        0 0 10px rgba(255, 59, 71, 0.85),
+        0 0 20px rgba(215, 25, 33, 0.5);
     }
     .mascot-mood-tag {
       font-size: 8px;
       letter-spacing: 1.5px;
-      color: rgba(255, 255, 255, 0.5);
+      color: rgba(255, 120, 128, 0.72);
       margin-top: 7px;
+      font-weight: 700;
       text-transform: uppercase;
+      transition: color 0.25s ease;
     }
+
+    /* СВЕТЛАЯ ТЕМА: Белый керамический корпус + Сияющие ярко-голубые глаза */
+    :root[data-theme="light"] .mascot-card {
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.95) 0%, rgba(242, 249, 255, 0.92) 100%);
+      border-color: rgba(0, 174, 255, 0.24);
+      box-shadow:
+        0 6px 20px rgba(0, 140, 255, 0.07),
+        inset 0 1px 0 #ffffff;
+    }
+    :root[data-theme="light"] .mascot-screen {
+      background:
+        radial-gradient(rgba(0, 180, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(165deg, #ffffff 0%, #eef7ff 100%);
+      background-size: 6px 6px, 100% 100%;
+      border: 1px solid rgba(0, 184, 255, 0.42);
+      box-shadow:
+        inset 0 1px 0 #ffffff,
+        inset 0 -3px 10px rgba(0, 170, 255, 0.08),
+        0 6px 18px rgba(0, 174, 255, 0.16);
+    }
+    :root[data-theme="light"] .mascot-screen.hype-mode {
+      border-color: rgba(0, 195, 255, 0.68);
+      box-shadow:
+        inset 0 1px 0 #ffffff,
+        inset 0 0 12px rgba(0, 195, 255, 0.14),
+        0 6px 20px rgba(0, 184, 255, 0.25);
+    }
+    :root[data-theme="light"] .mascot-screen.alert-mode {
+      border-color: rgba(0, 162, 255, 0.75);
+      box-shadow:
+        inset 0 1px 0 #ffffff,
+        inset 0 0 14px rgba(0, 162, 255, 0.18),
+        0 6px 20px rgba(0, 150, 255, 0.26);
+    }
+    :root[data-theme="light"] .mascot-face,
+    :root[data-theme="light"] .mascot-screen.hype-mode .mascot-face,
+    :root[data-theme="light"] .mascot-screen.alert-mode .mascot-face {
+      color: #00b4ff;
+      text-shadow:
+        0 0 9px rgba(0, 195, 255, 0.65),
+        0 0 18px rgba(0, 170, 255, 0.35);
+    }
+    :root[data-theme="light"] .mascot-mood-tag {
+      color: #0095d9;
+    }
+
     .mascot-info {
       flex: 1;
       min-width: 0;
@@ -1109,12 +1157,22 @@
       overflow: hidden;
       position: relative;
     }
+    :root[data-theme="light"] .mascot-energy-track {
+      background: rgba(0, 165, 255, 0.14);
+    }
     .mascot-energy-fill {
       height: 100%;
       width: 75%;
-      background: var(--green-live);
+      background: var(--nothing-red);
       border-radius: 999px;
       transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease;
+    }
+    :root[data-theme="light"] .mascot-energy-fill {
+      background: linear-gradient(90deg, #00b4ff 0%, #00d4ff 100%) !important;
+      box-shadow: 0 0 10px rgba(0, 184, 255, 0.45);
+    }
+    :root[data-theme="light"] #mascotBadge {
+      color: #00a6f0 !important;
     }
     @keyframes mascotBounce {
       0%   { transform: scale(1) rotate(0deg); }
@@ -1167,10 +1225,16 @@
     }
     :root[data-theme="light"] .hero-day-badge {
       background:
-        radial-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
-        linear-gradient(160deg, rgba(215, 25, 33, 0.14) 0%, rgba(255, 255, 255, 0.9) 100%);
+        radial-gradient(rgba(0, 180, 255, 0.14) 1px, transparent 1px),
+        linear-gradient(165deg, #ffffff 0%, #eef7ff 100%);
       background-size: 6px 6px, 100% 100%;
-      border-color: rgba(215, 25, 33, 0.38);
+      border-color: rgba(0, 184, 255, 0.4);
+      box-shadow:
+        inset 0 1px 0 #ffffff,
+        0 6px 18px rgba(0, 174, 255, 0.14);
+    }
+    :root[data-theme="light"] .hero-day-dot {
+      color: #00a6f0;
     }
     .hero-day-num {
       font-family: var(--font-dot);
@@ -2534,13 +2598,6 @@
 
       energyValEl.innerText = `${energy}%`;
       energyFillEl.style.width = `${energy}%`;
-      if (energy < 35) {
-        energyFillEl.style.backgroundColor = 'var(--nothing-red)';
-      } else if (energy >= 75) {
-        energyFillEl.style.backgroundColor = 'var(--green-live)';
-      } else {
-        energyFillEl.style.backgroundColor = '#38bdf8';
-      }
 
       // Если пользователь недавно тапнул на маскота — не перезаписываем реплику
       if (Date.now() < mascotPokeUntil) return;
@@ -2551,7 +2608,7 @@
       let speech = 'Все системы взвода G-13 работают отлично.';
       let screenMode = '';
       let badgeText = '● НА СВЯЗИ';
-      let badgeColor = 'var(--green-live)';
+      let badgeColor = 'var(--nothing-red)';
 
       const isNight = hour >= 0 && hour < 6;
       const blink = (new Date().getSeconds() % 7 === 0);
@@ -2672,7 +2729,7 @@
       moodEl.innerText = q.mood;
       speechEl.innerText = q.text;
       badgeEl.innerText = '● АКТИВЕН';
-      badgeEl.style.color = 'var(--green-live)';
+      badgeEl.style.color = 'var(--nothing-red)';
     }
 
     // ТАЙМЕР И СТАТУС ПАР
