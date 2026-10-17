@@ -186,24 +186,23 @@
       box-shadow: 0 0 6px var(--nothing-red);
     }
 
-    /* ИНДИКАТОР РОЛИ */
-    .user-pill {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--surface);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 8px 12px;
-      margin-bottom: 16px;
-      font-size: 10px;
-    }
-    .role-badge {
+    /* КНОПКА АДМИНА В ШАПКЕ */
+    .header-admin-btn {
+      display: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
       font-weight: 700;
-      letter-spacing: 1px;
-      padding: 2px 6px;
-      border-radius: 4px;
+      letter-spacing: 0.8px;
+      padding: 4px 8px;
+      border-radius: 7px;
       cursor: pointer;
+      text-transform: uppercase;
+      background: var(--glass-red-bg);
+      border: 1px solid var(--glass-red-border);
+      color: var(--glass-red-text);
+      box-shadow: var(--glass-highlight), var(--glass-shadow);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
     }
 
     /* ТАБЫ */
@@ -270,6 +269,52 @@
       line-height: 1.4;
     }
 
+    /* ОБЪЕДИНЕННЫЙ БЛОК СТАТУСА ВНУТРИ HERO-КАРТОЧКИ */
+    .hero-status-divider {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--card-border);
+    }
+
+    /* ШИРОКАЯ КАРТОЧКА РАДАРА (В АУДИТОРИИ) */
+    .radar-wide-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .radar-wide-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .radar-wide-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+    .radar-wide-counter {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      flex-shrink: 0;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 8px 14px;
+    }
+    .radar-wide-counter .dot-num {
+      font-size: 32px;
+      margin: 0;
+    }
+    .radar-wide-unit {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
     /* РАСПИСАНИЕ */
     .schedule-toolbar {
       display: flex;
@@ -309,7 +354,7 @@
       transition: all 0.15s;
     }
 
-    .lessons-rack, .tasks-rack {
+    .lessons-rack {
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -470,72 +515,6 @@
       line-height: 1.4;
     }
 
-    /* ЗАДАЧИ */
-    .task-item {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 14px 16px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      transition: opacity 0.2s;
-    }
-    .task-item.completed {
-      opacity: 0.35;
-    }
-    .task-checkbox {
-      width: 18px;
-      height: 18px;
-      border: 1px solid var(--border-bright);
-      border-radius: 4px;
-      margin-top: 3px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      background: var(--input-bg);
-    }
-    .task-checkbox.checked {
-      background: var(--nothing-red);
-      border-color: var(--nothing-red);
-    }
-    .task-checkbox.checked::after {
-      content: "✓";
-      color: #fff;
-      font-size: 11px;
-      font-weight: 900;
-    }
-    .task-content {
-      flex: 1;
-    }
-    .task-tag {
-      font-size: 9px;
-      letter-spacing: 1px;
-      color: var(--nothing-red);
-      text-transform: uppercase;
-      margin-bottom: 2px;
-    }
-    .task-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-white);
-      margin-bottom: 4px;
-      line-height: 1.4;
-    }
-    .task-item.completed .task-title {
-      text-decoration: line-through;
-    }
-    .task-deadline {
-      font-size: 10px;
-      color: var(--text-dim);
-    }
-    .task-del-btn {
-      cursor: pointer;
-      display: none;
-    }
-
     /* РЕДАКТОР */
     .editor-box {
       display: none;
@@ -679,7 +658,7 @@
       max-width: 440px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
     .nav-trigger {
@@ -773,23 +752,20 @@
        АНИМАЦИИ НАЖАТИЙ
        ========================================== */
     .tech-btn, .segment-btn, .nav-trigger, .admin-toggle-btn,
-    .lesson-action-btn, .btn-kick, .theme-btn, .role-badge,
-    .modal-close, .task-del-btn, .tech-card {
+    .lesson-action-btn, .btn-kick, .theme-btn, .header-admin-btn,
+    .modal-close, .tech-card {
       position: relative;
       overflow: hidden;
     }
 
-    button, .role-badge, .tech-card[onclick], .task-checkbox {
+    button, .tech-card[onclick] {
       transition: transform 0.12s ease, background-color 0.2s, border-color 0.2s, color 0.2s, opacity 0.2s;
     }
-    button:active, .role-badge:active, .task-checkbox:active {
+    button:active {
       transform: scale(0.93);
     }
     .tech-card[onclick]:active {
       transform: scale(0.97);
-    }
-    .task-content:active {
-      opacity: 0.7;
     }
 
     .ripple {
@@ -801,23 +777,8 @@
       pointer-events: none;
       animation: rippleOut 0.55s ease-out forwards;
     }
-    .admin-mode .task-del-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
     @keyframes rippleOut {
       to { transform: scale(1); opacity: 0; }
-    }
-
-    /* Галочка задачи «выпрыгивает» (класс ставится только при клике) */
-    .task-checkbox.pop {
-      animation: checkPop 0.3s ease;
-    }
-    @keyframes checkPop {
-      0%   { transform: scale(0.7); }
-      60%  { transform: scale(1.2); }
-      100% { transform: scale(1); }
     }
 
     @keyframes navBounce {
@@ -874,9 +835,7 @@
     .lesson-action-btn,
     .btn-kick,
     .theme-btn,
-    .role-badge,
-    .modal-close,
-    .task-del-btn {
+    .modal-close {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
       color: var(--glass-text);
@@ -917,14 +876,10 @@
     /* Красные варианты (удаление, админ, активный режим редактирования) */
     .btn-kick,
     .lesson-action-btn.btn-del,
-    .role-badge.role-admin,
     .admin-toggle-btn.active {
       background: var(--glass-red-bg);
       border-color: var(--glass-red-border);
       color: var(--glass-red-text);
-    }
-    .role-badge.role-student {
-      color: var(--text-dim);
     }
 
     /* Кнопка «Я в аудитории» */
@@ -940,8 +895,7 @@
     }
 
     /* Маленькие круглые кнопки */
-    .modal-close,
-    .task-del-btn {
+    .modal-close {
       width: 28px;
       height: 28px;
       border-radius: 50%;
@@ -949,19 +903,10 @@
       line-height: 1;
       padding: 0;
       flex-shrink: 0;
-    }
-    .modal-close {
       display: flex;
       align-items: center;
       justify-content: center;
       color: var(--text-dim);
-    }
-    .task-del-btn {
-      color: var(--text-muted);
-    }
-    .task-del-btn:hover {
-      color: var(--glass-red-text);
-      border-color: var(--glass-red-border);
     }
 
     /* Небольшие кнопки — мягкие скругления */
@@ -977,9 +922,8 @@
     .lesson-action-btn:active,
     .btn-kick:active,
     .theme-btn:active,
-    .role-badge:active,
-    .modal-close:active,
-    .task-del-btn:active {
+    .header-admin-btn:active,
+    .modal-close:active {
       filter: brightness(1.12);
     }
 
@@ -1349,7 +1293,6 @@
     }
     .tab-view.active .tech-grid > .tech-card,
     .tab-view.active .lessons-rack > .lesson-item,
-    .tab-view.active .tasks-rack > .task-item,
     .tab-view.active .segment-bar,
     .tab-view.active .schedule-toolbar {
       animation: smoothCardReveal 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -1357,19 +1300,12 @@
     .tab-view.active .tech-grid > .tech-card:nth-child(1) { animation-delay: 0.02s; }
     .tab-view.active .tech-grid > .tech-card:nth-child(2) { animation-delay: 0.08s; }
     .tab-view.active .tech-grid > .tech-card:nth-child(3) { animation-delay: 0.14s; }
-    .tab-view.active .tech-grid > .tech-card:nth-child(4) { animation-delay: 0.18s; }
-    .tab-view.active .tech-grid > .tech-card:nth-child(5) { animation-delay: 0.24s; }
 
-    .tab-view.active .lessons-rack > .lesson-item:nth-child(1),
-    .tab-view.active .tasks-rack > .task-item:nth-child(1) { animation-delay: 0.04s; }
-    .tab-view.active .lessons-rack > .lesson-item:nth-child(2),
-    .tab-view.active .tasks-rack > .task-item:nth-child(2) { animation-delay: 0.09s; }
-    .tab-view.active .lessons-rack > .lesson-item:nth-child(3),
-    .tab-view.active .tasks-rack > .task-item:nth-child(3) { animation-delay: 0.14s; }
-    .tab-view.active .lessons-rack > .lesson-item:nth-child(4),
-    .tab-view.active .tasks-rack > .task-item:nth-child(4) { animation-delay: 0.19s; }
-    .tab-view.active .lessons-rack > .lesson-item:nth-child(5),
-    .tab-view.active .tasks-rack > .task-item:nth-child(5) { animation-delay: 0.24s; }
+    .tab-view.active .lessons-rack > .lesson-item:nth-child(1) { animation-delay: 0.04s; }
+    .tab-view.active .lessons-rack > .lesson-item:nth-child(2) { animation-delay: 0.09s; }
+    .tab-view.active .lessons-rack > .lesson-item:nth-child(3) { animation-delay: 0.14s; }
+    .tab-view.active .lessons-rack > .lesson-item:nth-child(4) { animation-delay: 0.19s; }
+    .tab-view.active .lessons-rack > .lesson-item:nth-child(5) { animation-delay: 0.24s; }
 
     .nav-icon {
       width: 20px;
@@ -1424,26 +1360,18 @@
         <div class="brand-tag">G-13</div>
       </div>
       <div class="system-status">
+        <button class="header-admin-btn" id="adminHeaderBtn" onclick="openSquadModal()">[ ⚙ АДМИН ]</button>
         <div class="status-dot"></div>
         <span id="headerClock">00:00:00</span>
         <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Сменить тему">☀</button>
       </div>
     </header>
 
-    <!-- ПЛАШКА ПРОФИЛЯ -->
-    <div class="user-pill" id="userPill">
-      <div>
-        <span style="color: var(--text-muted);">ID БОЙЦА:</span>
-        <span id="userUid" style="color: var(--text-white);">7004092933</span>
-      </div>
-      <div id="userRoleBadge" class="role-badge role-admin" onclick="openSquadModal()">АДМИН ⚙</div>
-    </div>
-
     <!-- ВКЛАДКА 1: СВОДКА -->
     <section id="view-today" class="tab-view active">
       <div class="tech-grid">
-        <!-- ГЛАВНЫЙ БЛОК: СЕГОДНЯШНЕЕ ЧИСЛО, ДАТА И ПОГОДА -->
-        <div class="tech-card span-2 hero-date-card" id="heroDateCard">
+        <!-- ЕДИНЫЙ ГЛАВНЫЙ БЛОК: ДАТА, ПОГОДА И ТЕКУЩИЙ СТАТУС ПАР -->
+        <div class="tech-card span-2 hero-date-card" id="liveCard">
           <div class="hero-date-layout">
             <div class="hero-date-left">
               <div class="hero-day-badge">
@@ -1466,36 +1394,33 @@
               <div class="weather-meta" id="weatherMeta">📍 Авто-погода</div>
             </div>
           </div>
-        </div>
 
-        <!-- СТАТУС ПАР -->
-        <div class="tech-card span-2" id="liveCard">
-          <div class="card-label">
-            <span>СЕЙЧАС ПО РАСПИСАНИЮ</span>
-            <span id="liveBadge" style="color: var(--nothing-red);">● ЗАГРУЗКА</span>
+          <div class="hero-status-divider">
+            <div class="card-label">
+              <span>СЕЙЧАС ПО РАСПИСАНИЮ</span>
+              <span id="liveBadge" style="color: var(--nothing-red);">● ЗАГРУЗКА</span>
+            </div>
+            <div class="status-text-main" id="statusTitle">ПОДКЛЮЧЕНИЕ К БАЗЕ...</div>
+            <div class="status-sub" id="statusSub">Загрузка актуального расписания</div>
           </div>
-          <div class="status-text-main" id="statusTitle">ПОДКЛЮЧЕНИЕ К БАЗЕ...</div>
-          <div class="status-sub" id="statusSub">Загрузка актуального расписания</div>
         </div>
 
-        <!-- КАРТОЧКА РАДАРА -->
-        <div class="tech-card" style="cursor: pointer;" onclick="openRadarModal()">
+        <!-- ШИРОКАЯ КАРТОЧКА ПОСЕЩАЕМОСТИ (РАДАР) -->
+        <div class="tech-card span-2" style="cursor: pointer;" onclick="openRadarModal()">
           <div class="card-label">
-            <span>В АУДИТОРИИ</span>
+            <span>ПОСЕЩАЕМОСТЬ // В АУДИТОРИИ</span>
             <span style="color: var(--green-live);">● ОНЛАЙН</span>
           </div>
-          <div class="dot-num" id="radarStat">00</div>
-          <div class="status-sub">чел. на месте ➔</div>
-        </div>
-
-        <!-- КАРТОЧКА ЗАДАЧ -->
-        <div class="tech-card" style="cursor: pointer;" onclick="switchTab('tasks', document.querySelectorAll('.nav-trigger')[2])">
-          <div class="card-label">
-            <span>ДЕДЛАЙНЫ</span>
-            <span style="color: var(--text-muted);">СРС</span>
+          <div class="radar-wide-row">
+            <div class="radar-wide-left">
+              <div class="radar-wide-title">Отметка присутствия на паре</div>
+              <div class="status-sub">Нажми, чтобы отметиться или посмотреть список ➔</div>
+            </div>
+            <div class="radar-wide-counter">
+              <div class="dot-num" id="radarStat">00</div>
+              <span class="radar-wide-unit">чел.</span>
+            </div>
           </div>
-          <div class="dot-num" id="tasksStat">00</div>
-          <div class="status-sub">активных задач ➔</div>
         </div>
 
         <!-- КИБЕР-МАСКОТ ВЗВОДА (ЮНИТ-13) -->
@@ -1554,24 +1479,6 @@
         <input type="text" id="inLocation" class="input-field" placeholder="Этаж / крыло (необязательно)">
         <input type="text" id="inNote" class="input-field" placeholder="Заметка к паре (необязательно)">
         <button class="tech-btn" onclick="saveLesson()">[ СОХРАНИТЬ ПАРУ ]</button>
-      </div>
-    </section>
-
-    <!-- ВКЛАДКА 3: ЗАДАНИЯ -->
-    <section id="view-tasks" class="tab-view">
-      <div class="schedule-toolbar">
-        <span class="tool-title">СПИСОК ЗАДАНИЙ И ДЕДЛАЙНОВ</span>
-        <button class="admin-toggle-btn" id="adminBtnTasks" onclick="toggleAdminMode()">[РЕДАКТОР: ВЫКЛ]</button>
-      </div>
-
-      <div class="tasks-rack" id="tasksContainer"></div>
-
-      <div class="editor-box" id="editorBoxTasks">
-        <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; margin-bottom: 8px;">+ НОВОЕ ЗАДАНИЕ // ДЕДЛАЙН</div>
-        <input type="text" id="inTaskSubj" class="input-field" placeholder="Предмет (напр. Базы данных)">
-        <input type="text" id="inTaskTitle" class="input-field" placeholder="Описание задания (напр. Лаба №3)">
-        <input type="text" id="inTaskDeadline" class="input-field" placeholder="Срок сдачи (напр. До пятницы 18:00)">
-        <button class="tech-btn" onclick="saveTask()">[ ОПУБЛИКОВАТЬ ДЛЯ ГРУППЫ ]</button>
       </div>
     </section>
 
@@ -1682,7 +1589,7 @@
           <rect x="14" y="12" width="7" height="9" rx="2"></rect>
           <rect x="3" y="16" width="7" height="5" rx="2"></rect>
         </svg>
-        <div class="nav-text">СВОДКА</div>
+        <div class="nav-text">СЕГОДНЯ</div>
       </button>
       <button class="nav-trigger" onclick="switchTab('schedule', this)">
         <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -1694,13 +1601,6 @@
           <line x1="8" y1="17.5" x2="13" y2="17.5"></line>
         </svg>
         <div class="nav-text">РАСПИСАНИЕ</div>
-      </button>
-      <button class="nav-trigger" onclick="switchTab('tasks', this)">
-        <svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M9 11l3 3L22 4"></path>
-          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-        </svg>
-        <div class="nav-text">ЗАДАНИЯ</div>
       </button>
     </div>
   </nav>
@@ -1857,24 +1757,17 @@
     }
 
     function initUI(adminStatus) {
-      document.getElementById('userUid').innerText = currentUser.id;
-      const roleBadge = document.getElementById('userRoleBadge');
+      const adminHeaderBtn = document.getElementById('adminHeaderBtn');
       if (adminStatus) {
-        roleBadge.innerText = "АДМИН ⚙";
-        roleBadge.className = "role-badge role-admin";
+        if (adminHeaderBtn) adminHeaderBtn.style.display = "inline-block";
         document.getElementById('adminBtnSchedule').style.display = "block";
-        document.getElementById('adminBtnTasks').style.display = "block";
       } else {
-        roleBadge.innerText = "СТУДЕНТ";
-        roleBadge.className = "role-badge role-student";
-        roleBadge.onclick = null;
+        if (adminHeaderBtn) adminHeaderBtn.style.display = "none";
       }
       syncDataFromCloud();
     }
 
     let timetable = { 1: [], 2: [], 3: [], 4: [], 5: [] };
-    let tasks = {};
-    let completedTasks = JSON.parse(localStorage.getItem('ignis_done_tasks') || '[]');
     let radarData = {};
     let currentDay = 1;
     let editMode = false;
@@ -1883,9 +1776,8 @@
     async function syncDataFromCloud() {
       const todayKey = getTodayKey();
       try {
-        const [resTime, resTasks, resRadar] = await Promise.all([
+        const [resTime, resRadar] = await Promise.all([
           fetch(`${DB_URL}/timetable.json`),
-          fetch(`${DB_URL}/tasks.json`),
           fetch(`${DB_URL}/radar/${todayKey}.json`)
         ]);
 
@@ -1900,11 +1792,9 @@
           };
         }
 
-        tasks = (await resTasks.json()) || {};
         radarData = (await resRadar.json()) || {};
 
         renderLessons();
-        renderTasks();
         renderRadar();
         updateLiveStatus();
       } catch (err) {
@@ -1927,13 +1817,8 @@
       
       const txt = editMode ? "[РЕДАКТОР: ВКЛ]" : "[РЕДАКТОР: ВЫКЛ]";
       document.getElementById('adminBtnSchedule').innerText = txt;
-      document.getElementById('adminBtnTasks').innerText = txt;
-
       document.getElementById('adminBtnSchedule').classList.toggle('active', editMode);
-      document.getElementById('adminBtnTasks').classList.toggle('active', editMode);
-
       document.getElementById('editorBoxSchedule').classList.toggle('show', editMode);
-      document.getElementById('editorBoxTasks').classList.toggle('show', editMode);
       document.body.classList.toggle('admin-mode', editMode);
     }
 
@@ -2166,109 +2051,6 @@
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(timetable)
-      });
-    }
-
-    // ЗАДАНИЯ
-    function renderTasks() {
-      const container = document.getElementById('tasksContainer');
-      const taskKeys = Object.keys(tasks);
-
-      if (taskKeys.length === 0) {
-        container.innerHTML = `
-          <div class="empty-screen">
-            <div class="empty-code">ВСЕ СДАНО</div>
-            <div class="empty-msg">Все дедлайны закрыты либо отсутствуют.</div>
-          </div>
-        `;
-        document.getElementById('tasksStat').innerText = "00";
-        updateMascot();
-        return;
-      }
-
-      let activeCount = 0;
-      container.innerHTML = taskKeys.map(id => {
-        const item = tasks[id];
-        const isDone = completedTasks.includes(id);
-        if (!isDone) activeCount++;
-
-        return `
-          <div class="task-item ${isDone ? 'completed' : ''}">
-            <div class="task-checkbox ${isDone ? 'checked' : ''}" onclick="toggleTask('${esc(id)}')"></div>
-            <div class="task-content" onclick="toggleTask('${esc(id)}')">
-              <div class="task-tag">${esc(item.subj)}</div>
-              <div class="task-title">${esc(item.title)}</div>
-              <div class="task-deadline">${esc(item.deadline)}</div>
-            </div>
-            ${isAdmin ? `<button class="task-del-btn" onclick="deleteTask('${esc(id)}')">✕</button>` : ''}
-          </div>
-        `;
-      }).join('');
-
-      document.getElementById('tasksStat').innerText = String(activeCount).padStart(2, '0');
-      updateMascot();
-    }
-
-    function toggleTask(id) {
-      haptic();
-      if (completedTasks.includes(id)) {
-        completedTasks = completedTasks.filter(item => item !== id);
-      } else {
-        completedTasks.push(id);
-      }
-      localStorage.setItem('ignis_done_tasks', JSON.stringify(completedTasks));
-      renderTasks();
-
-      const box = document.querySelector(`.task-checkbox[onclick="toggleTask('${esc(id)}')"]`);
-      if (box) box.classList.add('pop');
-    }
-
-    async function saveTask() {
-      if (!isAdmin) return;
-      haptic();
-      const subj = document.getElementById('inTaskSubj').value.trim();
-      const title = document.getElementById('inTaskTitle').value.trim();
-      const deadline = document.getElementById('inTaskDeadline').value.trim();
-
-      if (!subj || !title || !deadline) {
-        alert("Заполните предмет, описание и дедлайн!");
-        return;
-      }
-
-      const newId = 't_' + Date.now();
-      tasks[newId] = { subj, title, deadline };
-
-      document.getElementById('inTaskSubj').value = '';
-      document.getElementById('inTaskTitle').value = '';
-      document.getElementById('inTaskDeadline').value = '';
-
-      renderTasks();
-
-      await fetch(`${DB_URL}/tasks/${newId}.json`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ subj, title, deadline })
-      });
-
-      const msg = `📌 <b>IGNIS // НОВОЕ ЗАДАНИЕ</b>\n\n` +
-                  `📖 <b>Предмет:</b> ${esc(subj)}\n` +
-                  `📝 <b>Задание:</b> ${esc(title)}\n` +
-                  `⏳ <b>Срок:</b> ${esc(deadline)}\n\n` +
-                  `<i>Добавлено в список дедлайнов группы!</i>`;
-
-      await sendTelegramAlert(msg);
-    }
-
-    async function deleteTask(id) {
-      if (!isAdmin) return;
-      haptic();
-      delete tasks[id];
-      completedTasks = completedTasks.filter(item => item !== id);
-      localStorage.setItem('ignis_done_tasks', JSON.stringify(completedTasks));
-      renderTasks();
-
-      await fetch(`${DB_URL}/tasks/${id}.json`, {
-        method: 'DELETE'
       });
     }
 
@@ -2554,15 +2336,15 @@
 
     const MASCOT_QUIPS = [
       { face: '[ ⌐■_■ ]', mood: 'СОВЕТ', text: 'Совет дня: если смотреть на препода с умным видом, шанс быть вызванным падает на 42%.' },
-      { face: '[ ★ ‿ ★ ]', mood: 'УДАЧА', text: 'Анализ вероятностей: сегодня отличный день, чтобы закрыть хотя бы один долг!' },
+      { face: '[ ★ ‿ ★ ]', mood: 'УДАЧА', text: 'Анализ вероятностей: сегодня отличный день, чтобы сдать лабу с первого раза!' },
       { face: '[ ⊙ _ ⊙ ]', mood: 'СКАНЕР', text: 'Сканирую аудиторию... Обнаружен высокий уровень желания пойти домой.' },
       { face: '[ ^ ‿ ^ ]', mood: 'НА СВЯЗИ', text: 'Юнит-13 на связи! Не забудь отметиться в карточке «В аудитории», если ты уже на месте 📍' },
-      { face: '[ • ̀_•́ ]', mood: 'ФОКУС', text: 'Боец G-13, помни: закрытый вовремя дедлайн бережёт нервные клетки на сессии.' },
+      { face: '[ • ̀_•́ ]', mood: 'ФОКУС', text: 'Боец G-13, помни: если нажать на любую пару в расписании, откроется досье с преподом и заметками!' },
       { face: '[ ˘ ‿ ˘ ]', mood: 'ПЕРЕРЫВ', text: 'Мои сенсоры подсказывают, что взводу срочно требуется доза кофе или шавухи ☕' },
       { face: '[ ✧ ‿ ✧ ]', mood: 'БОНУС', text: 'Плюс +100 к удаче на весь день активировано! Продолжай в том же духе.' },
-      { face: '[ ಠ ‿ ಠ ]', mood: 'СЕКРЕТ', text: 'Секретный протокол: главная сила взвода G-13 — вовремя скинутая в чат домашка.' },
+      { face: '[ ಠ ‿ ಠ ]', mood: 'СЕКРЕТ', text: 'Секретный протокол: главная сила взвода G-13 — вовремя скинутый в чат конспект.' },
       { face: '[ ◕ ‿ ◕ ]', mood: 'ДРУГ', text: 'Я слежу за расписанием 24/7, чтобы вы могли спокойно спать до самого будильника.' },
-      { face: '[ ° ▃ ° ]', mood: 'ВЗЛОМ', text: 'БИП-БОП // Попытка взломать журнал оценок... Шутка, лучше просто сдай лабу!' }
+      { face: '[ ° ▃ ° ]', mood: 'ВЗЛОМ', text: 'БИП-БОП // Попытка взломать журнал оценок... Шутка, лучше просто сдай зачёт!' }
     ];
 
     function updateMascot(ctxOverride) {
@@ -2578,22 +2360,17 @@
       if (!screenEl || !faceEl) return;
 
       const radarCount = Object.keys(radarData).length;
-      const totalTasks = Object.keys(tasks);
-      const pendingTasks = totalTasks.filter(id => !completedTasks.includes(id)).length;
-      const doneCount = totalTasks.length - pendingTasks;
       const hour = new Date().getHours();
 
       // 1. Расчёт заряда взвода (10% .. 100%)
-      let energy = 65;
-      if (mascotCtxState.mode === 'weekend' || mascotCtxState.mode === 'after') energy = 82;
-      if (mascotCtxState.mode === 'canceled') energy = 92;
+      let energy = 72;
+      if (mascotCtxState.mode === 'weekend' || mascotCtxState.mode === 'after') energy = 88;
+      if (mascotCtxState.mode === 'canceled') energy = 95;
       if (mascotCtxState.mode === 'in_progress') {
-        energy = radarCount === 0 ? 32 : Math.min(100, 55 + radarCount * 9);
+        energy = radarCount === 0 ? 35 : Math.min(100, 58 + radarCount * 9);
       } else {
         energy += radarCount * 6;
       }
-      energy += doneCount * 5;
-      energy -= pendingTasks * 6;
       energy = Math.max(10, Math.min(100, energy));
 
       energyValEl.innerText = `${energy}%`;
@@ -2652,13 +2429,6 @@
         face = blink ? '[ - _ - ]' : '[ ⊙ _ ⊙ ]';
         mood = 'ГОТОВ';
         speech = `До первой пары ${mascotCtxState.left} мин. Проверь рюкзак и не забудь отметиться в аудитории!`;
-      } else if (pendingTasks >= 4) {
-        face = '[ ; _ ; ]';
-        mood = 'АВРАЛ';
-        speech = `Внимание: в очереди висит ${pendingTasks} незакрытых дедлайна! Давай разгребём хотя бы один?`;
-        screenMode = 'alert-mode';
-        badgeText = '● АВРАЛ';
-        badgeColor = 'var(--nothing-red)';
       } else if (mascotCtxState.mode === 'weekend') {
         face = '[ ✧ ‿ ✧ ]';
         mood = 'ВЫХОДНОЙ';
@@ -2667,16 +2437,12 @@
       } else if (mascotCtxState.mode === 'after') {
         face = '[ ˘ ‿ ˘ ]';
         mood = 'ОТДЫХ';
-        speech = pendingTasks > 0
-          ? `Пары закончились! Осталось закрыть дедлайнов: ${pendingTasks} — и можно отдыхать 🎮`
-          : 'Все пары и дедлайны позади! Заслуженный отдых, боец 🎮';
+        speech = 'Все пары на сегодня позади! Заслуженный отдых, боец 🎮';
         screenMode = 'hype-mode';
       } else {
         face = blink ? '[ - ‿ - ]' : '[ • ‿ • ]';
         mood = 'НА СВЯЗИ';
-        speech = pendingTasks > 0
-          ? `Активных дедлайнов: ${pendingTasks}. Тапни на меня, если нужен совет!`
-          : 'Дедлайны чисты, расписание под контролем. Тапни на меня для связи!';
+        speech = 'Расписание под контролем, системы в норме. Тапни на меня для связи!';
       }
 
       screenEl.className = 'mascot-screen' + (screenMode ? ' ' + screenMode : '');
@@ -2713,7 +2479,7 @@
         screenEl.className = 'mascot-screen alert-mode poke-anim';
         faceEl.innerText = '[ ╬ ಠ_ಠ ]';
         moodEl.innerText = 'ПЕРЕГРЕВ';
-        speechEl.innerText = 'Эй-эй, полегче! У меня так пиксели осыпятся — лучше закрой дедлайны во вкладке «Задания»!';
+        speechEl.innerText = 'Эй-эй, полегче! У меня так пиксели осыпятся — лучше проверь расписание на завтра!';
         badgeEl.innerText = '● ЗЛИТСЯ';
         badgeEl.style.color = 'var(--nothing-red)';
         return;
