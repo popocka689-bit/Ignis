@@ -3,6 +3,19 @@ const https = require('https');
 const DB_URL = "https://ignis-d092d-default-rtdb.firebaseio.com";
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const ADMIN_IDS = ["7004092933", "8030931820"];
+const MINI_APP_URL = "https://popocka689-bit.github.io/Ignis/";
+
+// Пул киберпанк / tech артов для утреннего дайджеста
+const CYBERPUNK_MORNING_IMAGES = [
+  "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=1080&auto=format&fit=crop", // Неоновый ночной мегаполис
+  "https://images.unsplash.com/photo-1514565131-fce0801e5785?q=80&w=1080&auto=format&fit=crop", // Киберпанк улочка в неоне
+  "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1080&auto=format&fit=crop", // Неоновый геометрический туннель
+  "https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=1080&auto=format&fit=crop", // Футуристический скайлайн
+  "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1080&auto=format&fit=crop", // Терминал и матричный код
+  "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1080&auto=format&fit=crop", // Красный Nothing / Dark неон
+  "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1080&auto=format&fit=crop", // Дождливый неоновый город
+  "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1080&auto=format&fit=crop"  // Киберпанк арт
+];
 
 function fetchData(url) {
   return new Promise((resolve, reject) => {
@@ -36,13 +49,17 @@ function putData(url, data) {
   });
 }
 
-function sendMessage(chatId, text) {
+function sendMessage(chatId, text, replyMarkup = null) {
   return new Promise((resolve) => {
-    const payload = JSON.stringify({
+    const body = {
       chat_id: chatId,
       text: text,
       parse_mode: 'HTML'
-    });
+    };
+    if (replyMarkup) {
+      body.reply_markup = replyMarkup;
+    }
+    const payload = JSON.stringify(body);
 
     const req = https.request(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
       method: 'POST',
@@ -50,12 +67,64 @@ function sendMessage(chatId, text) {
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(payload)
       }
-    }, res => resolve());
+    }, res => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => resolve());
+    });
 
     req.on('error', () => resolve());
     req.write(payload);
     req.end();
   });
+}
+
+function sendPhoto(chatId, photoUrl, caption, replyMarkup = null) {
+  return new Promise((resolve) => {
+    const body = {
+      chat_id: chatId,
+      photo: photoUrl,
+      caption: caption,
+      parse_mode: 'HTML'
+    };
+    if (replyMarkup) {
+      body.reply_markup = replyMarkup;
+    }
+    const payload = JSON.stringify(body);
+
+    const req = https.request(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(payload)
+      }
+    }, res => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          resolve(!!parsed.ok);
+        } catch (e) {
+          resolve(false);
+        }
+      });
+    });
+
+    req.on('error', () => resolve(false));
+    req.write(payload);
+    req.end();
+  });
+}
+
+async function sendDigest(chatId, photoUrl, text, replyMarkup) {
+  // Лимит Telegram на подпись к фото - 1024 символа
+  if (photoUrl && text.length <= 1024) {
+    const success = await sendPhoto(chatId, photoUrl, text, replyMarkup);
+    if (success) return;
+  }
+  // Если отправка фото не удалась или текст длиннее 1024 символов - отправляем надежным текстом
+  await sendMessage(chatId, text, replyMarkup);
 }
 
 function parseTimeToMinutes(tStr) {
@@ -141,12 +210,24 @@ async function run() {
                          `${tasksBlock}\n\n` +
                          `<i>Удачного дня взводу G-13. Отметьтесь в RADAR!</i>`;
 
+      // Подбираем изображение на сегодня из пула (меняется каждый день)
+      const imageIndex = (parseInt(dateNum, 10) + parseInt(month, 10)) % CYBERPUNK_MORNING_IMAGES.length;
+      const morningPhoto = CYBERPUNK_MORNING_IMAGES[imageIndex];
+
+      const digestKeyboard = {
+        inline_keyboard: [
+          [
+            { text: "⚡ Открыть IGNIS", web_app: { url: MINI_APP_URL } }
+          ]
+        ]
+      };
+
       for (const uid of recipients) {
-        await sendMessage(uid, digestText);
+        await sendDigest(uid, morningPhoto, digestText, digestKeyboard);
       }
 
       await putData(`${DB_URL}/digest_logs.json`, { lastDigest: dateKey });
-      console.log(`Утренний дайджест отправлен.`);
+      console.log(`Утренний дайджест отправлен с медиа.`);
       return;
     }
   }
@@ -176,8 +257,16 @@ async function run() {
                       `⏰ <b>Время:</b> ${lesson.time}\n\n` +
                       `<i>Не забудьте отметиться в RADAR!</i>`;
 
+          const lessonKeyboard = {
+            inline_keyboard: [
+              [
+                { text: "📍 Отметиться в RADAR", web_app: { url: MINI_APP_URL } }
+              ]
+            ]
+          };
+
           for (const uid of recipients) {
-            await sendMessage(uid, msg);
+            await sendMessage(uid, msg, lessonKeyboard);
           }
 
           await putData(`${DB_URL}/sent_alerts/${dateKey}/${alertKey}.json`, true);

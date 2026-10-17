@@ -809,8 +809,10 @@
       pointer-events: none;
       animation: rippleOut 0.55s ease-out forwards;
     }
-    .tech-btn .ripple {
-      background: var(--bg);
+    .admin-mode .task-del-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     @keyframes rippleOut {
       to { transform: scale(1); opacity: 0; }
@@ -843,6 +845,158 @@
     @keyframes sheetUp {
       from { transform: translateY(40px); opacity: 0; }
       to   { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ==========================================
+       LIQUID GLASS — МАТОВЫЕ СТЕКЛЯННЫЕ КНОПКИ
+       ========================================== */
+    :root {
+      --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.05) 100%), rgba(28, 28, 32, 0.62);
+      --glass-bg-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.09) 100%), rgba(40, 40, 46, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.14);
+      --glass-border-strong: rgba(255, 255, 255, 0.24);
+      --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+      --glass-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      --glass-blur: blur(16px) saturate(160%);
+      --glass-text: #f5f5f5;
+
+      --glass-red-bg: linear-gradient(180deg, rgba(255, 70, 78, 0.30) 0%, rgba(215, 25, 33, 0.14) 100%), rgba(40, 10, 12, 0.6);
+      --glass-red-border: rgba(255, 80, 88, 0.45);
+      --glass-red-text: #ff5a62;
+
+      --glass-green-bg: linear-gradient(180deg, rgba(52, 211, 153, 0.28) 0%, rgba(16, 185, 129, 0.12) 100%), rgba(8, 32, 24, 0.6);
+      --glass-green-border: rgba(52, 211, 153, 0.45);
+    }
+    :root[data-theme="light"] {
+      --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 100%), rgba(236, 236, 240, 0.55);
+      --glass-bg-strong: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.78) 100%), rgba(228, 228, 234, 0.6);
+      --glass-border: rgba(0, 0, 0, 0.08);
+      --glass-border-strong: rgba(0, 0, 0, 0.14);
+      --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+      --glass-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      --glass-text: #111111;
+
+      --glass-red-bg: linear-gradient(180deg, rgba(255, 235, 236, 0.95) 0%, rgba(255, 210, 213, 0.7) 100%);
+      --glass-red-border: rgba(215, 25, 33, 0.35);
+      --glass-red-text: #c4141c;
+
+      --glass-green-bg: linear-gradient(180deg, rgba(225, 250, 240, 0.95) 0%, rgba(190, 240, 220, 0.7) 100%);
+      --glass-green-border: rgba(5, 150, 105, 0.4);
+    }
+
+    /* Базовое стекло для всех кнопок */
+    .tech-btn,
+    .admin-toggle-btn,
+    .lesson-action-btn,
+    .btn-kick,
+    .theme-btn,
+    .role-badge,
+    .modal-close,
+    .task-del-btn {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--glass-text);
+      box-shadow: var(--glass-highlight), var(--glass-shadow);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+    }
+
+    /* Главная кнопка — чуть плотнее и ярче */
+    .tech-btn {
+      background: var(--glass-bg-strong);
+      border-color: var(--glass-border-strong);
+      border-radius: 14px;
+    }
+
+    /* Сегменты дней и навбар: стеклянная «подложка» + стеклянная активная пилюля */
+    .segment-bar {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-radius: 14px;
+    }
+    .segment-btn,
+    .nav-trigger {
+      border: 1px solid transparent;
+      border-radius: 10px;
+    }
+    .segment-btn.active,
+    .nav-trigger.active {
+      background: var(--glass-bg-strong);
+      border-color: var(--glass-border-strong);
+      color: var(--glass-text);
+      box-shadow: var(--glass-highlight), 0 2px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    /* Красные варианты (удаление, админ, активный режим редактирования) */
+    .btn-kick,
+    .lesson-action-btn.btn-del,
+    .role-badge.role-admin,
+    .admin-toggle-btn.active {
+      background: var(--glass-red-bg);
+      border-color: var(--glass-red-border);
+      color: var(--glass-red-text);
+    }
+    .role-badge.role-student {
+      color: var(--text-dim);
+    }
+
+    /* Кнопка «Я в аудитории» */
+    .tech-btn.btn-checkin {
+      background: var(--glass-bg);
+      border-color: var(--glass-border);
+      color: var(--glass-text);
+    }
+    .tech-btn.btn-checkin.checked {
+      background: var(--glass-green-bg);
+      border-color: var(--glass-green-border);
+      color: var(--green-live);
+    }
+
+    /* Маленькие круглые кнопки */
+    .modal-close,
+    .task-del-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 12px;
+      line-height: 1;
+      padding: 0;
+      flex-shrink: 0;
+    }
+    .modal-close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
+    }
+    .task-del-btn {
+      color: var(--text-muted);
+    }
+    .task-del-btn:hover {
+      color: var(--glass-red-text);
+      border-color: var(--glass-red-border);
+    }
+
+    /* Небольшие кнопки — мягкие скругления */
+    .admin-toggle-btn,
+    .lesson-action-btn,
+    .btn-kick {
+      border-radius: 8px;
+    }
+
+    /* Стекло при нажатии становится чуть светлее */
+    .tech-btn:active,
+    .admin-toggle-btn:active,
+    .lesson-action-btn:active,
+    .btn-kick:active,
+    .theme-btn:active,
+    .role-badge:active,
+    .modal-close:active,
+    .task-del-btn:active {
+      filter: brightness(1.12);
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1033,6 +1187,7 @@
 
     // КЛЮЧИ БОТА ДЛЯ АВТОУВЕДОМЛЕНИЙ
     const BOT_TOKEN = "8919266628:AAG8prrDh4FmyfpUN784ObXl5vp5IqeQ-B4";
+    const MINI_APP_URL = "https://popocka689-bit.github.io/Ignis/";
 
     const tg = window.Telegram?.WebApp;
     let currentUser = null;
@@ -1066,7 +1221,7 @@
     }
 
     // ВЕЕРНАЯ РАССЫЛКА ПО ВСЕМУ ВЗВОДУ В ЛИЧКУ
-    async function sendTelegramAlert(text) {
+    async function sendTelegramAlert(text, replyMarkup = null) {
       try {
         const res = await fetch(`${DB_URL}/squad.json`);
         const squad = (await res.json()) || {};
@@ -1076,6 +1231,14 @@
           if (!uids.includes(String(id))) uids.push(String(id));
         });
 
+        const markup = replyMarkup || {
+          inline_keyboard: [
+            [
+              { text: "⚡ Открыть IGNIS", web_app: { url: MINI_APP_URL } }
+            ]
+          ]
+        };
+
         for (const uid of uids) {
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
@@ -1083,7 +1246,8 @@
             body: JSON.stringify({
               chat_id: uid,
               text: text,
-              parse_mode: 'HTML'
+              parse_mode: 'HTML',
+              reply_markup: markup
             })
           }).catch(() => {});
         }
