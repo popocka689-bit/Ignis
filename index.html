@@ -1127,6 +1127,178 @@
     .mascot-screen.poke-anim {
       animation: mascotBounce 0.36s cubic-bezier(0.22, 1, 0.36, 1);
     }
+    .mascot-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed var(--card-border);
+    }
+    .mascot-mini-btn {
+      flex: 1;
+      font-family: 'Space Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      padding: 7px 8px;
+      border-radius: 9px;
+      cursor: pointer;
+      text-transform: uppercase;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-white);
+      box-shadow: var(--glass-highlight);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    :root[data-theme="light"] .mascot-mini-btn {
+      border-color: rgba(0, 174, 255, 0.28);
+      color: #0b2538;
+    }
+
+    /* ==========================================
+       МИНИ-ИГРА И РАНДОМАЙЗЕР (ARCADE MODAL)
+    ========================================== */
+    .arcade-hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      font-size: 10px;
+    }
+    .arcade-stat-val {
+      font-family: var(--font-dot);
+      font-size: 18px;
+      color: var(--text-white);
+      margin-left: 6px;
+    }
+    .arcade-canvas-wrap {
+      position: relative;
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 38, 50, 0.42);
+      background:
+        radial-gradient(rgba(255, 45, 55, 0.1) 1px, transparent 1px),
+        linear-gradient(180deg, #090a0f 0%, #040508 100%);
+      background-size: 8px 8px, 100% 100%;
+      box-shadow: inset 0 2px 14px rgba(0, 0, 0, 0.85);
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    :root[data-theme="light"] .arcade-canvas-wrap {
+      border-color: rgba(0, 184, 255, 0.48);
+      background:
+        radial-gradient(rgba(0, 180, 255, 0.14) 1px, transparent 1px),
+        linear-gradient(180deg, #ffffff 0%, #eaf6ff 100%);
+      background-size: 8px 8px, 100% 100%;
+      box-shadow:
+        inset 0 1px 0 #ffffff,
+        0 6px 18px rgba(0, 174, 255, 0.14);
+    }
+    #arcadeCanvas {
+      display: block;
+      width: 100%;
+      height: 270px;
+    }
+    .arcade-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 18px;
+      background: rgba(6, 7, 10, 0.78);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      transition: opacity 0.2s ease;
+    }
+    :root[data-theme="light"] .arcade-overlay {
+      background: rgba(245, 251, 255, 0.84);
+    }
+    .arcade-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .arcade-hero-face {
+      font-family: var(--font-dot);
+      font-size: 26px;
+      color: #ff2a36;
+      text-shadow: 0 0 12px rgba(255, 42, 54, 0.7);
+      margin-bottom: 6px;
+    }
+    :root[data-theme="light"] .arcade-hero-face {
+      color: #00b4ff;
+      text-shadow: 0 0 12px rgba(0, 180, 255, 0.55);
+    }
+    .arcade-overlay-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-bottom: 4px;
+    }
+    .arcade-overlay-sub {
+      font-size: 10px;
+      color: var(--text-dim);
+      line-height: 1.45;
+      max-width: 260px;
+      margin-bottom: 12px;
+    }
+    .arcade-leaderboard {
+      margin-top: 10px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    .arcade-lb-title {
+      font-size: 9px;
+      letter-spacing: 1.2px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .arcade-lb-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      padding: 4px 0;
+      border-bottom: 1px dashed var(--card-border);
+    }
+    .arcade-lb-row:last-child {
+      border-bottom: none;
+    }
+    .roulette-box {
+      text-align: center;
+      padding: 22px 14px;
+      border-radius: 14px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      margin: 8px 0 12px 0;
+    }
+    .roulette-Target {
+      font-family: var(--font-dot);
+      font-size: 24px;
+      color: var(--text-white);
+      margin: 10px 0 6px 0;
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     /* ==========================================
        ГЛАВНЫЙ ВИДЖЕТ ДАТЫ И ПОГОДЫ (HERO CARD)
@@ -1447,6 +1619,11 @@
               </div>
             </div>
           </div>
+          <div class="mascot-actions" onclick="event.stopPropagation()">
+            <button class="mascot-mini-btn" onclick="openArcadeModal('game')">🎮 МИНИ-ИГРА</button>
+            <button class="mascot-mini-btn" onclick="openArcadeModal('roulette')">🎲 КТО К ДОСКЕ?</button>
+            <button class="mascot-mini-btn" style="flex: 0 0 auto; padding: 7px 10px;" id="mascotSoundBtn" onclick="toggleCyberSound()" title="Звук Юнита-13">🔊</button>
+          </div>
         </div>
       </div>
     </section>
@@ -1576,6 +1753,63 @@
 
       <div class="squad-list" id="squadMembersList"></div>
       <div style="font-size: 9px; color: var(--text-muted); text-align: center;">Ключ доступа взвода: <b>IGNIS-29</b></div>
+    </div>
+  </div>
+
+  <!-- МОДАЛКА: АРКАДА ЮНИТА-13 И РАНДОМАЙЗЕР -->
+  <div id="arcadeModal" class="modal-backdrop" onclick="if(event.target === this) closeArcadeModal()">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div>
+          <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; text-transform: uppercase;">ПРОТОКОЛ РАЗГРУЗКИ // ЮНИТ-13</div>
+          <div style="font-size: 15px; font-weight: 700;" id="arcadeModalTitle">КИБЕР-АРКАДА G-13</div>
+        </div>
+        <button class="modal-close" onclick="closeArcadeModal()">✕</button>
+      </div>
+
+      <div class="segment-bar" style="margin-bottom: 10px;">
+        <button class="segment-btn active" id="arcadeTabGameBtn" onclick="switchArcadeTab('game')">🎮 ПОБЕГ ОТ СЕССИИ</button>
+        <button class="segment-btn" id="arcadeTabRouletteBtn" onclick="switchArcadeTab('roulette')">🎲 КТО К ДОСКЕ?</button>
+      </div>
+
+      <!-- СЕКЦИЯ 1: ИГРА -->
+      <div id="arcadeViewGame">
+        <div class="arcade-hud">
+          <div>СЧЁТ:<span class="arcade-stat-val" id="arcadeScore">000</span></div>
+          <div id="arcadeShieldTag" style="font-size: 9px; color: var(--text-muted);">ЩИТ: НЕТ</div>
+          <div>РЕКОРД:<span class="arcade-stat-val" id="arcadeBest">000</span></div>
+        </div>
+
+        <div class="arcade-canvas-wrap" id="arcadeCanvasWrap">
+          <canvas id="arcadeCanvas" width="360" height="270"></canvas>
+          <div class="arcade-overlay" id="arcadeOverlay">
+            <div class="arcade-hero-face" id="arcadeOverlayFace">[ ⌐■_■ ]</div>
+            <div class="arcade-overlay-title" id="arcadeOverlayTitle">ПОБЕГ ОТ СЕССИИ</div>
+            <div class="arcade-overlay-sub" id="arcadeOverlaySub">Води пальцем влево-вправо! Уворачивайся от красных ДОЛГОВ и ПЕРЕСДАЧ, лови ЗАЧЁТЫ, ШАВУХУ и энергетический КОФЕ ⚡</div>
+            <button class="tech-btn" style="max-width: 220px; padding: 10px;" onclick="startArcadeGame()">[ 🚀 ЗАПУСТИТЬ ИГРУ ]</button>
+          </div>
+        </div>
+
+        <div class="arcade-leaderboard">
+          <div class="arcade-lb-title">
+            <span>🏆 ТОП-5 ВЗВОДА G-13</span>
+            <span id="arcadeLbStatus">ОНЛАЙН</span>
+          </div>
+          <div id="arcadeLbList">
+            <div style="font-size: 10px; color: var(--text-muted); text-align: center; padding: 4px 0;">Загрузка рекордов взвода...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- СЕКЦИЯ 2: РУЛЕТКА «КТО К ДОСКЕ?» -->
+      <div id="arcadeViewRoulette" style="display: none;">
+        <div class="roulette-box">
+          <div style="font-size: 9px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase;" id="rouletteSourceHint">ВЫБОР СЛУЧАЙНОГО БОЙЦА</div>
+          <div class="roulette-Target" id="rouletteWinner">[ ? ? ? ]</div>
+          <div style="font-size: 10px; color: var(--text-dim);" id="rouletteSub">Нажми кнопку ниже — Юнит-13 беспристрастно выберет счастливчика!</div>
+        </div>
+        <button class="tech-btn" id="rouletteSpinBtn" onclick="spinSquadRoulette()">[ 🎲 КРУТИТЬ РУЛЕТКУ ]</button>
+      </div>
     </div>
   </div>
 
@@ -2453,6 +2687,79 @@
       badgeEl.style.color = badgeColor;
     }
 
+    // ==========================================
+    // ЗВУКОВОЙ СИНТЕЗАТОР ЮНИТА-13 (WEB AUDIO API)
+    // ==========================================
+    let cyberAudioCtx = null;
+    let cyberSoundEnabled = localStorage.getItem('ignis_sound') !== 'off';
+
+    function updateSoundBtnUI() {
+      const btn = document.getElementById('mascotSoundBtn');
+      if (btn) btn.innerText = cyberSoundEnabled ? '🔊' : '🔇';
+    }
+    setTimeout(updateSoundBtnUI, 50);
+
+    function toggleCyberSound() {
+      haptic();
+      cyberSoundEnabled = !cyberSoundEnabled;
+      localStorage.setItem('ignis_sound', cyberSoundEnabled ? 'on' : 'off');
+      updateSoundBtnUI();
+      if (cyberSoundEnabled) playCyberSound('poke');
+    }
+
+    function playCyberSound(type) {
+      if (!cyberSoundEnabled) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        if (!cyberAudioCtx) cyberAudioCtx = new AudioCtx();
+        if (cyberAudioCtx.state === 'suspended') cyberAudioCtx.resume();
+
+        const now = cyberAudioCtx.currentTime;
+
+        const tone = (freq, endFreq, start, dur, wave = 'square', vol = 0.06) => {
+          const osc = cyberAudioCtx.createOscillator();
+          const gain = cyberAudioCtx.createGain();
+          osc.type = wave;
+          osc.frequency.setValueAtTime(freq, start);
+          if (endFreq && endFreq !== freq) {
+            osc.frequency.exponentialRampToValueAtTime(Math.max(20, endFreq), start + dur);
+          }
+          gain.gain.setValueAtTime(vol, start);
+          gain.gain.exponentialRampToValueAtTime(0.001, start + dur);
+          osc.connect(gain);
+          gain.connect(cyberAudioCtx.destination);
+          osc.start(start);
+          osc.stop(start + dur);
+        };
+
+        if (type === 'poke') {
+          tone(540, 780, now, 0.06, 'triangle', 0.07);
+          tone(820, 1120, now + 0.065, 0.08, 'sine', 0.07);
+        } else if (type === 'angry') {
+          tone(180, 110, now, 0.11, 'sawtooth', 0.08);
+          tone(145, 85, now + 0.12, 0.14, 'sawtooth', 0.08);
+        } else if (type === 'coin') {
+          tone(660, 880, now, 0.055, 'triangle', 0.07);
+          tone(990, 1320, now + 0.055, 0.09, 'sine', 0.07);
+        } else if (type === 'shield') {
+          tone(440, 660, now, 0.06, 'sine', 0.07);
+          tone(660, 990, now + 0.06, 0.07, 'sine', 0.07);
+          tone(990, 1480, now + 0.13, 0.11, 'triangle', 0.08);
+        } else if (type === 'hit') {
+          tone(220, 65, now, 0.22, 'sawtooth', 0.09);
+          tone(130, 48, now + 0.08, 0.24, 'square', 0.07);
+        } else if (type === 'tick') {
+          tone(700, 500, now, 0.03, 'triangle', 0.05);
+        } else if (type === 'win') {
+          tone(523.25, 523.25, now, 0.08, 'triangle', 0.08);
+          tone(659.25, 659.25, now + 0.085, 0.08, 'triangle', 0.08);
+          tone(783.99, 783.99, now + 0.17, 0.08, 'triangle', 0.08);
+          tone(1046.5, 1046.5, now + 0.255, 0.22, 'sine', 0.09);
+        }
+      } catch (e) {}
+    }
+
     function pokeMascot() {
       haptic();
       const now = Date.now();
@@ -2474,16 +2781,27 @@
       void screenEl.offsetWidth;
       screenEl.classList.add('poke-anim');
 
-      // Пасхалка при частом закликивании
-      if (mascotPokeStreak >= 5) {
+      // Секретная пасхалка: 6 быстрых тапов подряд запускают аркаду!
+      if (mascotPokeStreak >= 6) {
+        mascotPokeStreak = 0;
+        playCyberSound('shield');
+        openArcadeModal('game');
+        return;
+      }
+
+      // На 5-м быстром тапе — предупреждение о перегреве и намёк на секрет
+      if (mascotPokeStreak === 5) {
+        playCyberSound('angry');
         screenEl.className = 'mascot-screen alert-mode poke-anim';
         faceEl.innerText = '[ ╬ ಠ_ಠ ]';
         moodEl.innerText = 'ПЕРЕГРЕВ';
-        speechEl.innerText = 'Эй-эй, полегче! У меня так пиксели осыпятся — лучше проверь расписание на завтра!';
+        speechEl.innerText = 'Эй-эй, полегче! У меня пиксели кипят — тапни ещё раз, и я запущу секретный протокол разгрузки 🎮';
         badgeEl.innerText = '● ЗЛИТСЯ';
         badgeEl.style.color = 'var(--nothing-red)';
         return;
       }
+
+      playCyberSound('poke');
 
       let idx = Math.floor(Math.random() * MASCOT_QUIPS.length);
       if (idx === mascotLastQuipIdx) idx = (idx + 1) % MASCOT_QUIPS.length;
@@ -2496,6 +2814,461 @@
       speechEl.innerText = q.text;
       badgeEl.innerText = '● АКТИВЕН';
       badgeEl.style.color = 'var(--nothing-red)';
+    }
+
+    // ==========================================
+    // МИНИ-ИГРА «ПОБЕГ ОТ СЕССИИ» + РАНДОМАЙЗЕР
+    // ==========================================
+    let arcadeRunning = false;
+    let arcadeRafId = null;
+    let arcadeScore = 0;
+    let arcadeBest = parseInt(localStorage.getItem('ignis_arcade_best') || '0', 10) || 0;
+    let arcadePlayerX = 180;
+    let arcadeTargetX = 180;
+    let arcadeShield = false;
+    let arcadeItems = [];
+    let arcadeParticles = [];
+    let arcadeSpawnTimer = 0;
+    let arcadeFrame = 0;
+    let arcadeKeys = { left: false, right: false };
+
+    const HAZARDS_POOL = [
+      { label: 'ДОЛГ', w: 58 },
+      { label: '8:30', w: 52 },
+      { label: 'ПЕРЕСДАЧА', w: 86 },
+      { label: 'ЛЕТУЧКА', w: 72 },
+      { label: 'ОТЧИСЛЕНИЕ', w: 94 },
+      { label: 'КОНТРОЛЬНАЯ', w: 96 }
+    ];
+    const BONUS_POOL = [
+      { label: 'ЗАЧЁТ +10', pts: 10, type: 'bonus', w: 78 },
+      { label: 'ШАВУХА +15', pts: 15, type: 'bonus', w: 84 },
+      { label: 'АВТОМАТ +25', pts: 25, type: 'bonus', w: 92 },
+      { label: 'КОФЕ ⚡ ЩИТ', pts: 5, type: 'shield', w: 86 }
+    ];
+
+    function openArcadeModal(tab = 'game') {
+      haptic();
+      document.getElementById('arcadeModal').style.display = 'flex';
+      document.getElementById('arcadeBest').innerText = String(arcadeBest).padStart(3, '0');
+      switchArcadeTab(tab);
+      loadArcadeLeaderboard();
+      initArcadeControls();
+      drawArcadeStaticPreview();
+    }
+
+    function closeArcadeModal() {
+      haptic();
+      stopArcadeGame(false);
+      document.getElementById('arcadeModal').style.display = 'none';
+    }
+
+    function switchArcadeTab(tab) {
+      haptic();
+      const isGame = tab === 'game';
+      document.getElementById('arcadeTabGameBtn').classList.toggle('active', isGame);
+      document.getElementById('arcadeTabRouletteBtn').classList.toggle('active', !isGame);
+      document.getElementById('arcadeViewGame').style.display = isGame ? 'block' : 'none';
+      document.getElementById('arcadeViewRoulette').style.display = isGame ? 'none' : 'block';
+      if (!isGame) stopArcadeGame(false);
+    }
+
+    let arcadeControlsBound = false;
+    function initArcadeControls() {
+      if (arcadeControlsBound) return;
+      arcadeControlsBound = true;
+      const canvas = document.getElementById('arcadeCanvas');
+      if (!canvas) return;
+
+      const updatePosFromClientX = (clientX) => {
+        const rect = canvas.getBoundingClientRect();
+        if (!rect.width) return;
+        const relX = ((clientX - rect.left) / rect.width) * canvas.width;
+        arcadeTargetX = Math.max(38, Math.min(canvas.width - 38, relX));
+      };
+
+      canvas.addEventListener('pointerdown', (e) => {
+        updatePosFromClientX(e.clientX);
+      });
+      canvas.addEventListener('pointermove', (e) => {
+        if (e.pressure > 0 || e.pointerType === 'touch' || e.pointerType === 'mouse') {
+          updatePosFromClientX(e.clientX);
+        }
+      });
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A' || e.key === 'ф' || e.key === 'Ф') arcadeKeys.left = true;
+        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D' || e.key === 'в' || e.key === 'В') arcadeKeys.right = true;
+      });
+      window.addEventListener('keyup', (e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A' || e.key === 'ф' || e.key === 'Ф') arcadeKeys.left = false;
+        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D' || e.key === 'в' || e.key === 'В') arcadeKeys.right = false;
+      });
+    }
+
+    function updateShieldHUD() {
+      const el = document.getElementById('arcadeShieldTag');
+      if (!el) return;
+      if (arcadeShield) {
+        el.innerText = '⚡ ЩИТ АКТИВЕН';
+        el.style.color = 'var(--green-live)';
+      } else {
+        el.innerText = 'ЩИТ: НЕТ';
+        el.style.color = 'var(--text-muted)';
+      }
+    }
+
+    function startArcadeGame() {
+      haptic();
+      playCyberSound('shield');
+      const canvas = document.getElementById('arcadeCanvas');
+      arcadeScore = 0;
+      arcadePlayerX = canvas.width / 2;
+      arcadeTargetX = canvas.width / 2;
+      arcadeShield = false;
+      arcadeItems = [];
+      arcadeParticles = [];
+      arcadeSpawnTimer = 0;
+      arcadeFrame = 0;
+      arcadeRunning = true;
+
+      document.getElementById('arcadeScore').innerText = '000';
+      updateShieldHUD();
+      document.getElementById('arcadeOverlay').classList.add('hidden');
+
+      if (arcadeRafId) cancelAnimationFrame(arcadeRafId);
+      arcadeLoop();
+    }
+
+    function stopArcadeGame(isGameOver) {
+      arcadeRunning = false;
+      if (arcadeRafId) {
+        cancelAnimationFrame(arcadeRafId);
+        arcadeRafId = null;
+      }
+      if (isGameOver) {
+        playCyberSound('hit');
+        haptic();
+        const isNewRecord = arcadeScore > arcadeBest;
+        if (isNewRecord) {
+          arcadeBest = arcadeScore;
+          localStorage.setItem('ignis_arcade_best', String(arcadeBest));
+          document.getElementById('arcadeBest').innerText = String(arcadeBest).padStart(3, '0');
+        }
+        saveArcadeScoreToCloud(arcadeScore);
+
+        const overlay = document.getElementById('arcadeOverlay');
+        document.getElementById('arcadeOverlayFace').innerText = isNewRecord ? '[ ★ ‿ ★ ]' : '[ × _ × ]';
+        document.getElementById('arcadeOverlayTitle').innerText = isNewRecord
+          ? `НОВЫЙ РЕКОРД: ${arcadeScore} ОЧКОВ!`
+          : `СЕССИЯ НАСТИГЛА • СЧЁТ: ${arcadeScore}`;
+        document.getElementById('arcadeOverlaySub').innerText = isNewRecord
+          ? 'Красава, боец! Твой результат отправлен в таблицу рекордов взвода G-13 🏆'
+          : 'Не сдавайся! Попробуй ещё раз и пробейся в ТОП-5 нашего взвода.';
+        overlay.classList.remove('hidden');
+      }
+    }
+
+    function spawnArcadeParticles(x, y, color) {
+      for (let i = 0; i < 12; i++) {
+        const angle = (Math.PI * 2 * i) / 12 + Math.random() * 0.3;
+        const speed = 1.5 + Math.random() * 2.8;
+        arcadeParticles.push({
+          x,
+          y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          life: 1,
+          color
+        });
+      }
+    }
+
+    function drawArcadeStaticPreview() {
+      const canvas = document.getElementById('arcadeCanvas');
+      if (!canvas || arcadeRunning) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function arcadeLoop() {
+      if (!arcadeRunning) return;
+      const canvas = document.getElementById('arcadeCanvas');
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width;
+      const H = canvas.height;
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
+      arcadeFrame++;
+
+      // Пассивные очки за выживание каждые 45 кадров
+      if (arcadeFrame % 45 === 0) {
+        arcadeScore += 1;
+        document.getElementById('arcadeScore').innerText = String(arcadeScore).padStart(3, '0');
+      }
+
+      // Клавиатурное управление
+      if (arcadeKeys.left) arcadeTargetX = Math.max(38, arcadeTargetX - 5.5);
+      if (arcadeKeys.right) arcadeTargetX = Math.min(W - 38, arcadeTargetX + 5.5);
+
+      // Плавная интерполяция позиции Юнита-13
+      arcadePlayerX += (arcadeTargetX - arcadePlayerX) * 0.28;
+      const playerY = H - 30;
+      const playerW = 64;
+      const playerH = 26;
+
+      // Спавн объектов
+      arcadeSpawnTimer--;
+      const difficulty = Math.min(2.4, 1 + arcadeScore / 130);
+      if (arcadeSpawnTimer <= 0) {
+        const isBonus = Math.random() < 0.32;
+        if (isBonus) {
+          const tpl = BONUS_POOL[Math.floor(Math.random() * BONUS_POOL.length)];
+          arcadeItems.push({
+            x: 42 + Math.random() * (W - 84),
+            y: -18,
+            w: tpl.w,
+            h: 20,
+            vy: (1.9 + Math.random() * 1.1) * Math.min(1.65, difficulty),
+            kind: tpl.type,
+            pts: tpl.pts,
+            label: tpl.label
+          });
+        } else {
+          const tpl = HAZARDS_POOL[Math.floor(Math.random() * HAZARDS_POOL.length)];
+          arcadeItems.push({
+            x: 44 + Math.random() * (W - 88),
+            y: -18,
+            w: tpl.w,
+            h: 20,
+            vy: (2.2 + Math.random() * 1.5) * difficulty,
+            kind: 'hazard',
+            pts: 0,
+            label: tpl.label
+          });
+        }
+        arcadeSpawnTimer = Math.max(14, Math.floor(34 / difficulty));
+      }
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Отрисовка частиц
+      for (let i = arcadeParticles.length - 1; i >= 0; i--) {
+        const p = arcadeParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 0.05;
+        if (p.life <= 0) {
+          arcadeParticles.splice(i, 1);
+          continue;
+        }
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x - 2, p.y - 2, 4, 4);
+      }
+      ctx.globalAlpha = 1;
+
+      // Обновление и отрисовка падающих блоков
+      ctx.font = '700 10px "Space Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      for (let i = arcadeItems.length - 1; i >= 0; i--) {
+        const it = arcadeItems[i];
+        it.y += it.vy;
+
+        // Проверка столкновения с Юнитом-13
+        const hitX = Math.abs(it.x - arcadePlayerX) < (it.w / 2 + playerW / 2 - 6);
+        const hitY = Math.abs(it.y - playerY) < (it.h / 2 + playerH / 2 - 3);
+
+        if (hitX && hitY) {
+          arcadeItems.splice(i, 1);
+          if (it.kind === 'hazard') {
+            if (arcadeShield) {
+              arcadeShield = false;
+              updateShieldHUD();
+              playCyberSound('angry');
+              spawnArcadeParticles(arcadePlayerX, playerY, isLight ? '#00b4ff' : '#ff2a36');
+              continue;
+            } else {
+              spawnArcadeParticles(arcadePlayerX, playerY, '#ff2a36');
+              stopArcadeGame(true);
+              return;
+            }
+          } else if (it.kind === 'shield') {
+            arcadeShield = true;
+            arcadeScore += it.pts;
+            updateShieldHUD();
+            playCyberSound('shield');
+            spawnArcadeParticles(it.x, it.y, '#00d4ff');
+          } else {
+            arcadeScore += it.pts;
+            playCyberSound('coin');
+            spawnArcadeParticles(it.x, it.y, '#00e676');
+          }
+          document.getElementById('arcadeScore').innerText = String(arcadeScore).padStart(3, '0');
+          continue;
+        }
+
+        if (it.y > H + 25) {
+          arcadeItems.splice(i, 1);
+          continue;
+        }
+
+        // Рисуем капсулу предмета
+        const rx = it.x - it.w / 2;
+        const ry = it.y - it.h / 2;
+        if (it.kind === 'hazard') {
+          ctx.fillStyle = isLight ? 'rgba(255, 228, 230, 0.95)' : 'rgba(55, 10, 14, 0.9)';
+          ctx.strokeStyle = '#ff2a36';
+        } else if (it.kind === 'shield') {
+          ctx.fillStyle = isLight ? 'rgba(224, 244, 255, 0.96)' : 'rgba(8, 38, 52, 0.92)';
+          ctx.strokeStyle = '#00b4ff';
+        } else {
+          ctx.fillStyle = isLight ? 'rgba(220, 252, 235, 0.95)' : 'rgba(8, 42, 26, 0.9)';
+          ctx.strokeStyle = '#00e676';
+        }
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        ctx.roundRect(rx, ry, it.w, it.h, 6);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = it.kind === 'hazard'
+          ? (isLight ? '#c4141c' : '#ff4d57')
+          : (it.kind === 'shield' ? (isLight ? '#0077b6' : '#38bdf8') : (isLight ? '#047857' : '#34d399'));
+        ctx.fillText(it.label, it.x, it.y + 0.5);
+      }
+
+      // Отрисовка Юнита-13 (игрока)
+      const px = arcadePlayerX - playerW / 2;
+      const py = playerY - playerH / 2;
+
+      if (arcadeShield) {
+        ctx.strokeStyle = isLight ? 'rgba(0, 180, 255, 0.7)' : 'rgba(56, 189, 248, 0.75)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(px - 4, py - 4, playerW + 8, playerH + 8, 11);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = isLight ? '#ffffff' : '#0b0c10';
+      ctx.strokeStyle = isLight ? '#00b4ff' : '#ff2a36';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.roundRect(px, py, playerW, playerH, 8);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.font = '13px "DotGothic16", monospace';
+      ctx.fillStyle = isLight ? '#00b4ff' : '#ff2a36';
+      ctx.fillText(arcadeShield ? '[⌐■_■]' : '[•‿•]', arcadePlayerX, playerY + 1);
+
+      arcadeRafId = requestAnimationFrame(arcadeLoop);
+    }
+
+    // СИНХРОНИЗАЦИЯ ТАБЛИЦЫ РЕКОРДОВ ВЗВОДА G-13
+    async function saveArcadeScoreToCloud(score) {
+      if (score <= 0) return;
+      try {
+        const uid = String(currentUser.id);
+        const res = await fetch(`${DB_URL}/arcade/${uid}.json`);
+        const existing = await res.json();
+        const prevBest = existing?.score || 0;
+
+        if (score > prevBest) {
+          await fetch(`${DB_URL}/arcade/${uid}.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: currentUser.first_name || 'Боец G-13',
+              score: score,
+              updatedAt: Date.now()
+            })
+          });
+        }
+        loadArcadeLeaderboard();
+      } catch (e) {}
+    }
+
+    async function loadArcadeLeaderboard() {
+      const listEl = document.getElementById('arcadeLbList');
+      if (!listEl) return;
+      try {
+        const res = await fetch(`${DB_URL}/arcade.json`);
+        const data = (await res.json()) || {};
+        const entries = Object.values(data)
+          .filter(item => item && typeof item.score === 'number')
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 5);
+
+        if (entries.length === 0) {
+          listEl.innerHTML = `<div style="font-size: 10px; color: var(--text-muted); text-align: center; padding: 4px 0;">Пока никто не поставил рекорд — будь первым!</div>`;
+          return;
+        }
+
+        const medals = ['🥇', '🥈', '🥉', '04', '05'];
+        listEl.innerHTML = entries.map((item, i) => `
+          <div class="arcade-lb-row">
+            <span><b>${medals[i]}</b> ${esc(item.name)}</span>
+            <span style="font-family: var(--font-dot); font-size: 14px; color: var(--nothing-red);">${String(item.score).padStart(3, '0')}</span>
+          </div>
+        `).join('');
+      } catch (e) {
+        listEl.innerHTML = `<div style="font-size: 10px; color: var(--text-muted); text-align: center;">Таблица временно недоступна</div>`;
+      }
+    }
+
+    // РАНДОМАЙЗЕР «КТО К ДОСКЕ?»
+    let rouletteSpinning = false;
+    async function spinSquadRoulette() {
+      if (rouletteSpinning) return;
+      haptic();
+      rouletteSpinning = true;
+
+      const winnerEl = document.getElementById('rouletteWinner');
+      const subEl = document.getElementById('rouletteSub');
+      const hintEl = document.getElementById('rouletteSourceHint');
+
+      // 1. Сначала берём тех, кто отметился в аудитории
+      let pool = Object.values(radarData).map(s => s?.name).filter(Boolean);
+      let sourceLabel = 'ИЗ ТЕХ, КТО СЕЙЧАС В АУДИТОРИИ';
+
+      // 2. Если в аудитории меньше 2 человек — подтягиваем весь взвод из облака
+      if (pool.length < 2) {
+        try {
+          const res = await fetch(`${DB_URL}/squad.json`);
+          const squad = (await res.json()) || {};
+          const squadNames = Object.values(squad).map(u => u?.name).filter(Boolean);
+          if (squadNames.length > 0) {
+            pool = squadNames;
+            sourceLabel = 'ИЗ ПОЛНОГО СОСТАВА ВЗВОДА G-13';
+          }
+        } catch (e) {}
+      }
+
+      if (pool.length === 0) {
+        pool = [currentUser.first_name || 'Боец №1', 'Староста', 'Доброволец с последней парты'];
+        sourceLabel = 'ДЕМО-СПИСОК ВЗВОДА';
+      }
+
+      hintEl.innerText = `ВЫБОР: ${sourceLabel}`;
+      subEl.innerText = 'Юнит-13 сканирует кандидатов...';
+
+      const totalSteps = 18;
+      for (let step = 0; step < totalSteps; step++) {
+        const pick = pool[Math.floor(Math.random() * pool.length)];
+        winnerEl.innerText = pick.toUpperCase();
+        playCyberSound('tick');
+        await new Promise(r => setTimeout(r, 45 + step * 12));
+      }
+
+      const finalPick = pool[Math.floor(Math.random() * pool.length)];
+      winnerEl.innerText = `🎯 ${finalPick.toUpperCase()}`;
+      subEl.innerText = 'Вердикт Юнита-13 обжалованию не подлежит! Удачи у доски 😎';
+      playCyberSound('win');
+      haptic();
+      rouletteSpinning = false;
     }
 
     // ТАЙМЕР И СТАТУС ПАР
