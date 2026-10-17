@@ -269,11 +269,214 @@
       line-height: 1.4;
     }
 
-    /* ОБЪЕДИНЕННЫЙ БЛОК СТАТУСА ВНУТРИ HERO-КАРТОЧКИ */
+    /* ОБЪЕДИНЕННЫЙ БЛОК СТАТУСА И ТАЙМЛАЙНА ВНУТРИ HERO-КАРТОЧКИ */
     .hero-status-divider {
       margin-top: 14px;
       padding-top: 14px;
       border-top: 1px dashed var(--card-border);
+    }
+
+    /* ТАЙМЛАЙН УЧЕБНОГО ДНЯ (LIVE DAY JOURNEY) */
+    .journey-wrap {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--card-border);
+      display: none;
+    }
+    .journey-wrap.show {
+      display: block;
+    }
+    .journey-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+      font-size: 9px;
+      letter-spacing: 0.6px;
+    }
+    .journey-equator-badge {
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .journey-equator-badge.is-equator {
+      color: var(--green-live);
+    }
+    .journey-finish-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-white);
+      font-weight: 700;
+      font-size: 9px;
+    }
+    :root[data-theme="light"] .journey-finish-pill {
+      border-color: rgba(0, 174, 255, 0.28);
+      background: #f0f8ff;
+      color: #0b2538;
+    }
+
+    /* Полоса прогресса текущей пары / перемены */
+    .journey-live-bar-box {
+      margin-bottom: 10px;
+      display: none;
+    }
+    .journey-live-bar-box.show {
+      display: block;
+    }
+    .journey-live-bar-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8px;
+      color: var(--text-dim);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .journey-live-track {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(128, 128, 128, 0.18);
+      overflow: hidden;
+      position: relative;
+    }
+    :root[data-theme="light"] .journey-live-track {
+      background: rgba(0, 165, 255, 0.14);
+    }
+    .journey-live-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff2a36 0%, #ff6b72 100%);
+      box-shadow: 0 0 10px rgba(255, 42, 54, 0.55);
+      transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    :root[data-theme="light"] .journey-live-fill {
+      background: linear-gradient(90deg, #0095ff 0%, #00d4ff 100%);
+      box-shadow: 0 0 10px rgba(0, 184, 255, 0.45);
+    }
+
+    /* Горизонтальная лента капсул пар и перемен */
+    .journey-track {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      padding: 2px 1px 4px 1px;
+      scrollbar-width: none;
+    }
+    .journey-track::-webkit-scrollbar {
+      display: none;
+    }
+    .journey-node {
+      position: relative;
+      flex: 1 0 auto;
+      min-width: 78px;
+      padding: 7px 9px;
+      border-radius: 10px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform 0.15s ease, border-color 0.25s ease, opacity 0.25s ease;
+    }
+    .journey-node:active {
+      transform: scale(0.95);
+    }
+    .journey-node.is-done {
+      opacity: 0.52;
+    }
+    .journey-node.is-canceled {
+      opacity: 0.42;
+      border-style: dashed;
+    }
+    .journey-node.is-now {
+      border-color: #ff2a36;
+      box-shadow: 0 0 12px rgba(215, 25, 33, 0.24);
+    }
+    :root[data-theme="light"] .journey-node.is-now {
+      border-color: #00b4ff;
+      box-shadow: 0 4px 12px rgba(0, 180, 255, 0.2);
+      background: #ffffff;
+    }
+    .journey-node-fill {
+      position: absolute;
+      inset: 0;
+      width: var(--node-pct, 0%);
+      background: rgba(215, 25, 33, 0.16);
+      pointer-events: none;
+      transition: width 0.4s ease;
+    }
+    :root[data-theme="light"] .journey-node-fill {
+      background: rgba(0, 180, 255, 0.14);
+    }
+    .journey-node-top {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 4px;
+      font-size: 8px;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+    .journey-node.is-now .journey-node-top {
+      color: var(--nothing-red);
+    }
+    :root[data-theme="light"] .journey-node.is-now .journey-node-top {
+      color: #0095ff;
+    }
+    .journey-node-subj {
+      position: relative;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-white);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 96px;
+    }
+    .journey-node.is-canceled .journey-node-subj {
+      text-decoration: line-through;
+    }
+    .journey-node-sub {
+      position: relative;
+      font-size: 8px;
+      color: var(--text-dim);
+      margin-top: 1px;
+    }
+    .journey-connector {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 2px;
+      font-size: 7px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+    }
+    .journey-connector.is-active-break {
+      color: var(--green-live);
+      font-weight: 700;
+    }
+    .journey-connector-line {
+      width: 12px;
+      height: 1px;
+      background: var(--card-border);
+      margin-top: 2px;
+    }
+    .journey-connector.is-active-break .journey-connector-line {
+      background: var(--green-live);
+      box-shadow: 0 0 6px var(--green-live);
     }
 
     /* ШИРОКАЯ КАРТОЧКА РАДАРА (В АУДИТОРИИ) */
@@ -1574,6 +1777,26 @@
             </div>
             <div class="status-text-main" id="statusTitle">ПОДКЛЮЧЕНИЕ К БАЗЕ...</div>
             <div class="status-sub" id="statusSub">Загрузка актуального расписания</div>
+
+            <!-- ЖИВОЙ ТАЙМЛАЙН УЧЕБНОГО ДНЯ -->
+            <div class="journey-wrap" id="dayJourneyWrap" style="display: none;">
+              <div class="journey-meta-row">
+                <div class="journey-equator-badge" id="journeyEquatorBadge">ПРОГРЕСС ДНЯ: 0%</div>
+                <div class="journey-finish-pill" id="journeyFinishBadge">🏁 ДОМОЙ В --:--</div>
+              </div>
+
+              <div class="journey-live-bar-box" id="journeyLiveBarBox" style="display: none;">
+                <div class="journey-live-bar-head">
+                  <span id="journeyLiveBarLabel">ПРОГРЕСС ТЕКУЩЕЙ ПАРЫ</span>
+                  <span class="journey-live-pct" id="journeyLiveBarPct">0%</span>
+                </div>
+                <div class="journey-live-track">
+                  <div class="journey-live-fill" id="journeyLiveFill"></div>
+                </div>
+              </div>
+
+              <div class="journey-track" id="journeyTrack"></div>
+            </div>
           </div>
         </div>
 
@@ -2019,8 +2242,9 @@
       }).join('');
     }
 
-    function openLessonModal(idx) {
-      const list = timetable[currentDay] || [];
+    function openLessonModal(idx, dayOverride) {
+      const targetDay = dayOverride !== undefined ? dayOverride : currentDay;
+      const list = timetable[targetDay] || [];
       const item = list[idx];
       if (!item) return;
       haptic();
@@ -2362,6 +2586,11 @@
           mood = 'ВЗВОД';
           speech = `В аудитории уже ${radarCount} чел.! Взвод G-13 держит оборону. До конца ${mascotCtxState.left} мин.`;
           screenMode = 'hype-mode';
+        } else if (mascotCtxState.equator) {
+          face = blink ? '[ - ‿ - ]' : '[ ✧ ‿ ✧ ]';
+          mood = 'ЭКВАТОР';
+          speech = `Экватор дня позади (${mascotCtxState.dayPct || 50}%)! Осталось совсем чуть-чуть, до конца пары ${mascotCtxState.left} мин ⚡`;
+          screenMode = 'hype-mode';
         } else {
           face = blink ? '[ - ̀_-́ ]' : '[ • ̀_•́ ]';
           mood = 'УЧЁБА';
@@ -2369,8 +2598,10 @@
         }
       } else if (mascotCtxState.mode === 'break') {
         face = blink ? '[ - ‿ - ]' : '[ ^ ‿ ^ ]';
-        mood = 'ПЕРЕМЕНА';
-        speech = `Перемена ${mascotCtxState.left} мин! Самое время размяться или сгонять за перекусом ☕`;
+        mood = mascotCtxState.equator ? 'ЭКВАТОР' : 'ПЕРЕМЕНА';
+        speech = mascotCtxState.equator
+          ? `Перемена ${mascotCtxState.left} мин! Половина учебного дня уже позади (${mascotCtxState.dayPct}%) — финиш близко ☕`
+          : `Перемена ${mascotCtxState.left} мин! Самое время размяться или сгонять за перекусом ☕`;
         screenMode = 'hype-mode';
       } else if (mascotCtxState.mode === 'before') {
         face = blink ? '[ - _ - ]' : '[ ⊙ _ ⊙ ]';
@@ -2984,11 +3215,215 @@
       rouletteSpinning = false;
     }
 
-    // ТАЙМЕР И СТАТУС ПАР
+    // ТАЙМЕР, СТАТУС ПАР И ТАЙМЛАЙН УЧЕБНОГО ДНЯ
     function parseTimeToMinutes(tStr) {
       const match = tStr.match(/(\d{1,2})[:.](\d{2})/);
       if (!match) return null;
       return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
+    }
+
+    function formatMinutesToHHMM(mins) {
+      const h = String(Math.floor(mins / 60)).padStart(2, '0');
+      const m = String(mins % 60).padStart(2, '0');
+      return `${h}:${m}`;
+    }
+
+    function formatDurationLeft(mins) {
+      if (mins <= 0) return '0 М';
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      if (h > 0 && m > 0) return `${h} Ч ${m} М`;
+      if (h > 0) return `${h} Ч`;
+      return `${m} МИН`;
+    }
+
+    function renderDayJourney(day, currentMinutes, parsedLessons) {
+      const wrap = document.getElementById('dayJourneyWrap');
+      if (!wrap) return { equator: false, dayPct: 0 };
+
+      if (!parsedLessons || parsedLessons.length === 0) {
+        wrap.style.display = 'none';
+        return { equator: false, dayPct: 0 };
+      }
+
+      wrap.style.display = 'block';
+
+      const activeLessons = parsedLessons.filter(l => l.status !== 'canceled');
+      const refLessons = activeLessons.length > 0 ? activeLessons : parsedLessons;
+      const dayStart = refLessons[0].start;
+      const dayEnd = refLessons[refLessons.length - 1].end;
+      const totalSpan = Math.max(1, dayEnd - dayStart);
+
+      let dayPct = 0;
+      if (currentMinutes <= dayStart) {
+        dayPct = 0;
+      } else if (currentMinutes >= dayEnd) {
+        dayPct = 100;
+      } else {
+        dayPct = Math.min(99, Math.max(1, Math.round(((currentMinutes - dayStart) / totalSpan) * 100)));
+      }
+
+      const isEquator = dayPct >= 50 && dayPct < 100;
+
+      // 1. Бейдж прогресса дня и экватора
+      const eqBadge = document.getElementById('journeyEquatorBadge');
+      if (eqBadge) {
+        if (dayPct >= 100) {
+          eqBadge.innerText = '✅ ДЕНЬ ЗАВЕРШЁН • 100%';
+          eqBadge.classList.add('passed');
+        } else if (isEquator) {
+          eqBadge.innerText = `⚡ ЭКВАТОР ПРОЙДЕН • ${dayPct}%`;
+          eqBadge.classList.add('passed');
+        } else {
+          eqBadge.innerText = `ПРОГРЕСС ДНЯ: ${dayPct}%`;
+          eqBadge.classList.remove('passed');
+        }
+      }
+
+      // 2. Бейдж конца учебного дня и таймер «Домой через...»
+      const finBadge = document.getElementById('journeyFinishBadge');
+      const endTimeStr = formatMinutesToHHMM(dayEnd);
+      if (finBadge) {
+        if (activeLessons.length === 0) {
+          finBadge.innerText = '🎉 ВСЕ ПАРЫ ОТМЕНЕНЫ';
+          finBadge.classList.add('free-now');
+        } else if (currentMinutes < dayEnd) {
+          const minsToFreedom = dayEnd - currentMinutes;
+          finBadge.innerText = `🏁 ДОМОЙ В ${endTimeStr} • ЧЕРЕЗ ${formatDurationLeft(minsToFreedom)}`;
+          finBadge.classList.remove('free-now');
+        } else {
+          finBadge.innerText = `🎉 СВОБОДЕН ДО ЗАВТРА (${endTimeStr})`;
+          finBadge.classList.add('free-now');
+        }
+      }
+
+      // 3. Живая полоса прогресса текущей пары или перемены
+      const barBox = document.getElementById('journeyLiveBarBox');
+      const barLabel = document.getElementById('journeyLiveBarLabel');
+      const barPct = document.getElementById('journeyLiveBarPct');
+      const barFill = document.getElementById('journeyLiveFill');
+
+      let activeSegment = null;
+      for (let i = 0; i < parsedLessons.length; i++) {
+        const l = parsedLessons[i];
+        if (currentMinutes >= l.start && currentMinutes < l.end && l.status !== 'canceled') {
+          const dur = Math.max(1, l.end - l.start);
+          const elapsed = currentMinutes - l.start;
+          const pct = Math.min(100, Math.max(0, Math.round((elapsed / dur) * 100)));
+          activeSegment = {
+            mode: 'lesson',
+            label: `ПАРА №${i + 1} • ПРОШЛО ${elapsed} ИЗ ${dur} МИН`,
+            pct
+          };
+          break;
+        }
+        if (i < parsedLessons.length - 1) {
+          const nextL = parsedLessons[i + 1];
+          if (currentMinutes >= l.end && currentMinutes < nextL.start) {
+            const dur = Math.max(1, nextL.start - l.end);
+            const elapsed = currentMinutes - l.end;
+            const left = nextL.start - currentMinutes;
+            const pct = Math.min(100, Math.max(0, Math.round((elapsed / dur) * 100)));
+            activeSegment = {
+              mode: 'break',
+              label: `ПЕРЕМЕНА • ОСТАЛОСЬ ${left} МИН`,
+              pct
+            };
+            break;
+          }
+        }
+      }
+
+      if (barBox && barLabel && barPct && barFill) {
+        if (activeSegment) {
+          barBox.style.display = 'block';
+          barLabel.innerText = activeSegment.label;
+          barPct.innerText = `${activeSegment.pct}%`;
+          barFill.style.width = `${activeSegment.pct}%`;
+          if (activeSegment.mode === 'break') {
+            barFill.classList.add('break-mode');
+            barPct.classList.add('break-mode');
+          } else {
+            barFill.classList.remove('break-mode');
+            barPct.classList.remove('break-mode');
+          }
+        } else {
+          barBox.style.display = 'none';
+        }
+      }
+
+      // 4. Интерактивные капсулы пар и коннекторы перемен
+      const track = document.getElementById('journeyTrack');
+      if (track) {
+        let nextMarked = false;
+        const nodesHtml = [];
+
+        for (let i = 0; i < parsedLessons.length; i++) {
+          const l = parsedLessons[i];
+          const isCanceled = l.status === 'canceled';
+          const isDone = currentMinutes >= l.end;
+          const isNow = currentMinutes >= l.start && currentMinutes < l.end;
+          let isNext = false;
+
+          if (!isCanceled && !isDone && !isNow && !nextMarked && currentMinutes < l.start) {
+            isNext = true;
+            nextMarked = true;
+          }
+
+          let stateClass = '';
+          let tagText = `${i + 1} ПАРА`;
+          if (isCanceled) {
+            stateClass = 'is-canceled';
+            tagText = 'ОТМЕНА';
+          } else if (isNow) {
+            stateClass = 'is-now';
+            tagText = '● СЕЙЧАС';
+          } else if (isDone) {
+            stateClass = 'is-done';
+            tagText = '✓ ПРОШЛА';
+          } else if (isNext) {
+            stateClass = 'is-next';
+            tagText = '➔ ДАЛЕЕ';
+          }
+
+          const startStr = formatMinutesToHHMM(l.start);
+          const endStr = formatMinutesToHHMM(l.end);
+
+          nodesHtml.push(`
+            <div class="journey-node ${stateClass}" onclick="openLessonModal(${l.origIdx}, ${day})" title="Открыть досье пары">
+              <div class="journey-node-top">
+                <span class="journey-node-idx">#0${i + 1}</span>
+                <span class="journey-node-state-tag">${tagText}</span>
+              </div>
+              <div class="journey-node-subj">${esc(l.name)}</div>
+              <div class="journey-node-meta">
+                <span>${startStr}–${endStr}</span>
+                <span class="journey-node-cab">${esc(l.cab)}</span>
+              </div>
+            </div>
+          `);
+
+          if (i < parsedLessons.length - 1) {
+            const nextL = parsedLessons[i + 1];
+            const breakMins = Math.max(0, nextL.start - l.end);
+            const isBreakNow = currentMinutes >= l.end && currentMinutes < nextL.start;
+            const isBreakPassed = currentMinutes >= nextL.start;
+            const connClass = isBreakNow ? 'is-active-break' : (isBreakPassed ? 'is-passed' : '');
+            const breakIcon = breakMins >= 20 ? '☕ ' : '';
+
+            nodesHtml.push(`
+              <div class="journey-connector ${connClass}" title="Перемена ${breakMins} мин">
+                <div class="journey-connector-pill">${breakIcon}${breakMins}м</div>
+                <div class="journey-connector-line"></div>
+              </div>
+            `);
+          }
+        }
+
+        track.innerHTML = nodesHtml.join('');
+      }
+
+      return { equator: isEquator, dayPct };
     }
 
     function updateLiveStatus() {
@@ -3014,6 +3449,7 @@
         badge.style.color = "var(--text-muted)";
         title.innerText = "ВЫХОДНОЙ ДЕНЬ";
         sub.innerText = "Сегодня пар нет — отдыхаем и набираемся сил.";
+        renderDayJourney(day, currentMinutes, []);
         updateMascot({ mode: 'weekend', left: 0, subj: '' });
         return;
       }
@@ -3026,21 +3462,22 @@
         badge.style.color = "var(--text-muted)";
         title.innerText = "ПАР НА СЕГОДНЯ НЕТ";
         sub.innerText = "На сегодня расписание не заполнено.";
+        renderDayJourney(day, currentMinutes, []);
         updateMascot({ mode: 'empty', left: 0, subj: '' });
         return;
       }
 
       const parsedLessons = [];
-      for (const item of todayList) {
+      todayList.forEach((item, origIdx) => {
         const parts = item.time.split(/[-—–]/);
         if (parts.length >= 2) {
           const start = parseTimeToMinutes(parts[0]);
           const end = parseTimeToMinutes(parts[1]);
           if (start !== null && end !== null) {
-            parsedLessons.push({ ...item, start, end });
+            parsedLessons.push({ ...item, start, end, origIdx });
           }
         }
-      }
+      });
 
       if (parsedLessons.length === 0) {
         card.classList.remove('active-lesson');
@@ -3048,11 +3485,13 @@
         badge.style.color = "var(--text-muted)";
         title.innerText = "РАСПИСАНИЕ НА СЕГОДНЯ";
         sub.innerText = `Пар запланировано: ${todayList.length}`;
+        renderDayJourney(day, currentMinutes, []);
         updateMascot({ mode: 'idle', left: 0, subj: '' });
         return;
       }
 
       parsedLessons.sort((a, b) => a.start - b.start);
+      const journeyState = renderDayJourney(day, currentMinutes, parsedLessons);
 
       for (let i = 0; i < parsedLessons.length; i++) {
         const lesson = parsedLessons[i];
@@ -3063,7 +3502,7 @@
             badge.style.color = "var(--nothing-red)";
             title.innerText = "ПАРА ОТМЕНЕНА";
             sub.innerText = `${lesson.name} (${lesson.cab}) отменена`;
-            updateMascot({ mode: 'canceled', left: lesson.end - currentMinutes, subj: lesson.name });
+            updateMascot({ mode: 'canceled', left: lesson.end - currentMinutes, subj: lesson.name, ...journeyState });
             return;
           }
 
@@ -3073,7 +3512,7 @@
           badge.style.color = "var(--nothing-red)";
           title.innerText = `${lesson.name}`;
           sub.innerText = `${lesson.cab} • До конца пары: ${left} мин`;
-          updateMascot({ mode: 'in_progress', left, subj: lesson.name });
+          updateMascot({ mode: 'in_progress', left, subj: lesson.name, ...journeyState });
           return;
         }
 
@@ -3086,7 +3525,7 @@
             badge.style.color = "var(--green-live)";
             title.innerText = `ПЕРЕМЕНА (${breakLeft} МИН)`;
             sub.innerText = `Далее: ${nextLesson.name} (${nextLesson.cab})${nextLesson.status === 'canceled' ? ' [ОТМЕНА]' : ''}`;
-            updateMascot({ mode: 'break', left: breakLeft, subj: nextLesson.name });
+            updateMascot({ mode: 'break', left: breakLeft, subj: nextLesson.name, ...journeyState });
             return;
           }
         }
@@ -3099,7 +3538,7 @@
         badge.style.color = "#38bdf8";
         title.innerText = `ДО ПАР: ${diff} МИН`;
         sub.innerText = `1-я пара: ${parsedLessons[0].name} (${parsedLessons[0].cab})${parsedLessons[0].status === 'canceled' ? ' [ОТМЕНА]' : ''}`;
-        updateMascot({ mode: 'before', left: diff, subj: parsedLessons[0].name });
+        updateMascot({ mode: 'before', left: diff, subj: parsedLessons[0].name, ...journeyState });
         return;
       }
 
@@ -3108,7 +3547,7 @@
       badge.style.color = "var(--text-muted)";
       title.innerText = "ПАРЫ ЗАКОНЧИЛИСЬ";
       sub.innerText = "Все занятия на сегодня завершены 🎮";
-      updateMascot({ mode: 'after', left: 0, subj: '' });
+      updateMascot({ mode: 'after', left: 0, subj: '', ...journeyState });
     }
 
     // ==========================================
