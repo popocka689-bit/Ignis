@@ -17,8 +17,16 @@ const CYBERPUNK_MORNING_IMAGES = [
   "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1080&auto=format&fit=crop"  // Киберпанк арт
 ];
 
+function esc(str) {
+  return String(str ?? '').replace(/[&<>]/g, c => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;'
+  }[c]));
+}
+
 function fetchData(url) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     https.get(url, (res) => {
       let data = '';
       res.on('data', chunk => data += chunk);
@@ -26,7 +34,7 @@ function fetchData(url) {
         try { resolve(JSON.parse(data)); }
         catch (e) { resolve(null); }
       });
-    }).on('error', reject);
+    }).on('error', () => resolve(null));
   });
 }
 
@@ -42,57 +50,17 @@ function putData(url, data) {
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(payload)
       }
-    }, res => resolve());
+    }, () => resolve());
     req.on('error', () => resolve());
     req.write(payload);
     req.end();
   });
 }
 
-function sendMessage(chatId, text, replyMarkup = null) {
+function callTelegram(method, body) {
   return new Promise((resolve) => {
-    const body = {
-      chat_id: chatId,
-      text: text,
-      parse_mode: 'HTML'
-    };
-    if (replyMarkup) {
-      body.reply_markup = replyMarkup;
-    }
     const payload = JSON.stringify(body);
-
-    const req = https.request(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(payload)
-      }
-    }, res => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => resolve());
-    });
-
-    req.on('error', () => resolve());
-    req.write(payload);
-    req.end();
-  });
-}
-
-function sendPhoto(chatId, photoUrl, caption, replyMarkup = null) {
-  return new Promise((resolve) => {
-    const body = {
-      chat_id: chatId,
-      photo: photoUrl,
-      caption: caption,
-      parse_mode: 'HTML'
-    };
-    if (replyMarkup) {
-      body.reply_markup = replyMarkup;
-    }
-    const payload = JSON.stringify(body);
-
-    const req = https.request(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+    const req = https.request(`https://api.telegram.org/bot${BOT_TOKEN}/${method}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -102,12 +70,8 @@ function sendPhoto(chatId, photoUrl, caption, replyMarkup = null) {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          resolve(!!parsed.ok);
-        } catch (e) {
-          resolve(false);
-        }
+        try { resolve(!!JSON.parse(data).ok); }
+        catch (e) { resolve(false); }
       });
     });
 
@@ -115,6 +79,18 @@ function sendPhoto(chatId, photoUrl, caption, replyMarkup = null) {
     req.write(payload);
     req.end();
   });
+}
+
+function sendMessage(chatId, text, replyMarkup = null) {
+  const body = { chat_id: chatId, text, parse_mode: 'HTML' };
+  if (replyMarkup) body.reply_markup = replyMarkup;
+  return callTelegram('sendMessage', body);
+}
+
+function sendPhoto(chatId, photoUrl, caption, replyMarkup = null) {
+  const body = { chat_id: chatId, photo: photoUrl, caption, parse_mode: 'HTML' };
+  if (replyMarkup) body.reply_markup = replyMarkup;
+  return callTelegram('sendPhoto', body);
 }
 
 async function sendDigest(chatId, photoUrl, text, replyMarkup) {
@@ -128,7 +104,7 @@ async function sendDigest(chatId, photoUrl, text, replyMarkup) {
 }
 
 function parseTimeToMinutes(tStr) {
-  const match = tStr.match(/(\d{1,2})[:.](\d{2})/);
+  const match = String(tStr ?? '').match(/(\d{1,2})[:.](\d{2})/);
   if (!match) return null;
   return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
 }
@@ -169,7 +145,7 @@ async function run() {
     Object.keys(squadData).forEach(uid => recipients.add(uid));
   }
 
-  const todayLessons = (timetable && timetable[day]) ? timetable[day] : [];
+  const todayLessons = (timetable && Array.isArray(timetable[day])) ? timetable[day].filter(Boolean) : [];
   const alertsToday = sentAlerts || {};
 
   // ==========================================
@@ -187,7 +163,7 @@ async function run() {
       } else {
         lessonsBlock = todayLessons.map((l, i) => {
           const isCanc = l.status === 'canceled';
-          return `${i + 1}. <b>${l.name}</b> ${isCanc ? '[ОТМЕНЕНА]' : `[${l.cab}]`} • <code>${l.time}</code>`;
+          return `${i + 1}. <b>${esc(l.name)}</b> ${isCanc ? '[ОТМЕНЕНА]' : `[${esc(l.cab)}]`} • <code>${esc(l.time)}</code>`;
         }).join("\n");
       }
 
@@ -198,7 +174,7 @@ async function run() {
       } else {
         tasksBlock = taskKeys.slice(0, 3).map(k => {
           const t = tasksData[k];
-          return `• <b>${t.subj}</b>: ${t.title} (до <code>${t.deadline}</code>)`;
+          return `• <b>${esc(t.subj)}</b>: ${esc(t.title)} (до <code>${esc(t.deadline)}</code>)`;
         }).join("\n");
       }
 
@@ -242,7 +218,7 @@ async function run() {
     const alertKey = `lesson_${idx}`;
     if (alertsToday[alertKey]) continue; // Уже отправляли сегодня
 
-    const parts = lesson.time.split(/[-—–]/);
+    const parts = String(lesson.time ?? '').split(/[-—–]/);
     if (parts.length >= 1) {
       const startMin = parseTimeToMinutes(parts[0]);
       if (startMin !== null) {
@@ -252,9 +228,9 @@ async function run() {
         if (diff >= 1 && diff <= 15) {
           const msg = `🚨 <b>IGNIS // НАПОМИНАНИЕ</b>\n\n` +
                       `До пары осталось <b>~${diff} минут</b>!\n\n` +
-                      `📖 <b>Предмет:</b> ${lesson.name}\n` +
-                      `🚪 <b>Кабинет:</b> ${lesson.cab}\n` +
-                      `⏰ <b>Время:</b> ${lesson.time}\n\n` +
+                      `📖 <b>Предмет:</b> ${esc(lesson.name)}\n` +
+                      `🚪 <b>Кабинет:</b> ${esc(lesson.cab)}\n` +
+                      `⏰ <b>Время:</b> ${esc(lesson.time)}\n\n` +
                       `<i>Не забудьте отметиться в RADAR!</i>`;
 
           const lessonKeyboard = {

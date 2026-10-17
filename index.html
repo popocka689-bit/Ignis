@@ -40,7 +40,6 @@
       --surface: rgba(8, 8, 8, 0.9);
       --sheet-bg: #0d0d0d;
       --input-bg: #000000;
-      --hover-bg: #161616;
       --active-bg: rgba(40, 6, 8, 0.9);
       --nav-bg: rgba(0, 0, 0, 0.85);
       --backdrop: rgba(0, 0, 0, 0.75);
@@ -67,7 +66,6 @@
       --surface: rgba(250, 250, 250, 0.92);
       --sheet-bg: #fafafa;
       --input-bg: #ffffff;
-      --hover-bg: #ebebeb;
       --active-bg: rgba(253, 236, 236, 0.95);
       --nav-bg: rgba(255, 255, 255, 0.85);
       --backdrop: rgba(230, 230, 230, 0.6);
@@ -207,16 +205,6 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    .role-admin {
-      background: rgba(215, 25, 33, 0.15);
-      border: 1px solid var(--nothing-red);
-      color: var(--nothing-red);
-    }
-    .role-student {
-      background: var(--hover-bg);
-      border: 1px solid var(--border-bright);
-      color: var(--text-dim);
-    }
 
     /* ТАБЫ */
     .tab-view {
@@ -296,47 +284,29 @@
     }
     .admin-toggle-btn {
       display: none;
-      background: transparent;
-      border: 1px solid var(--border-bright);
-      color: var(--text-dim);
       font-family: 'Space Mono', monospace;
       font-size: 9px;
       padding: 4px 8px;
-      border-radius: 6px;
       cursor: pointer;
       text-transform: uppercase;
-    }
-    .admin-toggle-btn.active {
-      border-color: var(--nothing-red);
-      color: var(--nothing-red);
     }
 
     .segment-bar {
       display: flex;
       gap: 6px;
       margin-bottom: 16px;
-      border: 1px solid var(--card-border);
       padding: 4px;
-      border-radius: 12px;
-      background: var(--surface);
     }
     .segment-btn {
       flex: 1;
       background: transparent;
-      border: 1px solid transparent;
       color: var(--text-muted);
       font-family: 'Space Mono', monospace;
       font-size: 11px;
       font-weight: 700;
       padding: 8px 0;
-      border-radius: 8px;
       cursor: pointer;
       transition: all 0.15s;
-    }
-    .segment-btn.active {
-      background: var(--hover-bg);
-      color: var(--text-white);
-      border-color: var(--border-bright);
     }
 
     .lessons-rack, .tasks-rack {
@@ -406,22 +376,14 @@
       font-weight: 700;
     }
     .lesson-action-btn {
-      background: transparent;
-      border: 1px solid var(--border-bright);
-      color: var(--text-dim);
       font-family: 'Space Mono', monospace;
       font-size: 9px;
       padding: 3px 6px;
-      border-radius: 4px;
       cursor: pointer;
       display: none;
     }
     .admin-mode .lesson-action-btn {
       display: inline-block;
-    }
-    .lesson-action-btn.btn-del {
-      border-color: var(--nothing-red);
-      color: var(--nothing-red);
     }
 
     /* ЗАДАЧИ */
@@ -486,19 +448,8 @@
       color: var(--text-dim);
     }
     .task-del-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 14px;
       cursor: pointer;
-      padding: 2px 4px;
       display: none;
-    }
-    .task-del-btn:hover {
-      color: var(--nothing-red);
-    }
-    .admin-mode .task-del-btn {
-      display: block;
     }
 
     /* РЕДАКТОР */
@@ -532,10 +483,6 @@
     }
 
     .tech-btn {
-      background: var(--text-white);
-      color: var(--bg);
-      border: none;
-      border-radius: 10px;
       font-family: 'Space Mono', monospace;
       font-size: 11px;
       font-weight: 700;
@@ -589,6 +536,7 @@
       max-height: 80vh;
       display: flex;
       flex-direction: column;
+      animation: sheetUp 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
     }
     .modal-head {
       display: flex;
@@ -599,10 +547,6 @@
       padding-bottom: 10px;
     }
     .modal-close {
-      background: transparent;
-      border: none;
-      color: var(--text-dim);
-      font-size: 16px;
       cursor: pointer;
     }
     .radar-list, .squad-list {
@@ -629,26 +573,10 @@
       background: var(--green-live);
     }
     .btn-kick {
-      background: transparent;
-      border: 1px solid var(--nothing-red);
-      color: var(--nothing-red);
-      border-radius: 4px;
       font-size: 9px;
       padding: 4px 8px;
       cursor: pointer;
       font-family: 'Space Mono', monospace;
-    }
-
-    .btn-checkin {
-      background: transparent;
-      border: 1px solid var(--border-bright);
-      color: var(--text-white);
-      transition: all 0.2s;
-    }
-    .btn-checkin.checked {
-      background: rgba(16, 185, 129, 0.15);
-      border-color: var(--green-live);
-      color: var(--green-live);
     }
 
     /* НАВБАР */
@@ -672,21 +600,14 @@
     }
     .nav-trigger {
       background: transparent;
-      border: 1px solid transparent;
       color: var(--text-muted);
       padding: 8px 0;
-      border-radius: 10px;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 3px;
       font-family: 'Space Mono', monospace;
-    }
-    .nav-trigger.active {
-      background: var(--hover-bg);
-      border-color: var(--border-bright);
-      color: var(--text-white);
     }
     .nav-dot {
       font-family: 'DotGothic16', monospace;
@@ -695,6 +616,7 @@
     }
     .nav-trigger.active .nav-dot {
       color: var(--nothing-red);
+      animation: navBounce 0.35s ease;
     }
     .nav-text {
       font-size: 9px;
@@ -747,9 +669,6 @@
        КНОПКА ТЕМЫ
        ========================================== */
     .theme-btn {
-      background: transparent;
-      border: 1px solid var(--border-bright);
-      color: var(--text-white);
       width: 26px;
       height: 26px;
       border-radius: 50%;
@@ -779,11 +698,9 @@
        АНИМАЦИИ НАЖАТИЙ
        ========================================== */
     .tech-btn, .segment-btn, .nav-trigger, .admin-toggle-btn,
-    .lesson-action-btn, .btn-kick, .theme-btn, .role-badge {
+    .lesson-action-btn, .btn-kick, .theme-btn, .role-badge,
+    .modal-close, .task-del-btn, .tech-card {
       position: relative;
-      overflow: hidden;
-    }
-    .tech-card {
       overflow: hidden;
     }
 
@@ -828,20 +745,12 @@
       100% { transform: scale(1); }
     }
 
-    /* Активная вкладка в навбаре слегка подпрыгивает */
-    .nav-trigger.active .nav-dot {
-      animation: navBounce 0.35s ease;
-    }
     @keyframes navBounce {
       0%   { transform: translateY(0); }
       40%  { transform: translateY(-4px); }
       100% { transform: translateY(0); }
     }
 
-    /* Модалки выезжают снизу */
-    .modal-sheet {
-      animation: sheetUp 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
-    }
     @keyframes sheetUp {
       from { transform: translateY(40px); opacity: 0; }
       to   { transform: translateY(0); opacity: 1; }
@@ -1220,6 +1129,16 @@
       return `${year}-${month}-${day}`;
     }
 
+    function esc(str) {
+      return String(str ?? '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[c]));
+    }
+
     // ВЕЕРНАЯ РАССЫЛКА ПО ВСЕМУ ВЗВОДУ В ЛИЧКУ
     async function sendTelegramAlert(text, replyMarkup = null) {
       try {
@@ -1267,13 +1186,7 @@
         const res = await fetch(`${DB_URL}/squad/${currentUser.id}.json`);
         const squadUser = await res.json();
         if (squadUser) {
-          localStorage.setItem('ignis_auth_token', 'AUTHORIZED');
           initUI(false);
-          return;
-        } else {
-          // Если админ удалил человека из базы, сразу выбиваем на экран блокировки
-          localStorage.removeItem('ignis_auth_token');
-          document.getElementById('lockScreen').style.display = 'flex';
           return;
         }
       } catch (err) {
@@ -1319,7 +1232,6 @@
           body: JSON.stringify(memberData)
         });
 
-        localStorage.setItem('ignis_auth_token', 'AUTHORIZED');
         document.getElementById('lockScreen').style.display = 'none';
         initUI(false);
       } catch (err) {
@@ -1364,11 +1276,11 @@
         const dataTime = await resTime.json();
         if (dataTime) {
           timetable = {
-            1: dataTime[1] || [],
-            2: dataTime[2] || [],
-            3: dataTime[3] || [],
-            4: dataTime[4] || [],
-            5: dataTime[5] || []
+            1: (dataTime[1] || []).filter(Boolean),
+            2: (dataTime[2] || []).filter(Boolean),
+            3: (dataTime[3] || []).filter(Boolean),
+            4: (dataTime[4] || []).filter(Boolean),
+            5: (dataTime[5] || []).filter(Boolean)
           };
         }
 
@@ -1407,9 +1319,6 @@
       document.getElementById('editorBoxSchedule').classList.toggle('show', editMode);
       document.getElementById('editorBoxTasks').classList.toggle('show', editMode);
       document.body.classList.toggle('admin-mode', editMode);
-
-      renderLessons();
-      renderTasks();
     }
 
     // РАСПИСАНИЕ
@@ -1442,15 +1351,15 @@
             <div class="lesson-left">
               <div class="lesson-index">${idx + 1}</div>
               <div>
-                <div class="lesson-time">${item.time}</div>
+                <div class="lesson-time">${esc(item.time)}</div>
                 <div class="lesson-name">
-                  ${item.name}
+                  ${esc(item.name)}
                   ${isCanceled ? `<span class="lesson-badge-canceled">ОТМЕНЕНА</span>` : ''}
                 </div>
               </div>
             </div>
             <div class="lesson-right">
-              <div class="lesson-cab">${item.cab}</div>
+              <div class="lesson-cab">${esc(item.cab)}</div>
               ${isAdmin ? `
                 <button class="lesson-action-btn" onclick="changeLessonCab(${idx})">[КАБ]</button>
                 <button class="lesson-action-btn" onclick="toggleLessonCancel(${idx})">[${isCanceled ? 'ВЕРНУТЬ' : 'ОТМЕНА'}]</button>
@@ -1537,7 +1446,7 @@
     }
 
     // ЗАДАНИЯ
-   function renderTasks() {
+    function renderTasks() {
       const container = document.getElementById('tasksContainer');
       const taskKeys = Object.keys(tasks);
 
@@ -1560,13 +1469,13 @@
 
         return `
           <div class="task-item ${isDone ? 'completed' : ''}">
-            <div class="task-checkbox ${isDone ? 'checked' : ''}" onclick="toggleTask('${id}')"></div>
-            <div class="task-content" onclick="toggleTask('${id}')">
-              <div class="task-tag">${item.subj}</div>
-              <div class="task-title">${item.title}</div>
-              <div class="task-deadline">${item.deadline}</div>
+            <div class="task-checkbox ${isDone ? 'checked' : ''}" onclick="toggleTask('${esc(id)}')"></div>
+            <div class="task-content" onclick="toggleTask('${esc(id)}')">
+              <div class="task-tag">${esc(item.subj)}</div>
+              <div class="task-title">${esc(item.title)}</div>
+              <div class="task-deadline">${esc(item.deadline)}</div>
             </div>
-            ${isAdmin ? `<button class="task-del-btn" onclick="deleteTask('${id}')">✕</button>` : ''}
+            ${isAdmin ? `<button class="task-del-btn" onclick="deleteTask('${esc(id)}')">✕</button>` : ''}
           </div>
         `;
       }).join('');
@@ -1584,7 +1493,7 @@
       localStorage.setItem('ignis_done_tasks', JSON.stringify(completedTasks));
       renderTasks();
 
-      const box = document.querySelector(`.task-checkbox[onclick="toggleTask('${id}')"]`);
+      const box = document.querySelector(`.task-checkbox[onclick="toggleTask('${esc(id)}')"]`);
       if (box) box.classList.add('pop');
     }
 
@@ -1616,9 +1525,9 @@
       });
 
       const msg = `📌 <b>IGNIS // НОВЫЙ ДЕДЛАЙН</b>\n\n` +
-                  `📖 <b>Предмет:</b> ${subj}\n` +
-                  `📝 <b>Задание:</b> ${title}\n` +
-                  `⏳ <b>Срок:</b> ${deadline}\n\n` +
+                  `📖 <b>Предмет:</b> ${esc(subj)}\n` +
+                  `📝 <b>Задание:</b> ${esc(title)}\n` +
+                  `⏳ <b>Срок:</b> ${esc(deadline)}\n\n` +
                   `<i>Зафиксировано в очереди задач взвода!</i>`;
 
       await sendTelegramAlert(msg);
@@ -1681,9 +1590,9 @@
           <div class="user-entry-item">
             <div style="display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700;">
               <div class="radar-dot"></div>
-              <span>${student.name}</span>
+              <span>${esc(student.name)}</span>
             </div>
-            ${isAdmin ? `<button class="btn-kick" onclick="kickFromRadar('${uid}')">[УДАЛИТЬ]</button>` : ''}
+            ${isAdmin ? `<button class="btn-kick" onclick="kickFromRadar('${esc(uid)}')">[УДАЛИТЬ]</button>` : ''}
           </div>
         `;
       }).join('');
@@ -1749,10 +1658,10 @@
           return `
             <div class="user-entry-item">
               <div>
-                <div style="font-size: 12px; font-weight: 700;">${user.name}</div>
-                <div style="font-size: 9px; color: var(--text-muted);">@${user.username} • UID: ${uid}</div>
+                <div style="font-size: 12px; font-weight: 700;">${esc(user.name)}</div>
+                <div style="font-size: 9px; color: var(--text-muted);">@${esc(user.username)} • UID: ${esc(uid)}</div>
               </div>
-              <button class="btn-kick" onclick="kickFromSquad('${uid}')">[KICK]</button>
+              <button class="btn-kick" onclick="kickFromSquad('${esc(uid)}')">[KICK]</button>
             </div>
           `;
         }).join('');
@@ -1827,6 +1736,15 @@
         }
       }
 
+      if (parsedLessons.length === 0) {
+        card.classList.remove('active-lesson');
+        badge.innerText = "● IDLE";
+        badge.style.color = "var(--text-muted)";
+        title.innerText = "РАСПИСАНИЕ АКТИВНО";
+        sub.innerText = `Пар на сегодня: ${todayList.length}`;
+        return;
+      }
+
       parsedLessons.sort((a, b) => a.start - b.start);
 
       for (let i = 0; i < parsedLessons.length; i++) {
@@ -1870,7 +1788,7 @@
         badge.innerText = "● PENDING";
         badge.style.color = "#38bdf8";
         title.innerText = `ДО ПАР: ${diff} МИН`;
-        sub.innerText = `1-я пара: ${parsedLessons[0].name} (${parsedLessons[0].cab})`;
+        sub.innerText = `1-я пара: ${parsedLessons[0].name} (${parsedLessons[0].cab})${parsedLessons[0].status === 'canceled' ? ' [ОТМЕНА]' : ''}`;
         return;
       }
 
@@ -1920,7 +1838,7 @@
     // ==========================================
     // RIPPLE-ЭФФЕКТ ПРИ НАЖАТИИ
     // ==========================================
-    const RIPPLE_TARGETS = '.tech-btn, .segment-btn, .nav-trigger, .admin-toggle-btn, .lesson-action-btn, .btn-kick, .theme-btn, .role-badge, .tech-card[onclick]';
+    const RIPPLE_TARGETS = '.tech-btn, .segment-btn, .nav-trigger, .admin-toggle-btn, .lesson-action-btn, .btn-kick, .theme-btn, .role-badge, .modal-close, .task-del-btn, .tech-card[onclick]';
 
     document.addEventListener('pointerdown', (e) => {
       const el = e.target.closest(RIPPLE_TARGETS);
