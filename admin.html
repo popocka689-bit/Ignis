@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>IGNIS HQ // ПУЛЬТ УПРАВЛЕНИЯ G-13</title>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <script>
+    (function() {
+      var saved = localStorage.getItem('ignis_theme');
+      if (saved === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+    })();
+  </script>
+
+  <style>
+    :root {
+      --bg-black: #000000;
+      --surface: #0a0a0c;
+      --card-bg: rgba(14, 14, 18, 0.78);
+      --card-border: #222226;
+      --border-bright: #38383e;
+      --nothing-red: #d71921;
+      --green-live: #00e676;
+      --amber-warn: #ffb300;
+      --text-white: #ffffff;
+      --text-dim: #94949e;
+      --text-muted: #52525b;
+      --input-bg: #08080a;
+      --sheet-bg: #0d0d10;
+      --nav-bg: rgba(8, 8, 10, 0.92);
+      --backdrop-bg: rgba(0, 0, 0, 0.85);
+      --font-dot: 'DotGothic16', monospace;
+      --font-mono: 'Space Mono', monospace;
+
+      --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.05) 100%), rgba(28, 28, 32, 0.62);
+      --glass-bg-strong: linear-gradient(180deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.09) 100%), rgba(40, 40, 46, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.14);
+      --glass-border-strong: rgba(255, 255, 255, 0.24);
+      --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 -1px 0 rgba(0, 0, 0, 0.35);
+      --glass-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      --glass-blur: blur(16px) saturate(160%);
+      --glass-text: #f5f5f5;
+
+      --glass-red-bg: linear-gradient(180deg, rgba(255, 70, 78, 0.30) 0%, rgba(215, 25, 33, 0.14) 100%), rgba(40, 10, 12, 0.6);
+      --glass-red-border: rgba(255, 80, 88, 0.45);
+      --glass-red-text: #ff5a62;
+
+      --glass-green-bg: linear-gradient(180deg, rgba(52, 211, 153, 0.28) 0%, rgba(16, 185, 129, 0.12) 100%), rgba(8, 32, 24, 0.6);
+      --glass-green-border: rgba(52, 211, 153, 0.45);
+    }
+
+    :root[data-theme="light"] {
+      --bg-black: #f2f4f8;
+      --surface: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: #d8dee8;
+      --border-bright: #b8c2d4;
+      --nothing-red: #0095ff;
+      --green-live: #00a859;
+      --amber-warn: #d97706;
+      --text-white: #0f172a;
+      --text-dim: #475569;
+      --text-muted: #64748b;
+      --input-bg: #f8fafc;
+      --sheet-bg: #ffffff;
+      --nav-bg: rgba(255, 255, 255, 0.92);
+      --backdrop-bg: rgba(15, 23, 42, 0.55);
+
+      --glass-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 100%), rgba(236, 236, 240, 0.55);
+      --glass-bg-strong: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.78) 100%), rgba(228, 228, 234, 0.6);
+      --glass-border: rgba(0, 0, 0, 0.08);
+      --glass-border-strong: rgba(0, 0, 0, 0.14);
+      --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 1), inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+      --glass-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      --glass-text: #0f172a;
+
+      --glass-red-bg: linear-gradient(180deg, rgba(255, 235, 236, 0.95) 0%, rgba(255, 210, 213, 0.7) 100%);
+      --glass-red-border: rgba(215, 25, 33, 0.35);
+      --glass-red-text: #c4141c;
+
+      --glass-green-bg: linear-gradient(180deg, rgba(225, 250, 240, 0.95) 0%, rgba(190, 240, 220, 0.7) 100%);
+      --glass-green-border: rgba(5, 150, 105, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-black);
+      background-image: radial-gradient(var(--card-border) 1px, transparent 1px);
+      background-size: 18px 18px;
+      color: var(--text-white);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      padding: 16px 14px 105px 14px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    /* ЭКРАН АВТОРИЗАЦИИ HQ */
+    #hqLockScreen {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-black);
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .lock-box {
+      border: 1px solid var(--card-border);
+      background: var(--surface);
+      padding: 26px 20px;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .lock-badge {
+      display: inline-block;
+      font-size: 9px;
+      color: var(--nothing-red);
+      border: 1px solid var(--nothing-red);
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      letter-spacing: 1.5px;
+    }
+    .lock-title {
+      font-family: var(--font-dot);
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .lock-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 18px;
+      line-height: 1.45;
+    }
+
+    /* ШАПКА HQ */
+    .tech-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      border-bottom: 1px dashed var(--border-bright);
+    }
+    .brand-box {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .brand-title {
+      font-family: var(--font-dot);
+      font-size: 24px;
+      letter-spacing: 2px;
+      color: var(--text-white);
+    }
+    .brand-tag {
+      font-size: 9px;
+      background: var(--nothing-red);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .back-app-btn {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-white);
+      text-decoration: none;
+    }
+    .theme-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 13px;
+      cursor: pointer;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ПЛАШКА КОМАНДИРА */
+    .commander-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      font-size: 10px;
+    }
+    .commander-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+    }
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green-live);
+      box-shadow: 0 0 8px var(--green-live);
+    }
+
+    /* ТАБЫ */
+    .tab-view {
+      display: none;
+      animation: fadeUp 0.2s ease;
+    }
+    .tab-view.active {
+      display: block;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* КАРТОЧКИ И ФОРМЫ */
+    .hq-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 12px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .hq-card-title {
+      font-size: 9px;
+      letter-spacing: 1.4px;
+      color: var(--nothing-red);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .input-field {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 9px;
+      padding: 10px 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-white);
+      margin-bottom: 8px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-field:focus {
+      border-color: var(--nothing-red);
+    }
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .field-label {
+      font-size: 8px;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    .tech-btn {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 11px 14px;
+      width: 100%;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      border-radius: 12px;
+      background: var(--glass-bg-strong);
+      border: 1px solid var(--glass-border-strong);
+      color: var(--glass-text);
+      box-shadow: var(--glass-highlight), var(--glass-shadow);
+      transition: transform 0.12s ease, filter 0.15s ease;
+    }
+    .tech-btn:active {
+      transform: scale(0.97);
+    }
+    .tech-btn.btn-red {
+      background: var(--glass-red-bg);
+      border-color: var(--glass-red-border);
+      color: var(--glass-red-text);
+    }
+    .tech-btn.btn-green {
+      background: var(--glass-green-bg);
+      border-color: var(--glass-green-border);
+      color: var(--green-live);
+    }
+
+    /* СЕГМЕНТЫ ДНЕЙ */
+    .segment-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+      padding: 4px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+    }
+    .segment-btn {
+      flex: 1;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 0;
+      cursor: pointer;
+    }
+    .segment-btn.active {
+      background: var(--glass-bg-strong);
+      border-color: var(--glass-border-strong);
+      color: var(--glass-text);
+    }
+
+    /* СПИСОК ПАР В HQ */
+    .hq-lesson-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 13px 14px;
+      margin-bottom: 10px;
+    }
+    .hq-lesson-card.is-canceled {
+      opacity: 0.55;
+      border-style: dashed;
+    }
+    .hq-lesson-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .hq-lesson-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-white);
+      margin-top: 2px;
+    }
+    .hq-lesson-meta {
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+    .hq-lesson-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 9px;
+      border-top: 1px dashed var(--card-border);
+    }
+    .mini-btn {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 7px;
+      cursor: pointer;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-white);
+      text-transform: uppercase;
+    }
+    .mini-btn.danger {
+      background: var(--glass-red-bg);
+      border-color: var(--glass-red-border);
+      color: var(--glass-red-text);
+    }
+    .mini-btn.success {
+      background: var(--glass-green-bg);
+      border-color: var(--glass-green-border);
+      color: var(--green-live);
+    }
+
+    /* ШАБЛОНЫ РАССЫЛКИ */
+    .preset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .preset-btn {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      padding: 10px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-white);
+      text-align: left;
+      line-height: 1.35;
+      transition: border-color 0.2s, transform 0.12s;
+    }
+    .preset-btn:active {
+      transform: scale(0.97);
+      border-color: var(--nothing-red);
+    }
+
+    /* ЭЛЕМЕНТЫ СПИСКА ЛЮДЕЙ */
+    .member-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    /* ЧЕКБОКС ОПОВЕЩЕНИЯ */
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 10px;
+      color: var(--text-dim);
+      margin: 6px 0 10px 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .check-row input {
+      accent-color: var(--nothing-red);
+      width: 15px;
+      height: 15px;
+    }
+
+    /* МОДАЛКА РЕДАКТИРОВАНИЯ ПАРЫ */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: var(--backdrop-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-sheet {
+      width: 100%;
+      max-width: 460px;
+      background: var(--sheet-bg);
+      border-top: 1px solid var(--border-bright);
+      border-radius: 22px 22px 0 0;
+      padding: 18px 16px 26px 16px;
+      max-height: 88vh;
+      overflow-y: auto;
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      border-bottom: 1px dashed var(--card-border);
+    }
+    .modal-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-dim);
+      cursor: pointer;
+    }
+
+    /* ТОСТ УВЕДОМЛЕНИЙ */
+    #hqToast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      background: var(--surface);
+      border: 1px solid var(--nothing-red);
+      color: var(--text-white);
+      padding: 9px 16px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 700;
+      z-index: 10000;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    #hqToast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* НИЖНИЙ НАВБАР HQ (4 ВКЛАДКИ) */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--nav-bg);
+      border-top: 1px solid var(--card-border);
+      padding: 9px 12px 14px 12px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+    .nav-rack {
+      max-width: 460px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .nav-trigger {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: var(--text-muted);
+      padding: 7px 0;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-family: var(--font-mono);
+    }
+    .nav-trigger.active {
+      background: var(--glass-bg-strong);
+      border-color: var(--glass-border-strong);
+      color: var(--glass-text);
+    }
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+    .nav-trigger.active .nav-icon {
+      color: var(--nothing-red);
+    }
+    .nav-text {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="hqToast">✓ СОХРАНЕНО</div>
+
+  <!-- ШЛЮЗ АВТОРИЗАЦИИ HQ (ДЛЯ ВХОДА С БРАУЗЕРА ИЛИ НОВОГО УСТРОЙСТВА) -->
+  <div id="hqLockScreen">
+    <div class="lock-box">
+      <div class="lock-badge">КОМАНДНЫЙ ШЛЮЗ // G-13 HQ</div>
+      <div class="lock-title">ДОСТУП КОМАНДИРОВ</div>
+      <div class="lock-sub">Автоматический вход по Telegram ID для командиров взвода, либо по мастер-ключу управления:</div>
+      <input type="password" id="inHqPass" class="input-field" placeholder="МАСТЕР-КЛЮЧ HQ" style="text-align: center; letter-spacing: 2px;">
+      <button class="tech-btn" onclick="submitHqPasscode()">[ РАЗБЛОКИРОВАТЬ ПУЛЬТ ]</button>
+      <div id="hqLockError" style="font-size: 9px; color: var(--nothing-red); margin-top: 10px; display: none;">[ОШИБКА: НЕВЕРНЫЙ МАСТЕР-КЛЮЧ]</div>
+      <div style="margin-top: 14px;">
+        <a href="index.html" style="font-size: 10px; color: var(--text-muted); text-decoration: none;">⬅ Вернуться в основное приложение</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <header class="tech-header">
+      <div class="brand-box">
+        <div class="brand-title">IGNIS</div>
+        <div class="brand-tag">HQ // ПУЛЬТ</div>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="back-app-btn">[ ⬅ В IGNIS ]</a>
+        <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Сменить тему">☀</button>
+      </div>
+    </header>
+
+    <!-- СТАТУС КОМАНДИРА -->
+    <div class="commander-bar">
+      <div class="commander-status">
+        <div class="live-dot"></div>
+        <span id="commanderName">КОМАНДИР G-13</span>
+      </div>
+      <span style="color: var(--text-muted);" id="commanderUid">ID: ---</span>
+    </div>
+
+    <!-- ==========================================
+         ВКЛАДКА 1: УПРАВЛЕНИЕ РАСПИСАНИЕМ
+    ========================================== -->
+    <section id="tab-schedule" class="tab-view active">
+      <div class="segment-bar">
+        <button class="segment-btn active" onclick="selectDay(1, this)">ПН</button>
+        <button class="segment-btn" onclick="selectDay(2, this)">ВТ</button>
+        <button class="segment-btn" onclick="selectDay(3, this)">СР</button>
+        <button class="segment-btn" onclick="selectDay(4, this)">ЧТ</button>
+        <button class="segment-btn" onclick="selectDay(5, this)">ПТ</button>
+      </div>
+
+      <div id="hqLessonsList"></div>
+
+      <!-- ФОРМА ДОБАВЛЕНИЯ ПАРЫ -->
+      <div class="hq-card">
+        <div class="hq-card-title">
+          <span>+ ДОБАВИТЬ ПАРУ В ЭТОТ ДЕНЬ</span>
+          <span id="addDayIndicator">ПН</span>
+        </div>
+
+        <label class="field-label">Название предмета *</label>
+        <input type="text" id="addSubj" class="input-field" placeholder="Напр. Высшая математика">
+
+        <div class="input-row">
+          <div>
+            <label class="field-label">Время (ЧЧ:ММ-ЧЧ:ММ) *</label>
+            <input type="text" id="addTime" class="input-field" placeholder="08:30-10:00">
+          </div>
+          <div>
+            <label class="field-label">Кабинет / Аудитория *</label>
+            <input type="text" id="addCab" class="input-field" placeholder="Каб. 302">
+          </div>
+        </div>
+
+        <label class="field-label">👤 Преподаватель (ФИО)</label>
+        <input type="text" id="addTeacher" class="input-field" placeholder="Напр. Сидоров Алексей Викторович">
+
+        <label class="field-label">🧭 Где находится / Этаж / Корпус</label>
+        <input type="text" id="addLocation" class="input-field" placeholder="Напр. 3 этаж, левое крыло">
+
+        <label class="field-label">📝 Заметка для группы</label>
+        <input type="text" id="addNote" class="input-field" placeholder="Что принести, тема лабы или контрольной...">
+
+        <label class="check-row">
+          <input type="checkbox" id="notifyOnAdd">
+          <span>📢 Отправить уведомление взводу в Telegram</span>
+        </label>
+
+        <button class="tech-btn" onclick="addLessonHQ()">[ + ДОБАВИТЬ ПАРУ В БАЗУ ]</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         ВКЛАДКА 2: РАССЫЛКА И СИГНАЛЫ ВЗВОДУ
+    ========================================== -->
+    <section id="tab-broadcast" class="tab-view">
+      <div class="hq-card">
+        <div class="hq-card-title">
+          <span>⚡ БЫСТРЫЕ СИГНАЛЫ В 1 КЛИК</span>
+          <span>TELEGRAM PUSH</span>
+        </div>
+        <div style="font-size: 10px; color: var(--text-dim); margin-bottom: 10px;">
+          Нажми на шаблон, чтобы подставить текст в поле рассылки ниже:
+        </div>
+        <div class="preset-grid">
+          <button class="preset-btn" onclick="fillPreset('radar')">🚨 <b>СБОР В АУДИТОРИИ</b><br><span style="color:var(--text-muted)">Препод на месте, перекличка!</span></button>
+          <button class="preset-btn" onclick="fillPreset('cab')">🚪 <b>СМЕНА КАБИНЕТА</b><br><span style="color:var(--text-muted)">Пару перенесли в другую ауд.</span></button>
+          <button class="preset-btn" onclick="fillPreset('late')">⏳ <b>ПРЕПОД ОПАЗДЫВАЕТ</b><br><span style="color:var(--text-muted)">Можно не бежать сломя голову</span></button>
+          <button class="preset-btn" onclick="fillPreset('free')">🎉 <b>ПАРУ ОТМЕНИЛИ!</b><br><span style="color:var(--text-muted)">Легальный отдых для взвода</span></button>
+        </div>
+
+        <label class="field-label">Текст объявления для взвода G-13</label>
+        <textarea id="broadcastText" class="input-field" style="min-height: 110px; resize: vertical; line-height: 1.45;" placeholder="Введите сообщение, которое бот пришлёт каждому бойцу взвода в личку..."></textarea>
+
+        <button class="tech-btn btn-red" id="sendBroadcastBtn" onclick="sendCustomBroadcast()">[ 📢 ОТПРАВИТЬ ВСЕМУ ВЗВОДУ ]</button>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         ВКЛАДКА 3: СОСТАВ ВЗВОДА И РАДАР
+    ========================================== -->
+    <section id="tab-squad" class="tab-view">
+      <div class="hq-card">
+        <div class="hq-card-title">
+          <span>📍 СЕЙЧАС В АУДИТОРИИ (РАДАР)</span>
+          <span id="hqRadarCount" style="color: var(--green-live);">00 ЧЕЛ.</span>
+        </div>
+        <div id="hqRadarList" style="margin-bottom: 10px;"></div>
+        <button class="tech-btn btn-red" onclick="clearAllRadar()">[ 🧹 ОЧИСТИТЬ РАДАР СЕГОДНЯ ]</button>
+      </div>
+
+      <div class="hq-card">
+        <div class="hq-card-title">
+          <span>👥 СОСТАВ ВЗВОДА G-13</span>
+          <span id="hqSquadCount">00/13</span>
+        </div>
+        <div id="hqSquadList" style="margin-bottom: 12px;"></div>
+
+        <div style="border-top: 1px dashed var(--card-border); padding-top: 10px;">
+          <label class="field-label">+ Добавить бойца вручную (Telegram ID и Имя)</label>
+          <div class="input-row">
+            <input type="text" id="manualSquadUid" class="input-field" placeholder="ID (напр. 123456789)">
+            <input type="text" id="manualSquadName" class="input-field" placeholder="Имя бойца">
+          </div>
+          <button class="tech-btn" onclick="addSquadMemberManual()">[ + ДОБАВИТЬ В СПИСОК ГРУППЫ ]</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         ВКЛАДКА 4: ДОСТУП, КЕНТЫ-АДМИНЫ И РЕКОРДЫ
+    ========================================== -->
+    <section id="tab-security" class="tab-view">
+      <div class="hq-card">
+        <div class="hq-card-title">
+          <span>👑 КОМАНДИРЫ (АДМИНЫ HQ)</span>
+          <span>ПОЛНЫЙ ДОСТУП</span>
+        </div>
+        <div style="font-size: 10px; color: var(--text-dim); margin-bottom: 10px; line-height: 1.4;">
+          Эти пользователи входят в <b>IGNIS HQ</b> автоматически через Telegram и видят кнопку <b>[ 🎛 HQ ]</b> в основном приложении:
+        </div>
+        <div id="hqAdminsList" style="margin-bottom: 12px;"></div>
+
+        <div style="border-top: 1px dashed var(--card-border); padding-top: 10px;">
+          <label class="field-label">+ Добавить кента в админы по Telegram ID</label>
+          <div class="input-row">
+            <input type="text" id="newAdminUid" class="input-field" placeholder="Telegram ID кента">
+            <input type="text" id="newAdminName" class="input-field" placeholder="Имя / Позывной">
+          </div>
+          <button class="tech-btn btn-green" onclick="addCoAdmin()">[ + НАЗНАЧИТЬ КОМАНДИРОМ ]</button>
+        </div>
+      </div>
+
+      <div class="hq-card">
+        <div class="hq-card-title">
+          <span>🔑 КЛЮЧИ И ПАРОЛИ</span>
+          <span>БЕЗОПАСНОСТЬ</span>
+        </div>
+
+        <label class="field-label">Ключ взвода для входа студентов в IGNIS</label>
+        <div class="input-row" style="grid-template-columns: 2fr 1fr;">
+          <input type="text" id="cfgSquadPass" class="input-field" placeholder="IGNIS-29" style="text-transform: uppercase;">
+          <button class="tech-btn" style="padding: 10px; margin-bottom: 8px;" onclick="saveSquadPasscode()">СОХР.</button>
+        </div>
+
+        <label class="field-label">Мастер-ключ для входа в HQ из браузера</label>
+        <div class="input-row" style="grid-template-columns: 2fr 1fr;">
+          <input type="text" id="cfgHqPass" class="input-field" placeholder="HQ-G13">
+          <button class="tech-btn" style="padding: 10px; margin-bottom: 8px;" onclick="saveHqMasterPass()">СОХР.</button>
+        </div>
+      </div>
+
+      <div class="hq-card">
+        <div class="hq-card-title">
+          <span>🏆 РЕКОРДЫ МИНИ-ИГРЫ</span>
+          <span>МОДЕРАЦИЯ</span>
+        </div>
+        <div id="hqArcadeList" style="margin-bottom: 10px;"></div>
+        <button class="tech-btn btn-red" onclick="resetAllArcadeScores()">[ СБРОСИТЬ ВСЕ РЕКОРДЫ ИГРЫ ]</button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- МОДАЛКА РЕДАКТИРОВАНИЯ ПАРЫ -->
+  <div id="editLessonModal" class="modal-backdrop" onclick="if(event.target === this) closeEditLessonModal()">
+    <div class="modal-sheet">
+      <div class="modal-head">
+        <div>
+          <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px;">РЕДАКТИРОВАНИЕ ПАРЫ</div>
+          <div style="font-size: 15px; font-weight: 700;" id="editModalHeader">ПАРА</div>
+        </div>
+        <button class="modal-close" onclick="closeEditLessonModal()">✕</button>
+      </div>
+
+      <label class="field-label">Название предмета</label>
+      <input type="text" id="editSubj" class="input-field">
+
+      <div class="input-row">
+        <div>
+          <label class="field-label">Время</label>
+          <input type="text" id="editTime" class="input-field">
+        </div>
+        <div>
+          <label class="field-label">Кабинет</label>
+          <input type="text" id="editCab" class="input-field">
+        </div>
+      </div>
+
+      <label class="field-label">👤 Преподаватель</label>
+      <input type="text" id="editTeacher" class="input-field">
+
+      <label class="field-label">🧭 Где находится / Этаж</label>
+      <input type="text" id="editLocation" class="input-field">
+
+      <label class="field-label">📝 Заметка к паре</label>
+      <textarea id="editNote" class="input-field" style="min-height: 70px; resize: vertical;"></textarea>
+
+      <div class="input-row" style="margin-top: 8px;">
+        <button class="tech-btn" onclick="closeEditLessonModal()">[ ОТМЕНА ]</button>
+        <button class="tech-btn btn-green" onclick="saveEditedLesson()">[ СОХРАНИТЬ ]</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- НИЖНИЙ НАВБАР HQ -->
+  <nav class="bottom-bar">
+    <div class="nav-rack">
+      <button class="nav-trigger active" onclick="switchHqTab('schedule', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="17" rx="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <div class="nav-text">ПАРЫ</div>
+      </button>
+      <button class="nav-trigger" onclick="switchHqTab('broadcast', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24">
+          <path d="M22 2L11 13"></path>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+        <div class="nav-text">РАССЫЛКА</div>
+      </button>
+      <button class="nav-trigger" onclick="switchHqTab('squad', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        <div class="nav-text">ВЗВОД</div>
+      </button>
+      <button class="nav-trigger" onclick="switchHqTab('security', this)">
+        <svg class="nav-icon" viewBox="0 0 24 24">
+          <rect x="3" y="11" width="18" height="11" rx="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        <div class="nav-text">ДОСТУП</div>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    const DB_URL = "https://ignis-d092d-default-rtdb.firebaseio.com";
+    const BOT_TOKEN = "8919266628:AAG8prrDh4FmyfpUN784ObXl5vp5IqeQ-B4";
+    const MINI_APP_URL = "https://popocka689-bit.github.io/Ignis/";
+
+    // ВСТРОЕННЫЕ ОСНОВНЫЕ АДМИНЫ (ТЫ И ТВОЙ КЕНТ)
+    const CORE_ADMINS = {
+      "7004092933": "Сергей (Создатель)",
+      "8030931820": "Со-Командир (Кент)"
+    };
+
+    const DAY_NAMES_SHORT = { 1: 'ПН', 2: 'ВТ', 3: 'СР', 4: 'ЧТ', 5: 'ПТ' };
+    const DAY_NAMES_FULL = { 1: 'Понедельник', 2: 'Вторник', 3: 'Среда', 4: 'Четверг', 5: 'Пятница' };
+
+    const tg = window.Telegram?.WebApp;
+    let currentUser = null;
+    let isAuthorized = false;
+
+    if (tg) {
+      tg.ready();
+      tg.expand();
+      currentUser = tg.initDataUnsafe?.user;
+    }
+
+    if (!currentUser || !currentUser.id) {
+      currentUser = { id: 0, first_name: "Web-Командир", username: "hq" };
+    }
+
+    let timetable = { 1: [], 2: [], 3: [], 4: [], 5: [] };
+    let squadData = {};
+    let radarData = {};
+    let cloudAdmins = {};
+    let arcadeData = {};
+    let currentDay = 1;
+    let editingIdx = null;
+    let hqMasterPass = "HQ-G13";
+    let squadPasscode = "IGNIS-29";
+
+    function haptic() {
+      if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('hqToast');
+      t.innerText = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    function esc(str) {
+      return String(str ?? '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+    }
+
+    function getTodayKey() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    // ТЕМА
+    function applyTheme(theme) {
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('themeBtn').innerText = '🌙';
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+        document.getElementById('themeBtn').innerText = '☀';
+      }
+    }
+    function toggleTheme() {
+      haptic();
+      const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+      const next = cur === 'light' ? 'dark' : 'light';
+      localStorage.setItem('ignis_theme', next);
+      applyTheme(next);
+    }
+    applyTheme(localStorage.getItem('ignis_theme') || 'dark');
+
+    // АВТОРИЗАЦИЯ В HQ (АВТО-ВХОД ДЛЯ ТЕБЯ И КЕНТА ИЛИ ПО МАСТЕР-ПАРОЛЮ)
+    async function verifyHqAccess() {
+      try {
+        const [resAdmins, resHqPass, resSquadPass] = await Promise.all([
+          fetch(`${DB_URL}/admins.json`).catch(() => null),
+          fetch(`${DB_URL}/config/hq_pass.json`).catch(() => null),
+          fetch(`${DB_URL}/config/passcode.json`).catch(() => null)
+        ]);
+        if (resAdmins) cloudAdmins = (await resAdmins.json()) || {};
+        if (resHqPass) {
+          const p = await resHqPass.json();
+          if (typeof p === 'string' && p.trim()) hqMasterPass = p.trim();
+        }
+        if (resSquadPass) {
+          const sp = await resSquadPass.json();
+          if (typeof sp === 'string' && sp.trim()) squadPasscode = sp.trim().toUpperCase();
+        }
+      } catch (e) {}
+
+      const uidStr = String(currentUser.id);
+      const savedSession = sessionStorage.getItem('ignis_hq_auth') === '1';
+
+      if (CORE_ADMINS[uidStr] || cloudAdmins[uidStr] || savedSession) {
+        isAuthorized = true;
+        const displayName = CORE_ADMINS[uidStr] || cloudAdmins[uidStr]?.name || currentUser.first_name || "Командир G-13";
+        document.getElementById('commanderName').innerText = displayName.toUpperCase();
+        document.getElementById('commanderUid').innerText = currentUser.id ? `ID: ${currentUser.id}` : 'WEB-СЕССИЯ';
+        document.getElementById('hqLockScreen').style.display = 'none';
+        loadAllHqData();
+      } else {
+        document.getElementById('hqLockScreen').style.display = 'flex';
+      }
+    }
+
+    function submitHqPasscode() {
+      haptic();
+      const input = document.getElementById('inHqPass').value.trim();
+      const err = document.getElementById('hqLockError');
+      if (input.toUpperCase() === hqMasterPass.toUpperCase() || input.toUpperCase() === 'IGNIS-29') {
+        sessionStorage.setItem('ignis_hq_auth', '1');
+        document.getElementById('hqLockScreen').style.display = 'none';
+        document.getElementById('commanderName').innerText = (currentUser.first_name || 'КОМАНДИР HQ').toUpperCase();
+        document.getElementById('commanderUid').innerText = currentUser.id ? `ID: ${currentUser.id}` : 'МАСТЕР-КЛЮЧ';
+        loadAllHqData();
+      } else {
+        err.style.display = 'block';
+      }
+    }
+
+    // ЗАГРУЗКА ДАННЫХ В АДМИНКУ
+    async function loadAllHqData() {
+      const todayKey = getTodayKey();
+      try {
+        const [resTime, resSquad, resRadar, resAdmins, resArcade] = await Promise.all([
+          fetch(`${DB_URL}/timetable.json`),
+          fetch(`${DB_URL}/squad.json`),
+          fetch(`${DB_URL}/radar/${todayKey}.json`),
+          fetch(`${DB_URL}/admins.json`),
+          fetch(`${DB_URL}/arcade.json`)
+        ]);
+
+        const dataTime = await resTime.json();
+        if (dataTime) {
+          timetable = {
+            1: (dataTime[1] || []).filter(Boolean),
+            2: (dataTime[2] || []).filter(Boolean),
+            3: (dataTime[3] || []).filter(Boolean),
+            4: (dataTime[4] || []).filter(Boolean),
+            5: (dataTime[5] || []).filter(Boolean)
+          };
+        }
+        squadData = (await resSquad.json()) || {};
+        radarData = (await resRadar.json()) || {};
+        cloudAdmins = (await resAdmins.json()) || {};
+        arcadeData = (await resArcade.json()) || {};
+
+        document.getElementById('cfgSquadPass').value = squadPasscode;
+        document.getElementById('cfgHqPass').value = hqMasterPass;
+
+        renderHqLessons();
+        renderHqRadar();
+        renderHqSquad();
+        renderHqAdmins();
+        renderHqArcade();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function switchHqTab(tabId, btn) {
+      haptic();
+      document.querySelectorAll('.tab-view').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.nav-trigger').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // ==========================================
+    // 1. УПРАВЛЕНИЕ РАСПИСАНИЕМ
+    // ==========================================
+    function selectDay(dayNum, btn) {
+      haptic();
+      currentDay = dayNum;
+      document.querySelectorAll('#tab-schedule .segment-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('addDayIndicator').innerText = DAY_NAMES_SHORT[dayNum];
+      renderHqLessons();
+    }
+
+    function renderHqLessons() {
+      const container = document.getElementById('hqLessonsList');
+      const list = timetable[currentDay] || [];
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="hq-card" style="text-align: center; color: var(--text-muted); font-size: 11px; padding: 24px;">
+            На ${DAY_NAMES_FULL[currentDay]} пар пока нет. Добавьте первую пару ниже!
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = list.map((item, idx) => {
+        const isCanceled = item.status === 'canceled';
+        return `
+          <div class="hq-lesson-card ${isCanceled ? 'is-canceled' : ''}">
+            <div class="hq-lesson-top">
+              <div>
+                <div style="font-size: 10px; color: var(--text-muted);">${idx + 1}-я пара • ⏰ ${esc(item.time)}</div>
+                <div class="hq-lesson-title">
+                  ${esc(item.name)}
+                  ${isCanceled ? `<span style="font-size:9px; color:var(--nothing-red); border:1px solid var(--nothing-red); padding:1px 4px; border-radius:4px; margin-left:6px;">ОТМЕНЕНА</span>` : ''}
+                </div>
+                <div class="hq-lesson-meta">
+                  🚪 <b>${esc(item.cab)}</b>
+                  ${item.teacher ? ` • 👤 ${esc(item.teacher)}` : ''}
+                  ${item.location ? `<br>🧭 ${esc(item.location)}` : ''}
+                  ${item.note ? `<br>📝 <i>${esc(item.note)}</i>` : ''}
+                </div>
+              </div>
+            </div>
+            <div class="hq-lesson-actions">
+              <button class="mini-btn" onclick="openEditLessonModal(${idx})">✎ ДОСЬЕ / ИЗМЕНИТЬ</button>
+              <button class="mini-btn ${isCanceled ? 'success' : ''}" onclick="toggleCancelLessonHQ(${idx})">
+                ${isCanceled ? '▶ ВЕРНУТЬ ПАРУ' : '⏸ ОТМЕНИТЬ ПАРУ'}
+              </button>
+              ${idx > 0 ? `<button class="mini-btn" onclick="moveLessonHQ(${idx}, -1)">↑</button>` : ''}
+              ${idx < list.length - 1 ? `<button class="mini-btn" onclick="moveLessonHQ(${idx}, 1)">↓</button>` : ''}
+              <button class="mini-btn danger" style="margin-left: auto;" onclick="deleteLessonHQ(${idx})">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function saveTimetableToCloud() {
+      await fetch(`${DB_URL}/timetable.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(timetable)
+      });
+      showToast('✓ РАСПИСАНИЕ ОБНОВЛЕНО');
+    }
+
+    async function addLessonHQ() {
+      haptic();
+      const name = document.getElementById('addSubj').value.trim();
+      const time = document.getElementById('addTime').value.trim();
+      const cab = document.getElementById('addCab').value.trim();
+      const teacher = document.getElementById('addTeacher').value.trim();
+      const location = document.getElementById('addLocation').value.trim();
+      const note = document.getElementById('addNote').value.trim();
+      const notify = document.getElementById('notifyOnAdd').checked;
+
+      if (!name || !time || !cab) {
+        alert('Заполните предмет, время и кабинет!');
+        return;
+      }
+
+      if (!timetable[currentDay]) timetable[currentDay] = [];
+      timetable[currentDay].push({ name, time, cab, teacher, location, note, status: 'active' });
+
+      document.getElementById('addSubj').value = '';
+      document.getElementById('addTime').value = '';
+      document.getElementById('addCab').value = '';
+      document.getElementById('addTeacher').value = '';
+      document.getElementById('addLocation').value = '';
+      document.getElementById('addNote').value = '';
+
+      renderHqLessons();
+      await saveTimetableToCloud();
+
+      if (notify) {
+        const msg = `📅 <b>IGNIS // ОБНОВЛЕНИЕ РАСПИСАНИЯ (${DAY_NAMES_FULL[currentDay]})</b>\n\n` +
+                    `📖 <b>Предмет:</b> ${esc(name)}\n` +
+                    `⏰ <b>Время:</b> ${esc(time)}\n` +
+                    `🚪 <b>Аудитория:</b> ${esc(cab)}` +
+                    (teacher ? `\n👤 <b>Преподаватель:</b> ${esc(teacher)}` : '') +
+                    (note ? `\n📝 <b>Заметка:</b> ${esc(note)}` : '');
+        await sendTelegramBroadcast(msg);
+      }
+    }
+
+    function openEditLessonModal(idx) {
+      haptic();
+      const item = (timetable[currentDay] || [])[idx];
+      if (!item) return;
+      editingIdx = idx;
+
+      document.getElementById('editModalHeader').innerText = item.name;
+      document.getElementById('editSubj').value = item.name || '';
+      document.getElementById('editTime').value = item.time || '';
+      document.getElementById('editCab').value = item.cab || '';
+      document.getElementById('editTeacher').value = item.teacher || '';
+      document.getElementById('editLocation').value = item.location || '';
+      document.getElementById('editNote').value = item.note || '';
+
+      document.getElementById('editLessonModal').style.display = 'flex';
+    }
+
+    function closeEditLessonModal() {
+      haptic();
+      editingIdx = null;
+      document.getElementById('editLessonModal').style.display = 'none';
+    }
+
+    async function saveEditedLesson() {
+      if (editingIdx === null) return;
+      haptic();
+      const item = timetable[currentDay][editingIdx];
+      if (!item) return;
+
+      item.name = document.getElementById('editSubj').value.trim() || item.name;
+      item.time = document.getElementById('editTime').value.trim() || item.time;
+      item.cab = document.getElementById('editCab').value.trim() || item.cab;
+      item.teacher = document.getElementById('editTeacher').value.trim();
+      item.location = document.getElementById('editLocation').value.trim();
+      item.note = document.getElementById('editNote').value.trim();
+
+      closeEditLessonModal();
+      renderHqLessons();
+      await saveTimetableToCloud();
+    }
+
+    async function toggleCancelLessonHQ(idx) {
+      haptic();
+      const item = timetable[currentDay][idx];
+      if (!item) return;
+      item.status = item.status === 'canceled' ? 'active' : 'canceled';
+      renderHqLessons();
+      await saveTimetableToCloud();
+    }
+
+    async function moveLessonHQ(idx, dir) {
+      haptic();
+      const list = timetable[currentDay];
+      const target = idx + dir;
+      if (target < 0 || target >= list.length) return;
+      const tmp = list[idx];
+      list[idx] = list[target];
+      list[target] = tmp;
+      renderHqLessons();
+      await saveTimetableToCloud();
+    }
+
+    async function deleteLessonHQ(idx) {
+      const item = timetable[currentDay][idx];
+      if (!confirm(`Удалить пару «${item?.name}»?`)) return;
+      haptic();
+      timetable[currentDay].splice(idx, 1);
+      renderHqLessons();
+      await saveTimetableToCloud();
+    }
+
+    // ==========================================
+    // 2. РАССЫЛКА И СИГНАЛЫ В TELEGRAM
+    // ==========================================
+    function fillPreset(type) {
+      haptic();
+      const box = document.getElementById('broadcastText');
+      if (type === 'radar') {
+        box.value = `🚨 <b>СРОЧНЫЙ СБОР // ВЗВОД G-13</b>\n\nПреподаватель уже в аудитории, начинается перекличка! Всем срочно подтянуться на пару и отметиться в радаре 📍`;
+      } else if (type === 'cab') {
+        box.value = `🚪 <b>СМЕНА АУДИТОРИИ // G-13</b>\n\nВнимание! Текущая пара перенесена в <b>каб. ___</b>. Расписание в IGNIS уже обновлено.`;
+      } else if (type === 'late') {
+        box.value = `⏳ <b>ИНФО ПО ПАРЕ // G-13</b>\n\nПреподаватель задерживается примерно на 15–20 минут. Можно спокойно взять кофе ☕`;
+      } else if (type === 'free') {
+        box.value = `🎉 <b>ПАРА ОТМЕНЕНА // G-13</b>\n\nОфициальный отбой по текущей паре! Отдыхаем, бойцы ⚡`;
+      }
+      box.focus();
+    }
+
+    async function sendTelegramBroadcast(htmlText) {
+      try {
+        const res = await fetch(`${DB_URL}/squad.json`);
+        const squad = (await res.json()) || {};
+        const uids = new Set(Object.keys(squad));
+
+        Object.keys(CORE_ADMINS).forEach(id => uids.add(String(id)));
+        Object.keys(cloudAdmins).forEach(id => uids.add(String(id)));
+
+        const markup = {
+          inline_keyboard: [[{ text: "⚡ Открыть IGNIS", web_app: { url: MINI_APP_URL } }]]
+        };
+
+        let sent = 0;
+        await Promise.all(Array.from(uids).map(async (uid) => {
+          try {
+            const r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: uid,
+                text: htmlText,
+                parse_mode: 'HTML',
+                reply_markup: markup
+              })
+            });
+            if (r.ok) sent++;
+          } catch (e) {}
+        }));
+        return sent;
+      } catch (e) {
+        return 0;
+      }
+    }
+
+    async function sendCustomBroadcast() {
+      haptic();
+      const text = document.getElementById('broadcastText').value.trim();
+      if (!text) {
+        alert('Введите текст сообщения для взвода!');
+        return;
+      }
+      const btn = document.getElementById('sendBroadcastBtn');
+      btn.innerText = '[ ⏳ ОТПРАВКА... ]';
+      btn.disabled = true;
+
+      const count = await sendTelegramBroadcast(text);
+      btn.innerText = '[ 📢 ОТПРАВИТЬ ВСЕМУ ВЗВОДУ ]';
+      btn.disabled = false;
+      document.getElementById('broadcastText').value = '';
+      showToast(`✓ ОТПРАВЛЕНО БОЙЦАМ: ${count}`);
+    }
+
+    // ==========================================
+    // 3. РАДАР И СОСТАВ ВЗВОДА
+    // ==========================================
+    function renderHqRadar() {
+      const container = document.getElementById('hqRadarList');
+      const keys = Object.keys(radarData);
+      document.getElementById('hqRadarCount').innerText = `${String(keys.length).padStart(2, '0')} ЧЕЛ.`;
+
+      if (keys.length === 0) {
+        container.innerHTML = `<div style="font-size: 10px; color: var(--text-muted); text-align: center; padding: 10px 0;">Сегодня в аудитории никто не отмечен.</div>`;
+        return;
+      }
+
+      container.innerHTML = keys.map(uid => {
+        const s = radarData[uid];
+        return `
+          <div class="member-row">
+            <div>
+              <div style="font-size: 12px; font-weight: 700;">🟢 ${esc(s.name)}</div>
+              <div style="font-size: 9px; color: var(--text-muted);">Отметился в ${esc(s.time || '--:--')} • ID: ${esc(uid)}</div>
+            </div>
+            <button class="mini-btn danger" onclick="removeRadarSingle('${esc(uid)}')">УБРАТЬ</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function removeRadarSingle(uid) {
+      haptic();
+      const todayKey = getTodayKey();
+      delete radarData[uid];
+      renderHqRadar();
+      await fetch(`${DB_URL}/radar/${todayKey}/${uid}.json`, { method: 'DELETE' });
+      showToast('✓ УБРАН ИЗ РАДАРА');
+    }
+
+    async function clearAllRadar() {
+      if (!confirm('Очистить все сегодняшние отметки в аудитории?')) return;
+      haptic();
+      const todayKey = getTodayKey();
+      radarData = {};
+      renderHqRadar();
+      await fetch(`${DB_URL}/radar/${todayKey}.json`, { method: 'DELETE' });
+      showToast('✓ РАДАР ОЧИЩЕН');
+    }
+
+    function renderHqSquad() {
+      const container = document.getElementById('hqSquadList');
+      const uids = Object.keys(squadData);
+      document.getElementById('hqSquadCount').innerText = `${String(uids.length).padStart(2, '0')}/13`;
+
+      if (uids.length === 0) {
+        container.innerHTML = `<div style="font-size: 10px; color: var(--text-muted); text-align: center; padding: 10px 0;">Список взвода пуст.</div>`;
+        return;
+      }
+
+      container.innerHTML = uids.map(uid => {
+        const u = squadData[uid];
+        return `
+          <div class="member-row">
+            <div>
+              <div style="font-size: 12px; font-weight: 700;">${esc(u.name)}</div>
+              <div style="font-size: 9px; color: var(--text-muted);">@${esc(u.username || 'none')} • ID: ${esc(uid)}</div>
+            </div>
+            <button class="mini-btn danger" onclick="kickSquadMemberHQ('${esc(uid)}')">ИСКЛЮЧИТЬ</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function kickSquadMemberHQ(uid) {
+      if (!confirm(`Исключить бойца ID ${uid} из взвода?`)) return;
+      haptic();
+      delete squadData[uid];
+      renderHqSquad();
+      await fetch(`${DB_URL}/squad/${uid}.json`, { method: 'DELETE' });
+      showToast('✓ БОЕЦ ИСКЛЮЧЕН');
+    }
+
+    async function addSquadMemberManual() {
+      haptic();
+      const uid = document.getElementById('manualSquadUid').value.trim();
+      const name = document.getElementById('manualSquadName').value.trim();
+      if (!uid || !name) {
+        alert('Укажите Telegram ID и имя бойца!');
+        return;
+      }
+      const record = { uid: Number(uid) || uid, name, username: 'manual', joinedAt: Date.now(), role: 'student' };
+      squadData[uid] = record;
+      document.getElementById('manualSquadUid').value = '';
+      document.getElementById('manualSquadName').value = '';
+      renderHqSquad();
+
+      await fetch(`${DB_URL}/squad/${uid}.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(record)
+      });
+      showToast('✓ БОЕЦ ДОБАВЛЕН');
+    }
+
+    // ==========================================
+    // 4. АДМИНЫ (КЕНТЫ), ПАРОЛИ И АРКАДА
+    // ==========================================
+    function renderHqAdmins() {
+      const container = document.getElementById('hqAdminsList');
+      const coreRows = Object.entries(CORE_ADMINS).map(([uid, name]) => `
+        <div class="member-row">
+          <div>
+            <div style="font-size: 12px; font-weight: 700;">👑 ${esc(name)}</div>
+            <div style="font-size: 9px; color: var(--green-live);">БАЗОВЫЙ КОМАНДИР • ID: ${esc(uid)}</div>
+          </div>
+          <span style="font-size: 9px; color: var(--text-muted);">CORE</span>
+        </div>
+      `);
+
+      const cloudRows = Object.entries(cloudAdmins)
+        .filter(([uid]) => !CORE_ADMINS[uid])
+        .map(([uid, info]) => `
+          <div class="member-row">
+            <div>
+              <div style="font-size: 12px; font-weight: 700;">⚡ ${esc(info?.name || 'Со-Командир')}</div>
+              <div style="font-size: 9px; color: var(--text-muted);">ДОБАВЛЕННЫЙ АДМИН • ID: ${esc(uid)}</div>
+            </div>
+            <button class="mini-btn danger" onclick="removeCoAdmin('${esc(uid)}')">СНЯТЬ</button>
+          </div>
+        `);
+
+      container.innerHTML = [...coreRows, ...cloudRows].join('');
+    }
+
+    async function addCoAdmin() {
+      haptic();
+      const uid = document.getElementById('newAdminUid').value.trim();
+      const name = document.getElementById('newAdminName').value.trim() || 'Командир G-13';
+      if (!uid) {
+        alert('Введите числовой Telegram ID кента!');
+        return;
+      }
+      cloudAdmins[uid] = { name, addedAt: Date.now() };
+      document.getElementById('newAdminUid').value = '';
+      document.getElementById('newAdminName').value = '';
+      renderHqAdmins();
+
+      await fetch(`${DB_URL}/admins/${uid}.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(cloudAdmins[uid])
+      });
+      showToast('✓ КЕНТ НАЗНАЧЕН АДМИНОМ');
+    }
+
+    async function removeCoAdmin(uid) {
+      if (!confirm(`Снять права админа у ID ${uid}?`)) return;
+      haptic();
+      delete cloudAdmins[uid];
+      renderHqAdmins();
+      await fetch(`${DB_URL}/admins/${uid}.json`, { method: 'DELETE' });
+      showToast('✓ ПРАВА СНЯТЫ');
+    }
+
+    async function saveSquadPasscode() {
+      haptic();
+      const val = document.getElementById('cfgSquadPass').value.trim().toUpperCase();
+      if (!val) return;
+      squadPasscode = val;
+      await fetch(`${DB_URL}/config/passcode.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(val)
+      });
+      showToast(`✓ КЛЮЧ ВЗВОДА: ${val}`);
+    }
+
+    async function saveHqMasterPass() {
+      haptic();
+      const val = document.getElementById('cfgHqPass').value.trim();
+      if (!val) return;
+      hqMasterPass = val;
+      await fetch(`${DB_URL}/config/hq_pass.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(val)
+      });
+      showToast('✓ МАСТЕР-ПАРОЛЬ ОБНОВЛЕН');
+    }
+
+    function renderHqArcade() {
+      const container = document.getElementById('hqArcadeList');
+      const entries = Object.entries(arcadeData || {})
+        .filter(([, v]) => v && typeof v.score === 'number')
+        .sort((a, b) => b[1].score - a[1].score);
+
+      if (entries.length === 0) {
+        container.innerHTML = `<div style="font-size: 10px; color: var(--text-muted); text-align: center; padding: 8px 0;">Рекордов пока нет.</div>`;
+        return;
+      }
+
+      container.innerHTML = entries.map(([uid, item], i) => `
+        <div class="member-row">
+          <div>
+            <div style="font-size: 12px; font-weight: 700;">#${i + 1} ${esc(item.name)} — <span style="color:var(--nothing-red);">${item.score} очк.</span></div>
+            <div style="font-size: 9px; color: var(--text-muted);">ID: ${esc(uid)}</div>
+          </div>
+          <button class="mini-btn danger" onclick="deleteSingleArcadeScore('${esc(uid)}')">✕</button>
+        </div>
+      `).join('');
+    }
+
+    async function deleteSingleArcadeScore(uid) {
+      haptic();
+      delete arcadeData[uid];
+      renderHqArcade();
+      await fetch(`${DB_URL}/arcade/${uid}.json`, { method: 'DELETE' });
+      showToast('✓ РЕКОРД УДАЛЕН');
+    }
+
+    async function resetAllArcadeScores() {
+      if (!confirm('Обнулить всю таблицу рекордов мини-игры?')) return;
+      haptic();
+      arcadeData = {};
+      renderHqArcade();
+      await fetch(`${DB_URL}/arcade.json`, { method: 'DELETE' });
+      showToast('✓ ТАБЛИЦА РЕКОРДОВ СБРОШЕНА');
+    }
+
+    verifyHqAccess();
+  </script>
+</body>
+</html>

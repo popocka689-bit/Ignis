@@ -1532,7 +1532,7 @@
         <div class="brand-tag">G-13</div>
       </div>
       <div class="system-status">
-        <button class="header-admin-btn" id="adminHeaderBtn" onclick="openSquadModal()">[ ⚙ АДМИН ]</button>
+        <button class="header-admin-btn" id="adminHeaderBtn" onclick="window.location.href='admin.html'">[ 🎛 HQ ]</button>
         <div class="status-dot"></div>
         <span id="headerClock">00:00:00</span>
         <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Сменить тему">☀</button>
@@ -1628,11 +1628,10 @@
       </div>
     </section>
 
-    <!-- ВКЛАДКА 2: РАСПИСАНИЕ -->
+    <!-- ВКЛАДКА 2: РАСПИСАНИЕ (ТОЛЬКО ПРОСМОТР) -->
     <section id="view-schedule" class="tab-view">
       <div class="schedule-toolbar">
         <span class="tool-title">РАСПИСАНИЕ ПАР НА НЕДЕЛЮ</span>
-        <button class="admin-toggle-btn" id="adminBtnSchedule" onclick="toggleAdminMode()">[РЕДАКТОР: ВЫКЛ]</button>
       </div>
 
       <div class="segment-bar">
@@ -1644,24 +1643,11 @@
       </div>
 
       <div class="lessons-rack" id="lessonsContainer"></div>
-
-      <div class="editor-box" id="editorBoxSchedule">
-        <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; margin-bottom: 8px;">+ ДОБАВИТЬ ПАРУ В РАСПИСАНИЕ</div>
-        <input type="text" id="inSubj" class="input-field" placeholder="Название предмета">
-        <div class="input-row">
-          <input type="text" id="inTime" class="input-field" placeholder="08:30-10:00">
-          <input type="text" id="inCab" class="input-field" placeholder="Каб. 302">
-        </div>
-        <input type="text" id="inTeacher" class="input-field" placeholder="Преподаватель (необязательно)">
-        <input type="text" id="inLocation" class="input-field" placeholder="Этаж / крыло (необязательно)">
-        <input type="text" id="inNote" class="input-field" placeholder="Заметка к паре (необязательно)">
-        <button class="tech-btn" onclick="saveLesson()">[ СОХРАНИТЬ ПАРУ ]</button>
-      </div>
     </section>
 
   </div>
 
-  <!-- МОДАЛКА: ДОСЬЕ ПАРЫ -->
+  <!-- МОДАЛКА: ДОСЬЕ ПАРЫ (ЧИСТЫЙ ПРОСМОТР ДЛЯ СТУДЕНТОВ) -->
   <div id="lessonModal" class="modal-backdrop" onclick="if(event.target === this) closeLessonModal()">
     <div class="modal-sheet">
       <div class="modal-head">
@@ -1672,7 +1658,6 @@
         <button class="modal-close" onclick="closeLessonModal()">✕</button>
       </div>
 
-      <!-- РЕЖИМ ПРОСМОТРА -->
       <div id="lessonIntelView">
         <div class="intel-grid">
           <div class="intel-chips">
@@ -1696,30 +1681,6 @@
             <div class="intel-val" id="intelValNote">Заметок к этой паре пока нет.</div>
           </div>
         </div>
-
-        <button class="tech-btn" id="btnOpenIntelEdit" style="display: none;" onclick="toggleLessonIntelEdit(true)">[ ⚙ ИЗМЕНИТЬ ДАННЫЕ ]</button>
-      </div>
-
-      <!-- РЕЖИМ РЕДАКТИРОВАНИЯ (ТОЛЬКО ДЛЯ АДМИНА) -->
-      <div id="lessonIntelEdit" style="display: none;">
-        <div style="margin: 8px 0 12px 0;">
-          <div class="intel-label">КАБИНЕТ / АУДИТОРИЯ</div>
-          <input type="text" id="editIntelCab" class="input-field" placeholder="Напр. 302 или Спортзал">
-
-          <div class="intel-label" style="margin-top: 4px;">👤 ПРЕПОДАВАТЕЛЬ (ФИО)</div>
-          <input type="text" id="editIntelTeacher" class="input-field" placeholder="Напр. Сидоров Алексей Викторович">
-
-          <div class="intel-label" style="margin-top: 4px;">🧭 ЛОКАЦИЯ / ЭТАЖ / КОРПУС</div>
-          <input type="text" id="editIntelLocation" class="input-field" placeholder="Напр. 3 этаж, левое крыло">
-
-          <div class="intel-label" style="margin-top: 4px;">📝 ЗАМЕТКА К ПАРЕ</div>
-          <textarea id="editIntelNote" class="input-field intel-textarea" placeholder="Что взять с собой, требования к зачёту, тема контрольной..."></textarea>
-        </div>
-
-        <div class="input-row" style="grid-template-columns: 1fr 1fr;">
-          <button class="tech-btn" style="margin-top: 0;" onclick="toggleLessonIntelEdit(false)">[ ОТМЕНА ]</button>
-          <button class="tech-btn btn-checkin" style="margin-top: 0;" onclick="saveLessonIntel()">[ СОХРАНИТЬ ]</button>
-        </div>
       </div>
     </div>
   </div>
@@ -1737,22 +1698,6 @@
 
       <div class="radar-list" id="radarMembersList"></div>
       <button class="tech-btn btn-checkin" id="checkinBtn" onclick="toggleCheckin()">[ Я В АУДИТОРИИ 📍 ]</button>
-    </div>
-  </div>
-
-  <!-- МОДАЛКА: СПИСОК ГРУППЫ -->
-  <div id="squadModal" class="modal-backdrop" onclick="if(event.target === this) closeSquadModal()">
-    <div class="modal-sheet">
-      <div class="modal-head">
-        <div>
-          <div style="font-size: 9px; color: var(--nothing-red); letter-spacing: 1px; text-transform: uppercase;">УПРАВЛЕНИЕ ДОСТУПОМ</div>
-          <div style="font-size: 15px; font-weight: 700;" id="squadCapTitle">СОСТАВ ВЗВОДА (00/13)</div>
-        </div>
-        <button class="modal-close" onclick="closeSquadModal()">✕</button>
-      </div>
-
-      <div class="squad-list" id="squadMembersList"></div>
-      <div style="font-size: 9px; color: var(--text-muted); text-align: center;">Ключ доступа взвода: <b>IGNIS-29</b></div>
     </div>
   </div>
 
@@ -1841,12 +1786,8 @@
 
   <script>
     const DB_URL = "https://ignis-d092d-default-rtdb.firebaseio.com";
-    const SQUAD_PASSCODE = "IGNIS-29";
+    let SQUAD_PASSCODE = "IGNIS-29";
     const ADMIN_IDS = [7004092933, 8030931820];
-
-    // КЛЮЧИ БОТА ДЛЯ АВТОУВЕДОМЛЕНИЙ
-    const BOT_TOKEN = "8919266628:AAG8prrDh4FmyfpUN784ObXl5vp5IqeQ-B4";
-    const MINI_APP_URL = "https://popocka689-bit.github.io/Ignis/";
 
     const tg = window.Telegram?.WebApp;
     let currentUser = null;
@@ -1855,7 +1796,6 @@
     if (tg) {
       tg.ready();
       tg.expand();
-      // Цвета шапки Telegram выставляются в applyTheme()
       currentUser = tg.initDataUnsafe?.user;
     }
 
@@ -1889,44 +1829,27 @@
       }[c]));
     }
 
-    // ВЕЕРНАЯ РАССЫЛКА ПО ВСЕМУ ВЗВОДУ В ЛИЧКУ
-    async function sendTelegramAlert(text, replyMarkup = null) {
-      try {
-        const res = await fetch(`${DB_URL}/squad.json`);
-        const squad = (await res.json()) || {};
-        const uids = Object.keys(squad);
-
-        ADMIN_IDS.forEach(id => {
-          if (!uids.includes(String(id))) uids.push(String(id));
-        });
-
-        const markup = replyMarkup || {
-          inline_keyboard: [
-            [
-              { text: "⚡ Открыть IGNIS", web_app: { url: MINI_APP_URL } }
-            ]
-          ]
-        };
-
-        for (const uid of uids) {
-          fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: uid,
-              text: text,
-              parse_mode: 'HTML',
-              reply_markup: markup
-            })
-          }).catch(() => {});
-        }
-      } catch (e) {
-        console.error("Ошибка рассылки Telegram:", e);
-      }
-    }
-
     // ВЕРИФИКАЦИЯ SQUAD (ВАЙТ-ЛИСТ)
     async function verifySquadAccess() {
+      try {
+        const [resPass, resCloudAdmins] = await Promise.all([
+          fetch(`${DB_URL}/config/passcode.json`).catch(() => null),
+          fetch(`${DB_URL}/admins.json`).catch(() => null)
+        ]);
+        if (resPass) {
+          const customPass = await resPass.json();
+          if (typeof customPass === 'string' && customPass.trim()) {
+            SQUAD_PASSCODE = customPass.trim().toUpperCase();
+          }
+        }
+        if (resCloudAdmins) {
+          const cloudAdmins = (await resCloudAdmins.json()) || {};
+          if (cloudAdmins[String(currentUser.id)]) {
+            isAdmin = true;
+          }
+        }
+      } catch (e) {}
+
       if (isAdmin) {
         initUI(true);
         return;
@@ -1992,11 +1915,8 @@
 
     function initUI(adminStatus) {
       const adminHeaderBtn = document.getElementById('adminHeaderBtn');
-      if (adminStatus) {
-        if (adminHeaderBtn) adminHeaderBtn.style.display = "inline-block";
-        document.getElementById('adminBtnSchedule').style.display = "block";
-      } else {
-        if (adminHeaderBtn) adminHeaderBtn.style.display = "none";
+      if (adminHeaderBtn) {
+        adminHeaderBtn.style.display = adminStatus ? "inline-block" : "none";
       }
       syncDataFromCloud();
     }
@@ -2004,7 +1924,6 @@
     let timetable = { 1: [], 2: [], 3: [], 4: [], 5: [] };
     let radarData = {};
     let currentDay = 1;
-    let editMode = false;
 
     // СИНХРОНИЗАЦИЯ С ОБЛАКОМ
     async function syncDataFromCloud() {
@@ -2044,28 +1963,14 @@
       el.classList.add('active');
     }
 
-    function toggleAdminMode() {
-      if (!isAdmin) return;
-      haptic();
-      editMode = !editMode;
-      
-      const txt = editMode ? "[РЕДАКТОР: ВКЛ]" : "[РЕДАКТОР: ВЫКЛ]";
-      document.getElementById('adminBtnSchedule').innerText = txt;
-      document.getElementById('adminBtnSchedule').classList.toggle('active', editMode);
-      document.getElementById('editorBoxSchedule').classList.toggle('show', editMode);
-      document.body.classList.toggle('admin-mode', editMode);
-    }
-
-    // РАСПИСАНИЕ
+    // РАСПИСАНИЕ (ТОЛЬКО ЧТЕНИЕ)
     function selectDay(dayNum, btn) {
       haptic();
       currentDay = dayNum;
-      document.querySelectorAll('.segment-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#view-schedule .segment-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       renderLessons();
     }
-
-    let activeIntelIdx = null;
 
     function renderLessons() {
       const container = document.getElementById('lessonsContainer');
@@ -2108,11 +2013,6 @@
             </div>
             <div class="lesson-right">
               <div class="lesson-cab">${esc(item.cab)}</div>
-              ${isAdmin ? `
-                <button class="lesson-action-btn" onclick="event.stopPropagation(); changeLessonCab(${idx})">[КАБ]</button>
-                <button class="lesson-action-btn" onclick="event.stopPropagation(); toggleLessonCancel(${idx})">[${isCanceled ? 'ВЕРНУТЬ' : 'ОТМЕНА'}]</button>
-                <button class="lesson-action-btn btn-del" onclick="event.stopPropagation(); deleteLesson(${idx})">✕</button>
-              ` : ''}
             </div>
           </div>
         `;
@@ -2124,7 +2024,6 @@
       const item = list[idx];
       if (!item) return;
       haptic();
-      activeIntelIdx = idx;
 
       document.getElementById('intelModalTitle').innerText = item.name;
       document.getElementById('intelChipTime').innerText = `⏰ ${item.time}`;
@@ -2154,138 +2053,12 @@
       setField('intelValLocation', item.location, 'Не указана');
       setField('intelValNote', item.note, 'Заметок к этой паре пока нет.');
 
-      document.getElementById('btnOpenIntelEdit').style.display = isAdmin ? 'block' : 'none';
-      toggleLessonIntelEdit(false, true);
       document.getElementById('lessonModal').style.display = 'flex';
     }
 
     function closeLessonModal() {
       haptic();
       document.getElementById('lessonModal').style.display = 'none';
-      activeIntelIdx = null;
-    }
-
-    function toggleLessonIntelEdit(show, silent) {
-      if (!silent) haptic();
-      const viewBox = document.getElementById('lessonIntelView');
-      const editBox = document.getElementById('lessonIntelEdit');
-
-      if (show && isAdmin && activeIntelIdx !== null) {
-        const item = (timetable[currentDay] || [])[activeIntelIdx];
-        if (!item) return;
-        document.getElementById('editIntelCab').value = item.cab || '';
-        document.getElementById('editIntelTeacher').value = item.teacher || '';
-        document.getElementById('editIntelLocation').value = item.location || '';
-        document.getElementById('editIntelNote').value = item.note || '';
-        viewBox.style.display = 'none';
-        editBox.style.display = 'block';
-      } else {
-        viewBox.style.display = 'block';
-        editBox.style.display = 'none';
-      }
-    }
-
-    async function saveLessonIntel() {
-      if (!isAdmin || activeIntelIdx === null) return;
-      const item = (timetable[currentDay] || [])[activeIntelIdx];
-      if (!item) return;
-      haptic();
-
-      const newCab = document.getElementById('editIntelCab').value.trim();
-      if (newCab) item.cab = newCab;
-      item.teacher = document.getElementById('editIntelTeacher').value.trim();
-      item.location = document.getElementById('editIntelLocation').value.trim();
-      item.note = document.getElementById('editIntelNote').value.trim();
-
-      renderLessons();
-      updateLiveStatus();
-      openLessonModal(activeIntelIdx);
-
-      await fetch(`${DB_URL}/timetable.json`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(timetable)
-      });
-    }
-
-    async function changeLessonCab(idx) {
-      if (!isAdmin) return;
-      haptic();
-      const current = timetable[currentDay][idx].cab;
-      const newCab = prompt("Новый номер аудитории:", current);
-      if (newCab && newCab.trim() !== "") {
-        timetable[currentDay][idx].cab = newCab.trim();
-        renderLessons();
-        updateLiveStatus();
-        await fetch(`${DB_URL}/timetable.json`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(timetable)
-        });
-      }
-    }
-
-    async function toggleLessonCancel(idx) {
-      if (!isAdmin) return;
-      haptic();
-      const cur = timetable[currentDay][idx].status;
-      timetable[currentDay][idx].status = (cur === 'canceled') ? 'active' : 'canceled';
-      renderLessons();
-      updateLiveStatus();
-      await fetch(`${DB_URL}/timetable.json`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(timetable)
-      });
-    }
-
-    async function saveLesson() {
-      if (!isAdmin) return;
-      haptic();
-      const name = document.getElementById('inSubj').value.trim();
-      const time = document.getElementById('inTime').value.trim();
-      const cab = document.getElementById('inCab').value.trim();
-      const teacher = document.getElementById('inTeacher').value.trim();
-      const location = document.getElementById('inLocation').value.trim();
-      const note = document.getElementById('inNote').value.trim();
-
-      if (!name || !time || !cab) {
-        alert("Заполните предмет, время и кабинет!");
-        return;
-      }
-
-      if (!timetable[currentDay]) timetable[currentDay] = [];
-      timetable[currentDay].push({ name, time, cab, teacher, location, note, status: 'active' });
-
-      document.getElementById('inSubj').value = '';
-      document.getElementById('inTime').value = '';
-      document.getElementById('inCab').value = '';
-      document.getElementById('inTeacher').value = '';
-      document.getElementById('inLocation').value = '';
-      document.getElementById('inNote').value = '';
-
-      renderLessons();
-      updateLiveStatus();
-
-      await fetch(`${DB_URL}/timetable.json`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(timetable)
-      });
-    }
-
-    async function deleteLesson(idx) {
-      if (!isAdmin) return;
-      haptic();
-      timetable[currentDay].splice(idx, 1);
-      renderLessons();
-      updateLiveStatus();
-
-      await fetch(`${DB_URL}/timetable.json`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(timetable)
-      });
     }
 
     // ПОСЕЩАЕМОСТЬ (РАДАР)
@@ -2335,7 +2108,7 @@
               <div class="radar-dot"></div>
               <span>${esc(student.name)}</span>
             </div>
-            ${isAdmin ? `<button class="btn-kick" onclick="kickFromRadar('${esc(uid)}')">[УБРАТЬ]</button>` : ''}
+            <span style="font-size: 9px; color: var(--text-muted);">${esc(student.time || '')}</span>
           </div>
         `;
       }).join('');
@@ -2363,66 +2136,6 @@
           body: JSON.stringify(studentRecord)
         });
       }
-    }
-
-    async function kickFromRadar(uid) {
-      if (!isAdmin) return;
-      haptic();
-      const todayKey = getTodayKey();
-      delete radarData[uid];
-      renderRadar();
-      await fetch(`${DB_URL}/radar/${todayKey}/${uid}.json`, { method: 'DELETE' });
-    }
-
-    // ==========================================
-    // УПРАВЛЕНИЕ СОСТАВОМ ГРУППЫ
-    // ==========================================
-    async function openSquadModal() {
-      if (!isAdmin) return;
-      haptic();
-      document.getElementById('squadModal').style.display = 'flex';
-      const container = document.getElementById('squadMembersList');
-      container.innerHTML = `<div style="text-align: center; color: var(--text-dim); font-size: 11px;">ЗАГРУЗКА СПИСКА...</div>`;
-
-      try {
-        const res = await fetch(`${DB_URL}/squad.json`);
-        const squad = (await res.json()) || {};
-        const uids = Object.keys(squad);
-
-        document.getElementById('squadCapTitle').innerText = `СОСТАВ ВЗВОДА (${String(uids.length).padStart(2, '0')}/13)`;
-
-        if (uids.length === 0) {
-          container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 11px;">Никто ещё не активировал ключ.</div>`;
-          return;
-        }
-
-        container.innerHTML = uids.map(uid => {
-          const user = squad[uid];
-          return `
-            <div class="user-entry-item">
-              <div>
-                <div style="font-size: 12px; font-weight: 700;">${esc(user.name)}</div>
-                <div style="font-size: 9px; color: var(--text-muted);">@${esc(user.username)} • ID: ${esc(uid)}</div>
-              </div>
-              <button class="btn-kick" onclick="kickFromSquad('${esc(uid)}')">[ИСКЛЮЧИТЬ]</button>
-            </div>
-          `;
-        }).join('');
-      } catch (err) {
-        container.innerHTML = `<div style="color: var(--nothing-red); font-size: 11px;">[ОШИБКА ЗАГРУЗКИ СПИСКА]</div>`;
-      }
-    }
-
-    function closeSquadModal() {
-      haptic();
-      document.getElementById('squadModal').style.display = 'none';
-    }
-
-    async function kickFromSquad(uid) {
-      if (!confirm(`Исключить участника ID ${uid}? Доступ будет закрыт.`)) return;
-      haptic();
-      await fetch(`${DB_URL}/squad/${uid}.json`, { method: 'DELETE' });
-      openSquadModal();
     }
 
     // ==========================================
