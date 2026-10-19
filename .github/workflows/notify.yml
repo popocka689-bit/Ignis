@@ -1,9 +1,11 @@
-name: Check Upcoming Lessons
+name: Morning Digest Notifier
 
 on:
   schedule:
-    - cron: '0 2 * * 1-5'
-    - cron: '*/5 3-13 * * 1-5'
+    # Запускаемся каждые 15 минут с 01:00 до 03:45 UTC (06:00 - 08:45 по времени +05:00).
+    # Первый запуск в 06:00–06:30 утра отправляет дайджест и записывает флаг в базу,
+    # а повторные запуски страхуют от задержек GitHub Actions.
+    - cron: '*/15 1-3 * * 1-5'
   workflow_dispatch:
 
 jobs:
@@ -11,15 +13,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Run Notifier
         env:
           BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
         run: node notifier.js
-        
