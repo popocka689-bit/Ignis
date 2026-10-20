@@ -1,7 +1,7 @@
 const https = require('https');
 
 const DB_URL = "https://ignis-d092d-default-rtdb.firebaseio.com";
-const BOT_TOKEN = process.env.BOT_TOKEN;
+const BOT_TOKEN = process.env.BOT_TOKEN || "8919266628:AAG8prrDh4FmyfpUN784ObXl5vp5IqeQ-B4";
 const ADMIN_IDS = ["7004092933", "8030931820"];
 const MINI_APP_URL = "https://popocka689-bit.github.io/Ignis/";
 
@@ -70,12 +70,23 @@ function callTelegram(method, body) {
       let data = '';
       res.on('data', chunk => data += chunk);
       res.on('end', () => {
-        try { resolve(!!JSON.parse(data).ok); }
-        catch (e) { resolve(false); }
+        try {
+          const parsed = JSON.parse(data);
+          if (!parsed.ok) {
+            console.error(`Telegram API error [${method} to ${body.chat_id}]:`, parsed.description || data);
+          }
+          resolve(!!parsed.ok);
+        } catch (e) {
+          console.error(`Telegram response parse error:`, e.message);
+          resolve(false);
+        }
       });
     });
 
-    req.on('error', () => resolve(false));
+    req.on('error', (err) => {
+      console.error(`Telegram request network error [${method}]:`, err.message);
+      resolve(false);
+    });
     req.write(payload);
     req.end();
   });
@@ -136,10 +147,12 @@ async function run() {
   const dateNum = String(localDate.getUTCDate()).padStart(2, '0');
   const dateKey = `${year}-${month}-${dateNum}`;
 
-  // Окно отправки утреннего дайджеста: с 06:00 (360 мин) до 09:30 (570 мин) по времени +05:00.
-  // Благодаря запуску cron каждые 15 минут с 06:00 утра дайджест приходит в районе 06:00–06:30,
-  // а широкое окно страхует от любых задержек очередей GitHub Actions.
-  if (!isManualRun && (localMinutes < 360 || localMinutes > 570)) {
+  // Окно отправки утреннего дайджеста: с 05:45 (345 мин) до 14:00 (840 мин) по времени +05:00.
+  // Основные запуски запланированы на 06:04–06:50 утра.
+  // Широкое окно страхует от любых задержек очередей GitHub Actions:
+  // если раннер запустится с опозданием, дайджест все равно дойдет до студентов,
+  // а флаг lastDigest гарантирует, что сообщение придет ровно 1 раз в сутки.
+  if (!isManualRun && (localMinutes < 345 || localMinutes > 840)) {
     console.log(`Вне окна утреннего дайджеста (сейчас ${Math.floor(localMinutes / 60)}:${String(localMinutes % 60).padStart(2, '0')}).`);
     return;
   }

@@ -1165,6 +1165,23 @@
         <button class="tech-btn btn-primary" id="sendBroadcastBtn" onclick="sendCustomBroadcast()">
           📢 Отправить всему взводу
         </button>
+
+        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--card-border);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <div style="font-size: 12px; font-weight: 700; color: var(--text-white); letter-spacing: 0.5px;">
+              🌅 УТРЕННИЙ ДАЙДЖЕСТ ВЗВОДА
+            </div>
+            <span class="hq-card-badge" style="background: rgba(0, 230, 118, 0.15); color: var(--green-live); border-color: rgba(0, 230, 118, 0.3);">
+              Авто 06:00–06:30
+            </span>
+          </div>
+          <p style="font-size: 11px; color: var(--text-dim); margin-bottom: 10px; line-height: 1.45;">
+            Отправляет красивую утреннюю сводку с киберпанк-фото и расписанием на день. Если хочешь протестировать или выслать сводку прямо сейчас — нажми кнопку ниже:
+          </p>
+          <button class="tech-btn" id="sendDigestNowBtn" onclick="sendMorningDigestNow()" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border); color: #fff;">
+            🌅 Отправить утренний дайджест сейчас
+          </button>
+        </div>
       </div>
     </section>
 
@@ -1886,6 +1903,133 @@
       document.getElementById('broadcastText').value = '';
       updateBroadcastPreview();
       showToast(`✓ Отправлено бойцам: ${count}`);
+    }
+
+    const CYBERPUNK_MORNING_IMAGES = [
+      "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?q=80&w=1080&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1514565131-fce0801e5785?q=80&w=1080&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1080&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=1080&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=1080&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1080&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?q=80&w=1080&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=1080&auto=format&fit=crop"
+    ];
+
+    async function sendMorningDigestNow() {
+      haptic();
+      const btn = document.getElementById('sendDigestNowBtn');
+      if (!confirm('Отправить утренний дайджест с расписанием и фото всем бойцам взвода прямо сейчас?')) return;
+
+      btn.innerText = '⏳ Формирование и отправка...';
+      btn.disabled = true;
+
+      try {
+        const [ttRes, sqRes] = await Promise.all([
+          fetch(`${DB_URL}/timetable.json`),
+          fetch(`${DB_URL}/squad.json`)
+        ]);
+        const timetable = (await ttRes.json()) || {};
+        const squad = (await sqRes.json()) || {};
+
+        const now = new Date();
+        const localDate = new Date(now.getTime() + 5 * 60 * 60 * 1000);
+        let day = localDate.getUTCDay();
+        const year = localDate.getUTCFullYear();
+        const month = String(localDate.getUTCMonth() + 1).padStart(2, '0');
+        const dateNum = String(localDate.getUTCDate()).padStart(2, '0');
+        const dateKey = `${year}-${month}-${dateNum}`;
+
+        const targetDay = (day >= 1 && day <= 5) ? day : 1;
+        const todayLessons = (timetable && Array.isArray(timetable[targetDay])) ? timetable[targetDay].filter(Boolean) : [];
+        const daysNames = ["ВОСКРЕСЕНЬЕ", "ПОНЕДЕЛЬНИК", "ВТОРНИК", "СРЕДА", "ЧЕТВЕРГ", "ПЯТНИЦА", "СУББОТА"];
+        const currentDayName = daysNames[day];
+
+        let lessonsBlock = "";
+        if (todayLessons.length === 0) {
+          lessonsBlock = "<i>Пар на сегодня не запланировано — свободный день!</i>";
+        } else {
+          lessonsBlock = todayLessons.map((l, i) => {
+            const isCanc = l.status === 'canceled';
+            const base = `${i + 1}. <b>${l.name || ''}</b> ${isCanc ? '❌ <i>[ОТМЕНЕНА]</i>' : `[${l.cab || ''}]`} • <code>${l.time || ''}</code>`;
+            const extra = [];
+            if (!isCanc && l.teacher) extra.push(`👤 ${l.teacher}`);
+            if (!isCanc && l.note) extra.push(`📝 <i>${l.note}</i>`);
+            return extra.length > 0 ? `${base}\n   └ ${extra.join(' • ')}` : base;
+          }).join("\n");
+        }
+
+        let finishTime = null;
+        if (todayLessons.length > 0) {
+          const valid = todayLessons.filter(l => l && l.status !== 'canceled' && l.time);
+          if (valid.length > 0) {
+            const parts = String(valid[valid.length - 1].time || '').split(/[-—–]/);
+            if (parts.length >= 2) finishTime = parts[1].trim();
+          }
+        }
+        const finishLine = finishTime ? `\n\n🏁 <b>Освобождаемся сегодня в:</b> <code>${finishTime}</code>` : '';
+
+        const digestText = `⚡ <b>IGNIS // УТРЕННЯЯ СВОДКА ВЗВОДА G-13</b>\n` +
+                           `<code>${currentDayName} • ${dateNum}.${month}.${year}</code>\n\n` +
+                           `🗓 <b>РАСПИСАНИЕ НА СЕГОДНЯ:</b>\n` +
+                           `${lessonsBlock}` +
+                           `${finishLine}\n\n` +
+                           `<i>Бодрого утра, боец! Не забудь отметиться в RADAR на паре 📍</i>`;
+
+        const imageIndex = (parseInt(dateNum, 10) + parseInt(month, 10)) % CYBERPUNK_MORNING_IMAGES.length;
+        const photoUrl = CYBERPUNK_MORNING_IMAGES[imageIndex];
+
+        const uids = new Set(Object.keys(squad));
+        Object.keys(CORE_ADMINS).forEach(id => uids.add(String(id)));
+        Object.keys(cloudAdmins).forEach(id => uids.add(String(id)));
+
+        const markup = {
+          inline_keyboard: [[{ text: "⚡ Открыть IGNIS", web_app: { url: MINI_APP_URL } }]]
+        };
+
+        let sent = 0;
+        await Promise.all(Array.from(uids).map(async (uid) => {
+          try {
+            let r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: uid,
+                photo: photoUrl,
+                caption: digestText,
+                parse_mode: 'HTML',
+                reply_markup: markup
+              })
+            });
+            if (!r.ok) {
+              r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  chat_id: uid,
+                  text: digestText,
+                  parse_mode: 'HTML',
+                  reply_markup: markup
+                })
+              });
+            }
+            if (r.ok) sent++;
+          } catch (e) {}
+        }));
+
+        await fetch(`${DB_URL}/digest_logs.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ lastDigest: dateKey })
+        });
+
+        showToast(`✓ Дайджест доставлен: ${sent} бойцам`);
+      } catch (err) {
+        showToast('Ошибка при отправке дайджеста');
+      } finally {
+        btn.innerText = '🌅 Отправить утренний дайджест сейчас';
+        btn.disabled = false;
+      }
     }
 
     // ==========================================
